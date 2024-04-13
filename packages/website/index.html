@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>List of Lights</title>
+    <link rel="icon" href="/icon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="author" content="Kyle Hensel" />
+    <meta
+      name="description"
+      content="An index of maritime lights from the US DoD"
+    />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; base-uri 'none'; form-action 'none'; connect-src 'self' https://cdn.list.lighting http://localhost:3000; style-src 'self' 'unsafe-inline'; img-src data: *; script-src-elem 'self';"
+    />
+  </head>
+  <body>
+    <main></main>
+    <script type="module">
+      import { createElement } from 'react';
+      import { createRoot } from 'react-dom/client';
+      import { i18nReady } from './src/i18n';
+
+      i18nReady
+        .then(() => import('./src/App'))
+        .then(({ App }) => {
+          createRoot(document.querySelector('main')).render(createElement(App));
+        });
+    </script>
+  </body>
+</html>

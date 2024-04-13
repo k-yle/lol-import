@@ -1,0 +1,11 @@
+{
+  // configure the internationalization extension
+  "i18n-ally.localesPaths": ["./packages/website/src/translations"],
+  "i18n-ally.keystyle": "flat",
+  "i18n-ally.extract.keyPrefix": "{fileNameWithoutExt}.",
+  "i18n-ally.extract.keyMaxLength": 16,
+  "i18n-ally.sortKeys": true,
+
+  // fix auto-imports with names that conflict with other packages that we use
+  "typescript.preferences.autoImportFileExcludePatterns": ["node:test"]
+}

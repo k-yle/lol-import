@@ -25,13 +25,22 @@ jobs:
         run: |
           cd packages/parser
           npm i
+          cd ../website
+          npm i --force
 
       - name: 💚 Lint
         run: |
           cd packages/parser
+          npm run lint
+          cd ../website
           npm run lint
 
       - name: 🧪 Test
         run: |
           cd packages/parser
           npm test
+
+      - name: 🚧 Build
+        run: |
+          cd packages/website
+          npm run build

@@ -4,7 +4,7 @@
   "data_url": "https://cdn.list.lighting/taginfo.json",
   "data_updated": "20999999T999999Z",
   "project": {
-    "name": "Light of Lights Import/Conflation",
+    "name": "List of Lights Import/Conflation",
     "description": "Tags used by the regular conflation of seamarks from the US Department of Defence’s “List of Lights”",
     "project_url": "https://list.lighting",
     "doc_url": "https://osm.wiki/OpenSeaMap/List_of_Lights_Import",

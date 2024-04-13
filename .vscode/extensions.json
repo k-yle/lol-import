@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "lokalise.i18n-ally",
+    "eamodio.gitlens",
+    "esbenp.prettier-vscode",
+    "dbaeumer.vscode-eslint"
+  ]
+}
