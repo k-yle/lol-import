@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/taginfo/taginfo-projects/master/taginfo-project-schema.json",
+  "data_format": 1,
+  "data_url": "https://cdn.list.lighting/taginfo.json",
+  "data_updated": "20999999T999999Z",
+  "project": {
+    "name": "Light of Lights Import/Conflation",
+    "description": "Tags used by the regular conflation of seamarks from the US Department of Defence’s “List of Lights”",
+    "project_url": "https://list.lighting",
+    "doc_url": "https://osm.wiki/OpenSeaMap/List_of_Lights_Import",
+    "icon_url": "https://list.lighting/icon.svg",
+    "contact_name": "Kyle Hensel",
+    "contact_email": "message @kylenz on OpenStreetMap"
+  },
+  "tags": []
+}

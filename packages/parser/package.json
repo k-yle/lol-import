@@ -1,0 +1,31 @@
+{
+  "scripts": {
+    "start": "tsx src",
+    "lint": "tsc && eslint src",
+    "test": "vitest"
+  },
+  "dependencies": {
+    "@rapideditor/country-coder": "^5.2.2",
+    "countries-list": "^3.1.0",
+    "light-characteristics": "^1.0.0",
+    "prettier": "^3.2.5"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.28",
+    "eslint": "^8.57.0",
+    "eslint-config-kyle": "^19.6.1",
+    "osm-api": "^2.1.1",
+    "tsx": "^4.7.1",
+    "typescript": "^5.4.2",
+    "vitest": "^1.4.0"
+  },
+  "eslintConfig": {
+    "extends": "kyle",
+    "settings": {
+      "jest": {
+        "version": 29
+      }
+    }
+  },
+  "prettier": "eslint-config-kyle/prettier"
+}
