@@ -330,6 +330,12 @@ export function generateOsmTags(
     }
   }
 
+  // remove double spaces
+  tags['seamark:information'] = tags['seamark:information']?.replace(
+    / +/g,
+    ' ',
+  );
+
   return {
     tags: deleteUndefinedKeys(stripProxy(tags)),
     ialaId,

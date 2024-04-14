@@ -6,7 +6,8 @@ export const EVERY_KEY: { [key: string]: { [value: string]: number } } = {};
 
 /** tags that we intentionally mutate or append to */
 const SKIP_WARNING = new Set<string>([
-  // nothing here yet
+  //
+  'seamark:information',
 ]);
 
 /**

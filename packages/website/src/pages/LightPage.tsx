@@ -364,6 +364,10 @@ export const InnerLightPage: React.FC<{
                       {renderKey(key)}
                     </Anchor>
                   </Table.Th>
+                  <Table.Td>
+                    {/* hidden equals sign to save time when you copy-paste a row */}
+                    <div style={{ width: 1, overflow: 'hidden' }}>=</div>
+                  </Table.Td>
                   <Table.Td>{renderValue(key, value)}</Table.Td>
                 </Table.Tr>
               ))}
@@ -401,13 +405,15 @@ export const InnerLightPage: React.FC<{
             <Table.Tr>
               <Table.Th>{t('LightPage.orig.range')}</Table.Th>
               <Table.Td>
-                <Code block>{light.orig.range}</Code>
+                {light.orig.range && <Code block>{light.orig.range}</Code>}
               </Table.Td>
             </Table.Tr>
             <Table.Tr>
               <Table.Th>{t('LightPage.orig.height')}</Table.Th>
               <Table.Td>
-                <Code block>{light.orig.heightFeetMeters}</Code>
+                {light.orig.heightFeetMeters && (
+                  <Code block>{light.orig.heightFeetMeters}</Code>
+                )}
               </Table.Td>
             </Table.Tr>
           </Table.Tbody>
