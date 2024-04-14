@@ -90,6 +90,8 @@ export type Stats = ReturnType<typeof emptyStats>;
 export interface StatsFile {
   /** ISO Date */
   timestamp: string;
+  /** ISO Date */
+  timestampNoTime: string;
   global: Stats;
   byCountry: { [countryCode: string]: Stats };
   continents: { [continentName: string]: string[] };

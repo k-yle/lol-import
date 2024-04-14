@@ -63,8 +63,11 @@ async function main() {
 
   const allIDsInLOL = new Set<string>();
 
+  const timestampNoTime = lolData.timestamp.split('T')[0]; // date only
+
   const stats: StatsFile = {
     timestamp: lolData.timestamp,
+    timestampNoTime,
     global: emptyStats(),
     byCountry: {},
     continents: {},
@@ -85,11 +88,7 @@ async function main() {
     let expectedTags: Tags | undefined;
     let warnings: Warning[] | undefined;
     try {
-      const result = generateOsmTags(
-        lol,
-        country,
-        lolData.timestamp.split('T')[0], // date only
-      );
+      const result = generateOsmTags(lol, country, timestampNoTime);
       expectedTags = result.tags;
       ialaId = result.ialaId;
 
