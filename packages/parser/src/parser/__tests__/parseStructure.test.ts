@@ -141,6 +141,19 @@ describe('parseStructure', () => {
         ],
       ],
       [
+        'Column, black and white checkered diamond daymark; 20.',
+        [
+          {
+            type: 'daymark',
+            shape: 'rhombus',
+            colour: 'black;white',
+            colourPattern: 'squared',
+          },
+          { type: 'shape', shape: 'beacon', structure: 'column' },
+          { type: 'physicalHeight', metres: '6.1' },
+        ],
+      ],
+      [
         'E. CARDINAL BYB, beacon, topmark.',
         [
           {

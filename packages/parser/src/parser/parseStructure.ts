@@ -87,6 +87,7 @@ const COLOUR_PATTERNS: Record<string, string> = {
 };
 const TOPMARK_SHAPES: Record<string, string> = {
   round: 'sphere',
+  circular: 'sphere',
   spherical: 'sphere',
   sphere: 'sphere',
   square: 'square',
@@ -95,7 +96,7 @@ const TOPMARK_SHAPES: Record<string, string> = {
   pyramidal: 'triangle, point up',
   triangular: 'triangle, point up',
   cylindrical: 'cylinder',
-  diamond: 'diamond',
+  diamond: 'rhombus',
   '"x"': 'x-shape',
 };
 const SHAPE_ADJECTIVES = new Set([
@@ -125,15 +126,9 @@ const reNouns = [
   ...Object.keys(SHAPES.buoy),
 ].join('|');
 
-const reTopmarkAdjectives = [
-  ...COLOURS,
-  ...Object.keys(COLOUR_PATTERNS),
-  ...Object.keys(TOPMARK_SHAPES),
-  'and',
-].join('|');
-
 const reAdjectives = [
   ...COLOURS,
+  ...Object.keys(COLOUR_PATTERNS),
   ...Object.keys(MATERIALS),
   ...SHAPE_ADJECTIVES,
   ...JUNK_ADJECTIVES,
@@ -342,13 +337,13 @@ export function parseStructure(
     const topmarkMatch =
       workingString.match(
         new RegExp(
-          `\\b(?<prefix>((${reAdjectives}) )*)(top|day)mark(?<suffix> points? (up|down))?(, (?<stripes>((${reTopmarkAdjectives}) )*)(stripes?))?\\b`,
+          `\\b(?<prefix>((${reAdjectives}) )*)(top|day)mark(?<suffix> points? (up|down))?(, (?<stripes>((${reAdjectives}) )*)(stripes?))?\\b`,
         ),
       ) ||
       // sometimes, "x" is written without the word "topmark", because
       // it's so well-understood.
       workingString.match(
-        new RegExp(`\\b(?<prefix>((${reTopmarkAdjectives}) )*)(?<suffix>"x")`),
+        new RegExp(`\\b(?<prefix>((${reAdjectives}) )*)(?<suffix>"x")`),
       );
     if (topmarkMatch) {
       const type = topmarkMatch[0].includes('daymark') ? 'daymark' : 'topmark';
@@ -451,7 +446,7 @@ export function parseStructure(
     // this MUST come after topmarks are parsed, because the stripes could relate
     // to the topmark or the structure.
     const bandMatch = workingString.match(
-      new RegExp(`\\b(((${reTopmarkAdjectives}) )*)(band|stripe)(s|ed|d)?\\b`),
+      new RegExp(`\\b(((${reAdjectives}) )*)(band|stripe)(s|ed|d)?\\b`),
     );
     if (bandMatch) {
       // semantically, "bands" implies horizontal stripes, but usually
