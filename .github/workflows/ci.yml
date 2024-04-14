@@ -26,7 +26,7 @@ jobs:
           cd packages/parser
           npm i
           cd ../website
-          npm i --force
+          npm i
 
       - name: 💚 Lint
         run: |

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
+import Diff from 'react-diff-viewer-continued';
 import type { FELight } from '../../../parser/src/helpers/types';
-import { Diff } from './Diff';
 
 export type Tags = Record<string, string | null>;
 
@@ -25,6 +25,7 @@ export const TagDiff: React.FC<{ light: FELight }> = ({ light }) => {
   return (
     <div style={{ width: '100%', overflowX: 'auto' }}>
       <Diff
+        hideLineNumbers
         oldValue={tagsToString(light.osm!.currentTags)}
         newValue={tagsToString(newTags)}
       />
