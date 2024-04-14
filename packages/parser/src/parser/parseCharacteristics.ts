@@ -83,13 +83,13 @@ export function parseCharacteristics(
           .replace('.Vi.', '.V.') // violet
           .replace('.Or.', '.O.') // orange
 
-          .replace(/(?:^|\d|Al.|Dir.)F.L.Fl/, 'FLFl') // remove dot for fixed/long flash
-          .replace(/(?:^|\d|Al.|Dir.)L\.Fl/, 'LFl') // remove dot for long flash
-          .replace(/(?:^|\d|Al.|Dir.)I\.V.Q/, 'IVQ') // remove dot for interrupted very quick
-          .replace(/(?:^|\d|Al.|Dir.)I\.Q/, 'IQ') // remove dot for interrupted quick
-          .replace(/(?:^|\d|Al.|Dir.)V\.Q/, 'VQ') // remove dot for very quick
-          .replace(/(?:^|\d|Al.|Dir.)U\.Q/, 'UQ') // remove dot for ultra quick
-          .replace(/(?:^|\d|Al.|Dir.)F\.Fl/, 'FFl') // remove dot for fixed/flash
+          .replace(/(?:^|Al.|Dir.)(\d)?F.L.Fl/, '$1FLFl') // remove dot for fixed/long flash
+          .replace(/(?:^|Al.|Dir.)(\d)?L\.Fl/, '$1LFl') // remove dot for long flash
+          .replace(/(?:^|Al.|Dir.)(\d)?I\.V.Q/, '$1IVQ') // remove dot for interrupted very quick
+          .replace(/(?:^|Al.|Dir.)(\d)?I\.Q/, '$1IQ') // remove dot for interrupted quick
+          .replace(/(?:^|Al.|Dir.)(\d)?V\.Q/, '$1VQ') // remove dot for very quick
+          .replace(/(?:^|Al.|Dir.)(\d)?U\.Q/, '$1UQ') // remove dot for ultra quick
+          .replace(/(?:^|Al.|Dir.)(\d)?F\.Fl/, '$1FFl') // remove dot for fixed/flash
           .replace(/^Dir\./, 'Dir') // remove dot between Dir and rest of the sequence
           .replace(/^Aero(\.| )/, 'Aero'), // remove dot/space between Aero and rest of the sequence
       );

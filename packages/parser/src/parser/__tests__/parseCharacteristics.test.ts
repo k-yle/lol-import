@@ -76,6 +76,15 @@ describe('parseCharacteristics', () => {
         { type: 'period', seconds: 6 },
       ],
     ],
+    [
+      '2 V.Q.R.',
+      [
+        {
+          type: 'characteristic',
+          parsed: { COLOUR: ['R'], LITCHR: 'VQ', MLTYLT: 2 },
+        },
+      ],
+    ],
   ])('%s', (characteristic, output) => {
     const warnings: Warning[] = [];
     expect(
