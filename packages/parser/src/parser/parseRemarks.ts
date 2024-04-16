@@ -1,6 +1,7 @@
 import type { Tags } from 'osm-api';
 import type { LolFeature, Warning } from '../helpers/types';
 import { capitalise, isTruthy } from '../helpers/general';
+import { tokeniser } from '../helpers/tokeniser';
 
 const unparsableRemarks: Record<string, number> = {};
 
@@ -10,17 +11,14 @@ export const getUnparsableRemarks = () =>
     .map((line) => line.reverse().join('\t'))
     .join('\n');
 
-export type Bearing = { start: number; end: number };
-
 export type Sector = {
   start: number;
   end: number;
   characteristics: string;
-  visibility?: string;
+  visibility?: Visibility;
 };
 
-type Remark =
-  | { type: 'visibleBearings'; bearings: Bearing[] }
+export type Remark =
   | {
       type: 'sectorCharacteristics';
       sectors: Sector[];
@@ -37,6 +35,29 @@ const COMMON_REMARKS: Record<string, Tags> = {
   'operates at night only': { 'seamark:light:exhibition': 'night' },
   'storm signals': { 'seamark:light:exhibition': 'storm' },
   'radar reflector': { 'seamark:radar_reflector': 'yes' },
+  'Shown on request': { 'seamark:radar_reflector': 'on_request' },
+};
+
+type Visibility =
+  | 'visible'
+  | 'unintensified'
+  | 'intensified'
+  | 'occasional'
+  | 'obscured';
+
+const VISIBILITIES: Record<string, Visibility> = {
+  visible: 'visible',
+  unintensified: 'unintensified',
+  '(unintensified)': 'unintensified',
+  '(unintens.)': 'unintensified',
+  'unintens.': 'unintensified',
+  intensified: 'intensified',
+  '(intensified)': 'intensified',
+  'intens.': 'intensified',
+  'occas.': 'occasional',
+  'partially obscured': 'obscured',
+  obscured: 'obscured',
+  obsc: 'obscured',
 };
 
 export function parseBearing(_string: string): number | undefined {
@@ -62,225 +83,256 @@ export function parseRemarks(lol: LolFeature, warnings: Warning[]): Remark[] {
     .map((line) => line.trim().replace(/\.$/, '').trim())
     .filter(isTruthy);
 
-  return lines.map((line): Remark => {
-    const fogSignalMatch =
-      line.match(
-        /(?<cat>bell|horn|siren|whistle|diaphone|nautophone|reed): ((?<groupSec>\d+) bl.|mo\.?\((?<groupMo>\w+)\)) ev. (?<period>[\d.]+)s( \((?<seq>.+)\))?/i,
-      ) ||
-      line.match(/(?<cat>horn) points (?<angle>[\d'`°]+). \((?<seq>.+)\)/i);
-    if (fogSignalMatch?.groups) {
-      const blastSequence = (fogSignalMatch.groups.seq || '')
-        .split(';')
-        .filter(isTruthy)
-        .map((segment) => {
-          const match = segment.match(
-            /(bl\.|stroke) (?<stroke>[\d.]+)s, +si\. (?<silence>[\d.]+)s/,
-          );
-          if (!match) {
-            throw new Error(`Invalid blast sequence: “${segment}”`);
-          }
-          return <{ stroke: string; silence: string }>match.groups;
-        });
-
-      const { cat, angle, groupSec, groupMo } = fogSignalMatch.groups;
-      const group = groupSec || groupMo;
-      const parsedAngle = angle && parseBearing(angle);
-
-      const tags: Tags = {};
-
-      // if there is no explicit period, we can infer it by adding
-      // up the sequence
-      const period =
-        fogSignalMatch.groups.period ||
-        blastSequence.reduce(
-          (ac, index) => ac + +index.silence + +index.stroke,
-          0,
+  const result = lines.map((_line) => {
+    return tokeniser<Remark>(_line, (workingString) => {
+      const fogSignalMatch =
+        workingString.match(
+          /(?<cat>bell|horn|siren|whistle|diaphone|nautophone|reed): ((?<groupSec>\d+) bl.|mo\.?\((?<groupMo>\w+)\)) ev. (?<period>[\d.]+)s( \((?<seq>.+)\))?/i,
+        ) ||
+        workingString.match(
+          /(?<cat>horn) points (?<angle>[\d'`°]+). \((?<seq>.+)\)/i,
         );
+      if (fogSignalMatch?.groups) {
+        const blastSequence = (fogSignalMatch.groups.seq || '')
+          .split(';')
+          .filter(isTruthy)
+          .map((segment) => {
+            const match = segment.match(
+              /(bl\.|stroke) (?<stroke>[\d.]+)s, +si\. (?<silence>[\d.]+)s/,
+            );
+            if (!match) {
+              throw new Error(`Invalid blast sequence: “${segment}”`);
+            }
+            return <{ stroke: string; silence: string }>match.groups;
+          });
 
-      tags['seamark:fog_signal:category'] = cat.toLowerCase();
-      tags['seamark:fog_signal:period'] = `${period}`;
-      if (group) tags['seamark:fog_signal:group'] = group;
-      if (parsedAngle !== undefined) {
-        tags['seamark:fog_signal:orientation'] = `${parsedAngle}`;
+        const { cat, angle, groupSec, groupMo } = fogSignalMatch.groups;
+        const group = groupSec || groupMo;
+        const parsedAngle = angle && parseBearing(angle);
+
+        const tags: Tags = {};
+
+        // if there is no explicit period, we can infer it by adding
+        // up the sequence
+        const period =
+          fogSignalMatch.groups.period ||
+          blastSequence.reduce(
+            (ac, index) => ac + +index.silence + +index.stroke,
+            0,
+          );
+
+        tags['seamark:fog_signal:category'] = cat.toLowerCase();
+        tags['seamark:fog_signal:period'] = `${period}`;
+        if (group) tags['seamark:fog_signal:group'] = group;
+        if (parsedAngle !== undefined) {
+          tags['seamark:fog_signal:orientation'] = `${parsedAngle}`;
+        }
+
+        tags['seamark:fog_signal:sequence'] = blastSequence
+          .map((blast) => `${blast.stroke}+(${blast.silence})`)
+          .join('+');
+
+        return {
+          raw: fogSignalMatch[0],
+          parsed: { type: 'genericTags', tags },
+        };
       }
 
-      tags['seamark:fog_signal:sequence'] = blastSequence
-        .map((blast) => `${blast.stroke}+(${blast.silence})`)
-        .join('+');
+      const aisMatch = workingString.match(/AIS ?\(MMSI No (\d+)\)/);
+      if (aisMatch) {
+        return {
+          raw: aisMatch[0],
+          parsed: {
+            type: 'genericTags',
+            tags: {
+              'seamark:radio_station:category': 'ais',
+              'seamark:radio_station:mmsi': aisMatch[1],
+            },
+          },
+        };
+      }
 
-      return { type: 'genericTags', tags };
-    }
+      const safetyDistanceMatch = workingString.match(
+        /safety distance (\d+)(m| meters)/i,
+      );
+      if (safetyDistanceMatch) {
+        return {
+          raw: safetyDistanceMatch[0],
+          parsed: {
+            type: 'genericTags',
+            tags: { 'seamark:safety_distance': safetyDistanceMatch[1] },
+          },
+        };
+      }
 
-    const aisMatch = line.match(/AIS ?\(MMSI No (\d+)\)/);
-    if (aisMatch) {
-      return {
-        type: 'genericTags',
-        tags: {
-          'seamark:radio_station:category': 'ais',
-          'seamark:radio_station:mmsi': aisMatch[1],
-        },
-      };
-    }
+      for (const substr in COMMON_REMARKS) {
+        const index = workingString.toLowerCase().indexOf(substr);
+        if (index !== -1) {
+          // this ensure that we use the original capitalisation
+          const match = workingString.slice(index, index + substr.length);
+          return {
+            raw: match,
+            parsed: { type: 'genericTags', tags: COMMON_REMARKS[substr] },
+          };
+        }
+      }
 
-    const visibleMatch = line.match(
-      /Visible(?<rangeList>( ([\d'.?`°]+)-([\d'.?`°]+)( and)?)+)/,
-    );
-    if (visibleMatch) {
-      const rangeList = visibleMatch.groups!.rangeList.split(' and ');
-      const sectors = rangeList
-        .map((range) => {
-          const rangeMatch = range.match(
-            /(?<start>[\d'.?`°]+)-(?<end>[\d'.?`°]+)/,
-          )!;
+      const waveLengthMatch = workingString.match(/\( *[\d &]+cm *\)/);
+      if (waveLengthMatch) {
+        const value = [
+          waveLengthMatch[0].includes('3') && '0.03-X',
+          waveLengthMatch[0].includes('10') && '0.10-S',
+        ]
+          .filter(Boolean)
+          .join(';');
+        return {
+          raw: waveLengthMatch[0],
+          parsed: {
+            type: 'genericTags',
+            tags: { 'seamark:radar_transponder:wavelength': value },
+          },
+        };
+      }
 
-          const start = parseBearing(rangeMatch.groups!.start);
-          const end = parseBearing(
-            // remove full stop and anything afterwards
-            rangeMatch.groups!.end.replace(/\.($| .*)/, ''),
-          );
-          if (start === undefined) {
-            warnings.push({ type: 'invalid_bearings', value: visibleMatch[1] });
-            return undefined;
-          }
-          if (end === undefined) {
-            warnings.push({ type: 'invalid_bearings', value: visibleMatch[2] });
-            return undefined;
-          }
+      const azimuthMatch = workingString.match(
+        /Azimuth( coverage)? (?<start>[\d'.?`°]+)?-(?<end>[\d'.?`°]+)/,
+      );
+      if (azimuthMatch?.groups) {
+        return {
+          raw: azimuthMatch[0],
+          parsed: {
+            type: 'genericTags',
+            tags: {
+              'seamark:radar_transponder:sector_start': `${parseBearing(azimuthMatch.groups.start)}`,
+              'seamark:radar_transponder:sector_end': `${parseBearing(azimuthMatch.groups.end)}`,
+            },
+          },
+        };
+      }
 
-          return { start, end };
-        })
+      const calendarMatch = workingString.match(
+        /shown (?<startM>[a-z]+)\.? ?(?<startD>\d+) to (?<endM>[a-z]+)\.? ?(?<endD>\d+)/i,
+      );
+      if (calendarMatch?.groups) {
+        const { startM, startD, endM, endD } = calendarMatch.groups;
+
+        const openingHours = `${capitalise(startM)} ${startD}-${capitalise(endM)} ${endD}`;
+        return {
+          raw: calendarMatch[0],
+          parsed: {
+            type: 'genericTags',
+            tags: { lit: 'no', 'lit:conditional': `yes @ (${openingHours})` },
+          },
+        };
+      }
+
+      const splitByComma = workingString.split(',');
+      const sectorsMatch = splitByComma
+        .map(
+          (sector) =>
+            sector.match(
+              /Visible(?<rangeList>( ([\d'.?`°]+)-([\d'.?`°]+)( and)?)+)/,
+            ) ||
+            sector.match(
+              /(?<char>\d*[.A-Za-z]+)\. ?(\((?<viz>(un)?intens(\.|ified))\))? ?(?<start>[\d'.?`°]+)?- ?(?<end>[\d'.?`°]+)/,
+            ) ||
+            sector.match(
+              /(?<viz>Visible|obsc|(partially )?obscured|\((un)?intens(\.|ified)\)) ?(?<start>[\d'.?`°]+)?- ?(?<end>[\d'.?`°]+)/,
+            ),
+        )
         .filter(isTruthy);
 
-      if (sectors.length !== rangeList.length) {
-        // this means some ranges were filtered out above
-        // because they resolved to undefined.
-        return { type: 'unknown', line };
-      }
+      // we split at each comma, so check if some segments matched the sector pattern
+      if (sectorsMatch.length) {
+        const sectors = sectorsMatch
+          .flatMap((match) => {
+            // special case for "Visible a-b° and c-d°" - we need to split
+            // this into multiple array items
+            return (
+              match.groups?.rangeList?.split(' and ').map((range) => {
+                const rangeMatch = range.match(
+                  /(?<start>[\d'.?`°]+)-(?<end>[\d'.?`°]+)/,
+                )!;
+                rangeMatch.groups!.viz = 'Visible';
+                return rangeMatch;
+              }) || [match]
+            );
+          })
+          .map((match, index, array) => {
+            if (!match?.groups) return undefined;
 
-      return {
-        type: 'visibleBearings',
-        bearings: <Bearing[]>sectors,
-      };
-    }
+            const previous = array[index - 1];
+            const { char = '', start, end, viz } = match.groups;
 
-    const safetyDistanceMatch = line.match(/safety distance (\d+)(m| meters)/i);
-    if (safetyDistanceMatch) {
-      return {
-        type: 'genericTags',
-        tags: { 'seamark:safety_distance': safetyDistanceMatch[1] },
-      };
-    }
+            // if there's no start, then use the end of the prev sector
+            const realStart = start || previous?.groups?.end || '';
+            const startNumber = parseBearing(realStart);
+            const endNumber = parseBearing(end);
 
-    const genericTagMatch = COMMON_REMARKS[line.toLowerCase()];
-    if (genericTagMatch) {
-      return { type: 'genericTags', tags: genericTagMatch };
-    }
-
-    const waveLengthMatch = line.match(/\( *[\d &]+cm *\)/);
-    if (waveLengthMatch) {
-      const value = [
-        waveLengthMatch[0].includes('3') && '0.03-X',
-        waveLengthMatch[0].includes('10') && '0.10-S',
-      ]
-        .filter(Boolean)
-        .join(';');
-      return {
-        type: 'genericTags',
-        tags: { 'seamark:radar_transponder:wavelength': value },
-      };
-    }
-
-    const azimuthMatch = line.match(
-      /Azimuth( coverage)? (?<start>[\d'.?`°]+)?-(?<end>[\d'.?`°]+)/,
-    );
-    if (azimuthMatch?.groups) {
-      return {
-        type: 'genericTags',
-        tags: {
-          'seamark:radar_transponder:sector_start': `${parseBearing(azimuthMatch.groups.start)}`,
-          'seamark:radar_transponder:sector_end': `${parseBearing(azimuthMatch.groups.end)}`,
-        },
-      };
-    }
-
-    const calendarMatch = line.match(
-      /shown (?<startM>[a-z]+)\.? ?(?<startD>\d+) to (?<endM>[a-z]+)\.? ?(?<endD>\d+)/i,
-    );
-    if (calendarMatch?.groups) {
-      const { startM, startD, endM, endD } = calendarMatch.groups;
-
-      const openingHours = `${capitalise(startM)} ${startD}-${capitalise(endM)} ${endD}`;
-      return {
-        type: 'genericTags',
-        tags: {
-          lit: 'no',
-          'lit:conditional': `yes @ (${openingHours})`,
-        },
-      };
-    }
-
-    const splitByComma = line.split(',');
-    const sectorsMatch = splitByComma.map((sector) =>
-      sector.match(
-        /(?<char>[\w.]+)\. ?(\((?<viz>(un)?intensified)\))? ?(?<start>[\d'.?`°]+)?-(?<end>[\d'.?`°]+)/,
-      ),
-    );
-    const nonSectors = splitByComma.filter((_, index) => !sectorsMatch[index]);
-
-    // we split at each comma, so check if some segments matched the sector pattern
-    if (sectorsMatch.some(isTruthy)) {
-      const sectors = sectorsMatch
-        .filter(isTruthy)
-        .map((match, index, array) => {
-          if (!match?.groups) return undefined;
-
-          const previous = array[index - 1];
-          const { char, start, end, viz } = match.groups;
-
-          // if there's no start, then use the end of the prev sector
-          const realStart = start || previous?.groups?.end || '';
-          const startNumber = parseBearing(realStart);
-          const endNumber = parseBearing(end);
-
-          if (startNumber === undefined) {
-            if (index === 0 && !realStart) {
-              warnings.push({
-                type: 'invalid_bearings_first_sector_no_start',
-                value: `“${match[0]}” in “${line}”`,
-              });
-            } else {
+            if (startNumber === undefined) {
+              if (index === 0 && !realStart) {
+                warnings.push({
+                  type: 'invalid_bearings_first_sector_no_start',
+                  value: `“${match[0]}” in “${_line}”`,
+                });
+              } else {
+                warnings.push({
+                  type: 'invalid_bearings',
+                  value: `start: “${realStart}” in ${match[0]}`,
+                });
+              }
+              return undefined;
+            }
+            if (endNumber === undefined) {
               warnings.push({
                 type: 'invalid_bearings',
-                value: `start: “${realStart}” in ${match[0]}`,
+                value: `end: “${end}” in ${match[0]}`,
               });
+              return undefined;
             }
-            return undefined;
-          }
-          if (endNumber === undefined) {
-            warnings.push({
-              type: 'invalid_bearings',
-              value: `end: “${end}” in ${match[0]}`,
-            });
-            return undefined;
-          }
 
-          const sector: Sector = {
-            characteristics: char,
-            start: startNumber,
-            end: endNumber,
-          };
-          if (viz) sector.visibility = viz;
-          return sector;
-        })
-        .filter(isTruthy);
-      return { type: 'sectorCharacteristics', sectors };
-    }
+            const sector: Sector = {
+              characteristics: char,
+              start: startNumber,
+              end: endNumber,
+            };
+            if (viz) {
+              const mappedViz = VISIBILITIES[viz.toLowerCase()];
+              if (!mappedViz) {
+                throw new Error(`Unknown visibility “${viz}”`);
+              }
+              sector.visibility = mappedViz;
+            }
 
-    const remainingPartOfLine = nonSectors.join(', ');
+            // sometimes this one is parsed into the wrong field
+            if (char === 'obsc') {
+              sector.visibility = 'obscured';
+              sector.characteristics = '';
+            }
 
-    unparsableRemarks[remainingPartOfLine] ||= 0;
-    unparsableRemarks[remainingPartOfLine]++;
+            return sector;
+          })
+          .filter(isTruthy);
 
-    return { type: 'unknown', line: remainingPartOfLine };
+        return {
+          raw: sectorsMatch.map((match) => match[0]),
+          parsed: { type: 'sectorCharacteristics', sectors },
+        };
+      }
+
+      return undefined;
+    });
   });
+
+  const output = result.flatMap((r) => r.output);
+  const unparsable = result.map((r) => r.unparsable).filter(isTruthy);
+
+  // loop is complete - that means that anything left in the string is unparsable.
+  for (const remainder of unparsable) {
+    output.push({ type: 'unknown', line: remainder });
+    unparsableRemarks[remainder] ||= 0;
+    unparsableRemarks[remainder]++;
+  }
+
+  return output;
 }

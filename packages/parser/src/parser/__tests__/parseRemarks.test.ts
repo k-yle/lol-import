@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseRemarks } from '../parseRemarks';
+import { type Remark, parseRemarks } from '../parseRemarks';
 import type { LolFeature, Warning } from '../../helpers/types';
 
 describe('parseRemarks', () => {
@@ -68,14 +68,18 @@ describe('parseRemarks', () => {
 
   describe('visible bearing', () => {
     it.each`
-      start                 | end     | remarks
-      ${123.4}              | ${56.3} | ${'Visible 123.4°-56°18`'}
-      ${123.06666666666666} | ${56.3} | ${"Visible 123°4'-56°18`"}
-      ${256}                | ${118}  | ${'Visible 256°-118°.  Shown Nov. to May.'}
-    `('$remarks', ({ remarks, start, end }) => {
+      start                 | end     | remarks                        | extra
+      ${123.4}              | ${56.3} | ${'Visible 123.4°-56°18`'}     | ${[]}
+      ${123.06666666666666} | ${56.3} | ${"Visible 123°4'-56°18`"}     | ${[]}
+      ${256}                | ${118}  | ${'Visible 256°-118°.  XXXX.'} | ${[{ type: 'unknown', line: 'XXXX' }]}
+    `('$remarks', ({ remarks, start, end, extra }) => {
       const warnings: Warning[] = [];
       expect(parseRemarks(<LolFeature>{ remarks }, warnings)).toStrictEqual([
-        { type: 'visibleBearings', bearings: [{ start, end }] },
+        {
+          type: 'sectorCharacteristics',
+          sectors: [{ characteristics: '', start, end, visibility: 'visible' }],
+        },
+        ...extra,
       ]);
       expect(warnings).toStrictEqual([]);
     });
@@ -91,10 +95,20 @@ describe('parseRemarks', () => {
         ),
       ).toStrictEqual([
         {
-          type: 'visibleBearings',
-          bearings: [
-            { start: 350.6, end: 6.6 },
-            { start: 8.3, end: 227 },
+          type: 'sectorCharacteristics',
+          sectors: [
+            {
+              characteristics: '',
+              start: 350.6,
+              end: 6.6,
+              visibility: 'visible',
+            },
+            {
+              characteristics: '',
+              start: 8.3,
+              end: 227,
+              visibility: 'visible',
+            },
           ],
         },
       ]);
@@ -149,7 +163,7 @@ describe('parseRemarks', () => {
   });
 
   describe('sectors', () => {
-    it.each<[string, object]>([
+    it.each<[string, object, Remark[]?]>([
       [
         'F.G. 0°30`-360.5°',
         [{ characteristics: 'F.G', start: 0.5, end: 360.5 }],
@@ -181,36 +195,13 @@ describe('parseRemarks', () => {
           { characteristics: 'Al.W.R', start: 180, end: 180.003 },
           { characteristics: 'F.R', start: 180.003, end: 181.003 },
         ],
+        [{ type: 'unknown', line: 'Range 4M by day' }],
       ],
-      [
-        'R.(unintensified) 040°-062°48`, Vi. (intensified) -130°, G.-198°48`, B.-344°, W.-040°.  Shown 24 hours Nov. 1 to Mar. 31',
-        [
-          {
-            characteristics: 'R',
-            start: 40,
-            end: 62.8,
-            visibility: 'unintensified',
-          },
-          {
-            characteristics: 'Vi',
-            start: 62.8,
-            end: 130,
-            visibility: 'intensified',
-          },
-          { characteristics: 'G', start: 130, end: 198.8 },
-          { characteristics: 'B', start: 198.8, end: 344 },
-          { characteristics: 'W', start: 344, end: 40 },
-        ],
-      ],
-      // TODO: handle this case
-      // [
-      //   'Visible 204°-359°, (unintens.)- 016°, obsc.-073°, (unintens.)- 094°, obsc.-115°, (unintens.)- 130°, obsc.-204°.',
-      //   [{ type: 'sectors', sectors: [{ start: 204, end: 359 }] }], // it ignored everything afterward...
-      // ],
-    ])('%s', (remarks, sectors) => {
+    ])('%s', (remarks, sectors, extra = []) => {
       const warnings: Warning[] = [];
       expect(parseRemarks(<LolFeature>{ remarks }, warnings)).toStrictEqual([
         { type: 'sectorCharacteristics', sectors },
+        ...extra,
       ]);
       expect(warnings).toStrictEqual([]);
     });
@@ -225,6 +216,13 @@ describe('parseRemarks', () => {
             type: 'genericTags',
             tags: { 'seamark:radar_transponder:wavelength': '0.03-X;0.10-S' },
           },
+          {
+            type: 'genericTags',
+            tags: {
+              'seamark:radar_transponder:sector_start': '20',
+              'seamark:radar_transponder:sector_end': '196',
+            },
+          },
         ],
       ],
       [
@@ -236,6 +234,104 @@ describe('parseRemarks', () => {
               'seamark:radar_transponder:sector_start': '20',
               'seamark:radar_transponder:sector_end': '196.5',
             },
+          },
+        ],
+      ],
+      [
+        'R.(unintensified) 040°-062°48`, Vi. (intensified) -130°, G.-198°48`, B.-344°, W.-040°.  Shown 24 hours Nov. 1 to Mar. 31',
+        [
+          { type: 'genericTags', tags: { 'seamark:light:exhibition': '24h' } },
+          {
+            type: 'sectorCharacteristics',
+            sectors: [
+              {
+                characteristics: 'R',
+                start: 40,
+                end: 62.8,
+                visibility: 'unintensified',
+              },
+              {
+                characteristics: 'Vi',
+                start: 62.8,
+                end: 130,
+                visibility: 'intensified',
+              },
+              { characteristics: 'G', start: 130, end: 198.8 },
+              { characteristics: 'B', start: 198.8, end: 344 },
+              { characteristics: 'W', start: 344, end: 40 },
+            ],
+          },
+          { type: 'unknown', line: 'Nov. 1 to Mar. 31' }, // TODO: it should parse this
+        ],
+      ],
+      [
+        'G. 231°54`-252°24`, W.-258°30`, R.-056°48`, W.-065°, G.-084°36`.  Shown Jul. 1 to Jun. 10.',
+        [
+          {
+            type: 'genericTags',
+            tags: { lit: 'no', 'lit:conditional': 'yes @ (Jul 1-Jun 10)' },
+          },
+          {
+            type: 'sectorCharacteristics',
+            sectors: [
+              { characteristics: 'G', start: 231.9, end: 252.4 },
+              { characteristics: 'W', start: 252.4, end: 258.5 },
+              { characteristics: 'R', start: 258.5, end: 56.8 },
+              { characteristics: 'W', start: 56.8, end: 65 },
+              { characteristics: 'G', start: 65, end: 84.6 },
+            ],
+          },
+        ],
+      ],
+      [
+        'Visible 204°-359°, (unintens.)- 016°, obsc.-073°, (unintens.)- 094°, obsc.-115°, (unintens.)- 130°, obsc.-204°.',
+        [
+          {
+            type: 'sectorCharacteristics',
+            sectors: [
+              {
+                characteristics: '',
+                start: 204,
+                end: 359,
+                visibility: 'visible',
+              },
+              {
+                characteristics: '',
+                start: 359,
+                end: 16,
+                visibility: 'unintensified',
+              },
+              {
+                characteristics: '',
+                start: 16,
+                end: 73,
+                visibility: 'obscured',
+              },
+              {
+                characteristics: '',
+                start: 73,
+                end: 94,
+                visibility: 'unintensified',
+              },
+              {
+                characteristics: '',
+                start: 94,
+                end: 115,
+                visibility: 'obscured',
+              },
+              {
+                characteristics: '',
+                start: 115,
+                end: 130,
+                visibility: 'unintensified',
+              },
+              {
+                characteristics: '',
+                start: 130,
+                end: 204,
+                visibility: 'obscured',
+              },
+            ],
           },
         ],
       ],

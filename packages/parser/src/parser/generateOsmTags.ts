@@ -1,4 +1,4 @@
-import { COLOURS } from 'light-characteristics';
+import { COLOURS, type Colour, type Light } from 'light-characteristics';
 import type { Tags } from 'osm-api';
 import type { LolFeature, Warning } from '../helpers/types';
 import { IALA_B } from '../helpers/constants';
@@ -6,8 +6,11 @@ import { deleteUndefinedKeys, isTruthy, sortObject } from '../helpers/general';
 import { proxyTags, stripProxy } from '../helpers/proxy';
 import { appendToTag } from '../helpers/tags';
 import { duplicateLightTags } from '../helpers/duplicateLightTags';
-import { parseCharacteristics } from './parseCharacteristics';
-import { type Bearing, type Sector, parseRemarks } from './parseRemarks';
+import {
+  parseCharacteristicForSector,
+  parseCharacteristics,
+} from './parseCharacteristics';
+import { type Sector, parseRemarks } from './parseRemarks';
 import { type Structure, parseStructure } from './parseStructure';
 import { parseName } from './parseName';
 
@@ -199,18 +202,18 @@ export function generateOsmTags(
   tags.source = `US NGA Pub. ${light.volumeNumber.replace('PUB ', '')}. ${date}.`;
 
   let sectors: false | Sector[] = false;
-  let visibleBearings: false | Bearing[] = false;
 
   const remarks = parseRemarks(light, warnings);
   for (const remark of remarks) {
     switch (remark.type) {
       case 'genericTags': {
-        Object.assign(tags, remark.tags);
-        break;
-      }
-
-      case 'visibleBearings': {
-        visibleBearings = remark.bearings;
+        for (const [k, v] of Object.entries(remark.tags)) {
+          if (k === 'seamark:light:exhibition') {
+            appendToTag(tags, k, v);
+          } else {
+            tags[k] = v;
+          }
+        }
         break;
       }
 
@@ -230,24 +233,14 @@ export function generateOsmTags(
     }
   }
 
-  if (visibleBearings && sectors) throw new Error('has bearings and sectors');
-
-  if (sectors) {
-    // oh no 🥲
-    // TODO: implement
-  } else {
-    // simple case 🙂
-
-    const lightsToMap = (visibleBearings || [undefined]) as (
-      | Bearing
-      | undefined
-    )[];
-    for (const [index, bearing] of lightsToMap.entries()) {
+  if (true) {
+    const lightsToMap = sectors === false ? [undefined] : sectors;
+    for (const [index, sector] of lightsToMap.entries()) {
       // for sectored lights, you have to use :1: to keep
       // OpenSeaMap happy, even if there's only 1 sector.
       const lxType = tokenFromName.has('RACON')
         ? 'radar_transponder'
-        : bearing
+        : sector
           ? `light:${index + 1}`
           : 'light';
 
@@ -256,9 +249,10 @@ export function generateOsmTags(
         tags[`seamark:${lxType}:height`] = lensHeightsMetres[0];
       }
 
-      if (bearing) {
-        tags[`seamark:${lxType}:sector_start`] = `${bearing.start}`;
-        tags[`seamark:${lxType}:sector_end`] = `${bearing.end}`;
+      if (sector) {
+        tags[`seamark:${lxType}:sector_start`] = `${sector.start}`;
+        tags[`seamark:${lxType}:sector_end`] = `${sector.end}`;
+        tags[`seamark:${lxType}:visibility`] = sector.visibility || '';
       }
 
       const sequence: string[] = [];
@@ -297,13 +291,28 @@ export function generateOsmTags(
             if (line.parsed.SIGPER) throw new Error('Unexpected period');
             if (line.parsed.VALMXR) throw new Error('Unexpected range');
 
-            tags[`seamark:${lxType}:colour`] = line.parsed.COLOUR.map(
+            // for sectored lights, get the overrides for this sector.
+            const overrides = ((): Partial<Light> => {
+              if (!sector?.characteristics) return {};
+
+              if (sector.characteristics in COLOURS) {
+                // it's just a colour
+                return { COLOUR: [<Colour>sector.characteristics] };
+              }
+
+              // more complicated than just a colour
+              return parseCharacteristicForSector(sector.characteristics) || {};
+            })();
+
+            const parsed: Light = { ...line.parsed, ...overrides };
+
+            tags[`seamark:${lxType}:colour`] = parsed.COLOUR.map(
               (code) => COLOURS[code],
             ).join(';');
-            tags[`seamark:${lxType}:character`] = line.parsed.LITCHR;
-            tags[`seamark:${lxType}:group`] = line.parsed.SIGGRP || '';
-            tags[`seamark:${lxType}:multiple`] = `${line.parsed.MLTYLT || ''}`;
-            appendToTag(tags, `seamark:${lxType}:category`, line.parsed.CATLIT);
+            tags[`seamark:${lxType}:character`] = parsed.LITCHR;
+            tags[`seamark:${lxType}:group`] = parsed.SIGGRP || '';
+            tags[`seamark:${lxType}:multiple`] = `${parsed.MLTYLT || ''}`;
+            appendToTag(tags, `seamark:${lxType}:category`, parsed.CATLIT);
 
             break;
           }

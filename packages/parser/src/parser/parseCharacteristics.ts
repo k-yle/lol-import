@@ -18,6 +18,27 @@ export type Characteric =
   | { type: 'unsupported'; line: string }
   | { type: 'unknown'; line: string };
 
+/** The lol format needs a bit of tweaking before our library understands it */
+function cleanCharacteristic(str: string) {
+  return str
+    .replace(/^(\d) +/i, '$1') // remove space after the first number (MLTYLT)
+    .replace('(vert.)', '(vert)')
+    .replace('(horiz.)', '(hor)')
+    .replace('(hor.)', '(hor)')
+    .replace('.Vi.', '.V.') // violet
+    .replace('.Or.', '.O.') // orange
+
+    .replace(/(?:^|Al.|Dir.)(\d)?F.L.Fl/, '$1FLFl') // remove dot for fixed/long flash
+    .replace(/(?:^|Al.|Dir.)(\d)?L\.Fl/, '$1LFl') // remove dot for long flash
+    .replace(/(?:^|Al.|Dir.)(\d)?I\.V.Q/, '$1IVQ') // remove dot for interrupted very quick
+    .replace(/(?:^|Al.|Dir.)(\d)?I\.Q/, '$1IQ') // remove dot for interrupted quick
+    .replace(/(?:^|Al.|Dir.)(\d)?V\.Q/, '$1VQ') // remove dot for very quick
+    .replace(/(?:^|Al.|Dir.)(\d)?U\.Q/, '$1UQ') // remove dot for ultra quick
+    .replace(/(?:^|Al.|Dir.)(\d)?F\.Fl/, '$1FFl') // remove dot for fixed/flash
+    .replace(/^Dir\./, 'Dir') // remove dot between Dir and rest of the sequence
+    .replace(/^Aero(\.| )/, 'Aero'); // remove dot/space between Aero and rest of the sequence
+}
+
 export function parseCharacteristics(
   lol: LolFeature,
   warnings: Warning[],
@@ -73,26 +94,7 @@ export function parseCharacteristics(
 
     // finally, try to parse the line as a light characteristic
     try {
-      const parsed = decodeLight(
-        line
-          // TODO: the light characteristic parser should understand these, add test cases from LOL
-          .replace(/^(\d) +/i, '$1') // remove space after the first number (MLTYLT)
-          .replace('(vert.)', '(vert)')
-          .replace('(horiz.)', '(hor)')
-          .replace('(hor.)', '(hor)')
-          .replace('.Vi.', '.V.') // violet
-          .replace('.Or.', '.O.') // orange
-
-          .replace(/(?:^|Al.|Dir.)(\d)?F.L.Fl/, '$1FLFl') // remove dot for fixed/long flash
-          .replace(/(?:^|Al.|Dir.)(\d)?L\.Fl/, '$1LFl') // remove dot for long flash
-          .replace(/(?:^|Al.|Dir.)(\d)?I\.V.Q/, '$1IVQ') // remove dot for interrupted very quick
-          .replace(/(?:^|Al.|Dir.)(\d)?I\.Q/, '$1IQ') // remove dot for interrupted quick
-          .replace(/(?:^|Al.|Dir.)(\d)?V\.Q/, '$1VQ') // remove dot for very quick
-          .replace(/(?:^|Al.|Dir.)(\d)?U\.Q/, '$1UQ') // remove dot for ultra quick
-          .replace(/(?:^|Al.|Dir.)(\d)?F\.Fl/, '$1FFl') // remove dot for fixed/flash
-          .replace(/^Dir\./, 'Dir') // remove dot between Dir and rest of the sequence
-          .replace(/^Aero(\.| )/, 'Aero'), // remove dot/space between Aero and rest of the sequence
-      );
+      const parsed = decodeLight(cleanCharacteristic(line));
       return { type: 'characteristic', parsed };
     } catch {
       unparsableCharactericLines[line] ||= 0;
@@ -101,4 +103,15 @@ export function parseCharacteristics(
       return { type: 'unknown', line };
     }
   });
+}
+
+export function parseCharacteristicForSector(str: string) {
+  try {
+    return decodeLight(cleanCharacteristic(str));
+  } catch {
+    const key = `[Sector] ${str}`;
+    unparsableCharactericLines[key] ||= 0;
+    unparsableCharactericLines[key]++;
+    return undefined;
+  }
 }
