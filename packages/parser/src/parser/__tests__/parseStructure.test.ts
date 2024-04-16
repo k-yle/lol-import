@@ -90,7 +90,7 @@ describe('parseStructure', () => {
           },
         ],
       ],
-    ])('$input', (input, output) => {
+    ])('%s', (input, output) => {
       const warnings: Warning[] = [];
       const result = parseStructure(input, warnings, true);
       expect(result).toStrictEqual(output);
@@ -121,7 +121,7 @@ describe('parseStructure', () => {
           {
             type: 'colourPattern',
             colours: ['green', 'brown'],
-            pattern: 'horizontal',
+            pattern: 'vertical',
           },
           {
             type: 'unknown',

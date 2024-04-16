@@ -362,7 +362,7 @@ export function parseStructure(
         .filter((word) => word in COLOUR_PATTERNS)
         .map((value) => COLOUR_PATTERNS[value] || value); // maybe apply overrides
 
-      // the word 'stripes' or 'bands' implies horizontal
+      // the word 'stripes' implies horizontal
       if (colourPatterns.length === 0 && stripes) {
         colourPatterns.push('horizontal');
       }
@@ -446,21 +446,27 @@ export function parseStructure(
     // this MUST come after topmarks are parsed, because the stripes could relate
     // to the topmark or the structure.
     const bandMatch = workingString.match(
-      new RegExp(`\\b(((${reAdjectives}) )*)(band|stripe)(s|ed|d)?\\b`),
+      new RegExp(
+        `\\b(((${reAdjectives}) )*)(?<bandOrStripe>band|stripe)(s|ed|d)?\\b`,
+      ),
     );
     if (bandMatch) {
-      // semantically, "bands" implies horizontal stripes, but usually
-      // they only tell us one of the colours. "Stripes" means there
+      // semantically, "bands" implies vertical stripes, and "stripes" implies
+      // horizontal. But usually they only tell us one of the colours. But there
       // has to be 2+ colours, so we assume the other colour has
       // already been parsed.
       const words = bandMatch[1].split(' ').filter(isTruthy);
 
-      let pattern = 'horizontal';
+      let pattern: string | undefined;
       for (const word of words) {
         if (COLOUR_PATTERNS[word]) {
           pattern = COLOUR_PATTERNS[word];
         }
       }
+
+      // use implied pattern if still undefined
+      pattern ||=
+        bandMatch.groups!.bandOrStripe === 'band' ? 'vertical' : 'horizontal';
 
       output.push({
         type: 'colourPattern',
