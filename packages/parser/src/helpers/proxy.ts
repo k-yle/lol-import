@@ -19,9 +19,11 @@ export const proxyTags = (tags: Tags, warnings: Warning[]) => {
     set(target, key, newValue) {
       if (typeof key === 'symbol') return true;
 
-      EVERY_KEY[key] ||= {};
-      EVERY_KEY[key][newValue] ||= 0;
-      EVERY_KEY[key][newValue]++;
+      if (newValue) {
+        EVERY_KEY[key] ||= {};
+        EVERY_KEY[key][newValue] ||= 0;
+        EVERY_KEY[key][newValue]++;
+      }
 
       const oldValue = target[key];
 

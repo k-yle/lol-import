@@ -1,5 +1,7 @@
 import { promises as fs } from 'node:fs';
 import { dirname } from 'node:path';
+import { promisify } from 'node:util';
+import { exec } from 'node:child_process';
 import type { OsmFeature, Tags } from 'osm-api';
 import { format } from 'prettier';
 import { iso1A2Code } from '@rapideditor/country-coder';
@@ -29,7 +31,7 @@ import {
   type Warning,
   emptyStats,
 } from './helpers/types';
-import { isTruthy } from './helpers/general';
+import { isTruthy, sortObject } from './helpers/general';
 
 /** if the only thing that needs changing are these keys, then abort */
 const TRIVIAL_KEYS = new Set(['source', 'seamark:name', 'seamark:information']);
@@ -38,6 +40,22 @@ async function main() {
   // create folder if they doesn't exist
   await fs.mkdir(tempFolder, { recursive: true });
   await fs.mkdir(outputFolder, { recursive: true });
+
+  // when running locally, create a git repo in the output folder
+  // so we can easily see the diff of what changed since the last
+  // execution.
+  if (!process.env.CI) {
+    await promisify(exec)(
+      [
+        //
+        'rm -rf .git',
+        'git init',
+        'git add .',
+        "git commit -m '.'",
+      ].join(' && '),
+      { cwd: outputFolder },
+    );
+  }
 
   const lolData = await loadLolFile();
   const osmData = await loadOsmFile();
@@ -73,7 +91,7 @@ async function main() {
     continents: {},
   };
   const fullData: FullFile = {};
-  const allWarnings: { [warningType: string]: string[] } = {};
+  let allWarnings: { [warningType: string]: string[] } = {};
 
   for (const lol of lolData.ngalol) {
     if (!lol.position.trim()) continue; // broken row
@@ -184,6 +202,7 @@ async function main() {
   }
 
   console.warn('Warnings:');
+  allWarnings = sortObject(allWarnings);
   for (const type in allWarnings) {
     console.warn(allWarnings[type].length, type);
   }

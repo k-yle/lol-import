@@ -2,7 +2,7 @@ import { COLOURS } from 'light-characteristics';
 import type { Tags } from 'osm-api';
 import type { LolFeature, Warning } from '../helpers/types';
 import { IALA_B } from '../helpers/constants';
-import { deleteUndefinedKeys, isTruthy } from '../helpers/general';
+import { deleteUndefinedKeys, isTruthy, sortObject } from '../helpers/general';
 import { proxyTags, stripProxy } from '../helpers/proxy';
 import { appendToTag } from '../helpers/tags';
 import { parseCharacteristics } from './parseCharacteristics';
@@ -337,7 +337,7 @@ export function generateOsmTags(
   );
 
   return {
-    tags: deleteUndefinedKeys(stripProxy(tags)),
+    tags: sortObject(deleteUndefinedKeys(stripProxy(tags))),
     ialaId,
     warnings,
   };

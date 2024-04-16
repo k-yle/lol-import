@@ -13,3 +13,12 @@ export const deleteUndefinedKeys = <T>(object: T): T => {
   }
   return object;
 };
+
+/** useful for reduce the noise in a diff */
+export function sortObject<T extends Record<string, unknown>>(object: T): T {
+  return <T>(
+    Object.fromEntries(
+      Object.entries(object).sort(([a], [b]) => a.localeCompare(b)),
+    )
+  );
+}
