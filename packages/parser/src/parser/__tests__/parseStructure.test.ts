@@ -167,6 +167,44 @@ describe('parseStructure', () => {
           { type: 'shape', shape: 'beacon' },
         ],
       ],
+      [
+        'Black triangular daymark point up, white trapezoidal daymark, black stripe; 20.',
+        [
+          { type: 'daymark', colour: 'black', shape: 'triangle, point up' },
+          {
+            type: 'daymark',
+            colour: 'white;black',
+            colourPattern: 'horizontal',
+            shape: 'trapezium, up',
+          },
+          { type: 'physicalHeight', metres: '6.1' },
+        ],
+      ],
+      [
+        'Metal framework tower, black rectangular daymark, white stripes; 158.\n\nSecondary structure: Red rectangular daymark, white stripes.\n',
+        [
+          {
+            type: 'daymark',
+            colour: 'black;white',
+            colourPattern: 'horizontal',
+            shape: 'board',
+          },
+          {
+            type: 'daymark',
+            colour: 'red;white',
+            colourPattern: 'horizontal',
+            shape: 'board',
+          },
+          {
+            type: 'shape',
+            material: 'metal;framework',
+            shape: 'beacon',
+            structure: 'tower',
+          },
+          { type: 'shape', shape: 'beacon' },
+          { type: 'unknown', remainder: '; 158.\n\nsecondary :' },
+        ],
+      ],
     ])('%s', (input, output) => {
       const warnings: Warning[] = [];
       expect(parseStructure(input, warnings, true)).toStrictEqual(output);

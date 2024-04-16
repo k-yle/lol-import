@@ -98,6 +98,7 @@ const TOPMARK_SHAPES: Record<string, string> = {
   triangular: 'triangle, point up',
   cylindrical: 'cylinder',
   diamond: 'rhombus',
+  trapezoidal: 'trapezium, up',
   '"x"': 'x-shape',
 };
 const SHAPE_ADJECTIVES = new Set([
@@ -105,7 +106,6 @@ const SHAPE_ADJECTIVES = new Set([
   'octagonal',
   'hexagonal',
   'quadrangular',
-  'trapezoidal',
   '[a-z]+-sided', // e.g. four-sided
 ]);
 
