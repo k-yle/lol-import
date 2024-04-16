@@ -173,6 +173,20 @@ export function parseRemarks(lol: LolFeature, warnings: Warning[]): Remark[] {
       return { type: 'genericTags', tags: genericTagMatch };
     }
 
+    const waveLengthMatch = line.match(/\( *[\d &]+cm *\)/);
+    if (waveLengthMatch) {
+      const value = [
+        waveLengthMatch[0].includes('3') && '0.03-X',
+        waveLengthMatch[0].includes('10') && '0.10-S',
+      ]
+        .filter(Boolean)
+        .join(';');
+      return {
+        type: 'genericTags',
+        tags: { 'seamark:radar_transponder:wavelength': value },
+      };
+    }
+
     const calendarMatch = line.match(
       /shown (?<startM>[a-z]+)\.? ?(?<startD>\d+) to (?<endM>[a-z]+)\.? ?(?<endD>\d+)/i,
     );

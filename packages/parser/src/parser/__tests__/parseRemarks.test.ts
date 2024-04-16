@@ -215,4 +215,24 @@ describe('parseRemarks', () => {
       expect(warnings).toStrictEqual([]);
     });
   });
+
+  describe('full', () => {
+    it.each<[string, object]>([
+      [
+        'Azimuth coverage 020°-196°.  (3  & 10cm )',
+        [
+          {
+            type: 'genericTags',
+            tags: { 'seamark:radar_transponder:wavelength': '0.03-X;0.10-S' },
+          },
+        ],
+      ],
+    ])('%s', (remarks, results) => {
+      const warnings: Warning[] = [];
+      expect(parseRemarks(<LolFeature>{ remarks }, warnings)).toStrictEqual(
+        results,
+      );
+      expect(warnings).toStrictEqual([]);
+    });
+  });
 });
