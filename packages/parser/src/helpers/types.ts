@@ -19,7 +19,6 @@ export interface LolFeature {
   name: string;
   /** e.g. `44°03'07.2"S \n176°19'58.8"W` */
   position: string;
-  /** FIXME: need to merge based on this thing */
   charNo: number;
   /**
    * A string like
@@ -37,7 +36,7 @@ export interface LolFeature {
    * sectors with the same colour...
    */
   // TODO: parse range
-  range: string;
+  range: string | null;
   structure: string | null;
   /**
    * For sectored lights, these "remarks" include the sectors. For example:
@@ -97,7 +96,7 @@ export interface StatsFile {
 export type FELight = LatLon & {
   country: string;
   tags: Tags;
-  warnings: Warning[] | undefined;
+  warnings: Warning[];
   orig: Pick<
     LolFeature,
     | 'remarks'

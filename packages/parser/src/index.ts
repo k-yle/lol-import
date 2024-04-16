@@ -25,6 +25,7 @@ import { getUnparsableRemarks } from './parser/parseRemarks';
 import { getUnparsableStructureLines } from './parser/parseStructure';
 import { generateTagInfoFile } from './helpers/taginfo';
 import {
+  type FELight,
   type FullFile,
   type Stats,
   type StatsFile,
@@ -32,6 +33,7 @@ import {
   emptyStats,
 } from './helpers/types';
 import { isTruthy, sortObject } from './helpers/general';
+import { mergeLights } from './stages/merge';
 
 /** if the only thing that needs changing are these keys, then abort */
 const TRIVIAL_KEYS = new Set(['source', 'seamark:name', 'seamark:information']);
@@ -111,12 +113,6 @@ async function main() {
       ialaId = result.ialaId;
 
       warnings = result.warnings; // store for later
-      for (const warning of result.warnings) {
-        allWarnings[warning.type] ||= [];
-        allWarnings[warning.type].push(
-          `[${country}] [${ialaId}] ${warning.value}`,
-        );
-      }
     } catch (ex) {
       throw new Error(
         `[${country}] [${ialaId.replaceAll('\n', '|')}] ${(<Error>ex).message}`,
@@ -153,10 +149,11 @@ async function main() {
     stats.byCountry[country][verdict]++;
 
     fullData[country] ||= {};
-    fullData[country][ialaId] = {
+
+    const newLight: FELight = {
       country,
       ...pos,
-      warnings: warnings.length ? warnings : undefined,
+      warnings,
       orig: {
         characteristic: lol.characteristic,
         name: [
@@ -184,6 +181,23 @@ async function main() {
             }
           : undefined,
     };
+
+    const mergeWarnings: Warning[] = [];
+    fullData[country][ialaId] = fullData[country][ialaId]
+      ? mergeLights(fullData[country][ialaId], newLight, mergeWarnings)
+      : newLight;
+
+    if (mergeWarnings.length) {
+      fullData[country][ialaId].warnings ||= [];
+      fullData[country][ialaId].warnings?.push(...mergeWarnings);
+    }
+
+    for (const warning of [...warnings, ...mergeWarnings]) {
+      allWarnings[warning.type] ||= [];
+      allWarnings[warning.type].push(
+        `[${country}] [${ialaId}] ${warning.value}`,
+      );
+    }
   }
 
   // now find all the refs that exist in OSM but not in IALA

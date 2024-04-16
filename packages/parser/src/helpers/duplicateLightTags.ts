@@ -1,10 +1,12 @@
 import type { Tags } from 'osm-api';
 
+/** any tag that start with `seamark:light` except `seamark:light:reference` */
+export const isLightTag = (key: string) =>
+  key.startsWith('seamark:light:') && !key.endsWith(':reference');
+
 /** mutates instead of returning, to preserve the {@link Proxy} */
 export function duplicateLightTags(tags: Tags, copies: number) {
-  const lightKeys = Object.keys(tags).filter(
-    (key) => key.startsWith('seamark:light:') && !key.endsWith(':reference'),
-  );
+  const lightKeys = Object.keys(tags).filter(isLightTag);
   for (const key of lightKeys) {
     /* eslint-disable no-param-reassign */
     for (let index = 1; index <= copies; index++) {
