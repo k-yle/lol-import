@@ -29,10 +29,7 @@ export interface LolFeature {
    */
   characteristic: string;
   /** feet first, then metres. Sometimes there are bogus lines */
-  heightFeetMeters:
-    | `${number}\n${number}`
-    | `null\n${number}\n${number}`
-    | null;
+  heightFeetMeters: string | null;
   /**
    * In nautical miles? Either a single number, or a string
    * like `W. 6 ; R. 4 ; G. 3`, corresponding to the sector

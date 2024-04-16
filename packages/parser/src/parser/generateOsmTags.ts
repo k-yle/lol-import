@@ -5,6 +5,7 @@ import { IALA_B } from '../helpers/constants';
 import { deleteUndefinedKeys, isTruthy, sortObject } from '../helpers/general';
 import { proxyTags, stripProxy } from '../helpers/proxy';
 import { appendToTag } from '../helpers/tags';
+import { duplicateLightTags } from '../helpers/duplicateLightTags';
 import { parseCharacteristics } from './parseCharacteristics';
 import { type Bearing, type Sector, parseRemarks } from './parseRemarks';
 import { type Structure, parseStructure } from './parseStructure';
@@ -177,22 +178,18 @@ export function generateOsmTags(
   // this one never has sectors
   tags['seamark:light:reference'] = ialaId;
 
-  let lensHeightMetres = '';
-  const lensHeight = light.heightFeetMeters
+  const lensHeightsMetres = light.heightFeetMeters
     ?.split('\n')
+    .filter((_, index) => index % 2) // even numbers are metres
     .filter((v) => v !== 'null');
-  if (lensHeight) {
-    if (lensHeight.length !== 2) {
-      // TODO: handle comma-separated
-      warnings.push({
-        type: 'invalid_lens_height',
-        value: lensHeight.join(', '),
-      });
-    } else if (Number.isNaN(+lensHeight[1])) {
-      throw new TypeError(`Lens height is not a number: “${lensHeight}”`);
-    } else {
-      lensHeightMetres = lensHeight[1];
-    }
+
+  if (lensHeightsMetres?.some((v) => Number.isNaN(+v))) {
+    throw new Error('NaN lens height');
+  }
+
+  if (lensHeightsMetres && new Set(lensHeightsMetres).size === 1) {
+    // i.e. every value is the same, so reduce the array to a single value
+    lensHeightsMetres.splice(1);
   }
 
   // this tag is special cased in the conflation function
@@ -241,7 +238,6 @@ export function generateOsmTags(
   } else {
     // simple case 🙂
 
-    // FIXME: test an example with visibleBearings
     const lightsToMap = (visibleBearings || [undefined]) as (
       | Bearing
       | undefined
@@ -255,7 +251,10 @@ export function generateOsmTags(
           ? `light:${index + 1}`
           : 'light';
 
-      tags[`seamark:${lxType}:height`] = lensHeightMetres;
+      if (lensHeightsMetres?.length === 1) {
+        // single value, so we can add it now
+        tags[`seamark:${lxType}:height`] = lensHeightsMetres[0];
+      }
 
       if (bearing) {
         tags[`seamark:${lxType}:sector_start`] = `${bearing.start}`;
@@ -327,6 +326,24 @@ export function generateOsmTags(
       if (tokenFromName.has('AVIATION LIGHT')) {
         appendToTag(tags, `seamark:${lxType}:category`, 'aero');
       }
+    }
+  }
+
+  if (lensHeightsMetres && lensHeightsMetres.length > 1) {
+    const multiple = tags['seamark:light:multiple'];
+    if (!multiple) {
+      warnings.push({
+        type: 'invalid_lens_height',
+        value: `${lensHeightsMetres.length} different lens heights (${lensHeightsMetres.join(', ')}), but only 1 light was detected`,
+      });
+    } else if (lensHeightsMetres.length === +multiple) {
+      duplicateLightTags(tags, lensHeightsMetres.length);
+      for (const [index, height] of lensHeightsMetres.entries()) {
+        tags[`seamark:light:${index + 1}:height`] = height;
+      }
+    } else {
+      // mismatch
+      throw new Error('Mismatched number of lights vs lens heights');
     }
   }
 
