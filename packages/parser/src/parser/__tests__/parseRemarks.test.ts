@@ -227,6 +227,18 @@ describe('parseRemarks', () => {
           },
         ],
       ],
+      [
+        'Azimuth coverage 020°-196°30`.',
+        [
+          {
+            type: 'genericTags',
+            tags: {
+              'seamark:radar_transponder:sector_start': '20',
+              'seamark:radar_transponder:sector_end': '196.5',
+            },
+          },
+        ],
+      ],
     ])('%s', (remarks, results) => {
       const warnings: Warning[] = [];
       expect(parseRemarks(<LolFeature>{ remarks }, warnings)).toStrictEqual(

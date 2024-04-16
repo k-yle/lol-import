@@ -39,7 +39,10 @@ const COMMON_REMARKS: Record<string, Tags> = {
   'radar reflector': { 'seamark:radar_reflector': 'yes' },
 };
 
-export function parseBearing(string: string): number | undefined {
+export function parseBearing(_string: string): number | undefined {
+  // remove full stop and anything afterwards
+  const string = _string.replace(/\.($| .*)/, '');
+
   const dmMatch = string.match(/^(\d+)[?°]([\d.]+)('|`)?\.?$/);
   if (dmMatch) {
     const [, d, m] = dmMatch;
@@ -187,6 +190,19 @@ export function parseRemarks(lol: LolFeature, warnings: Warning[]): Remark[] {
       };
     }
 
+    const azimuthMatch = line.match(
+      /Azimuth( coverage)? (?<start>[\d'.?`°]+)?-(?<end>[\d'.?`°]+)/,
+    );
+    if (azimuthMatch?.groups) {
+      return {
+        type: 'genericTags',
+        tags: {
+          'seamark:radar_transponder:sector_start': `${parseBearing(azimuthMatch.groups.start)}`,
+          'seamark:radar_transponder:sector_end': `${parseBearing(azimuthMatch.groups.end)}`,
+        },
+      };
+    }
+
     const calendarMatch = line.match(
       /shown (?<startM>[a-z]+)\.? ?(?<startD>\d+) to (?<endM>[a-z]+)\.? ?(?<endD>\d+)/i,
     );
@@ -219,10 +235,7 @@ export function parseRemarks(lol: LolFeature, warnings: Warning[]): Remark[] {
           if (!match?.groups) return undefined;
 
           const previous = array[index - 1];
-          const { char, start, viz } = match.groups;
-
-          // remove full stop and anything afterwards
-          const end = match.groups.end.replace(/\.($| .*)/, '');
+          const { char, start, end, viz } = match.groups;
 
           // if there's no start, then use the end of the prev sector
           const realStart = start || previous?.groups?.end || '';
