@@ -56,7 +56,7 @@ async function main() {
         'rm -rf .git',
         'git init',
         'git add .',
-        "git commit -m '.'",
+        "git commit -m '.' --no-gpg-sign",
       ].join(' && '),
       { cwd: outputFolder },
     );

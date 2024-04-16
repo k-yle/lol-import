@@ -39,6 +39,7 @@ import { reëncodeLight } from '../helpers/reëncodeLight';
 import { APP_NAME } from '../helpers/constants';
 import { IgnoreSuggestionsModal } from '../components/IgnoreSuggestionsModal';
 import { AuthContext } from '../context/AuthContext';
+import { Test } from '../Test';
 
 const ERRORS = {
   UNPARSABLE: t('error.unparsable'),
@@ -250,7 +251,10 @@ export const InnerLightPage: React.FC<{
     }
   }, [countryFromUrl, country, urlSafeId, navigate]);
 
-  const reëncodedLight = useMemo(() => light && reëncodeLight(light), [light]);
+  const reëncodedLight = useMemo(
+    () => light && reëncodeLight(light.tags),
+    [light],
+  );
 
   if (!light) return <Loader />;
 
@@ -346,6 +350,8 @@ export const InnerLightPage: React.FC<{
     unexpected: null, // can never happen
   }[light.osm?.verdict || 'missing'];
 
+  const originalCount = light.orig.name.split('---------');
+
   return (
     <div>
       <Breadcrumbs style={{ alignContent: 'center' }}>
@@ -359,12 +365,28 @@ export const InnerLightPage: React.FC<{
           {id}
         </Anchor>
       </Breadcrumbs>
-      <Title order={3}>
-        {light.tags['seamark:name'] || <em>{t('noname.light')}</em>}
-      </Title>
-
+      <div>
+        <Title order={3} display="inline">
+          {light.tags['seamark:name'] || <em>{t('noname.light')}</em>}
+        </Title>{' '}
+        –{' '}
+        <Anchor
+          href={`https://www.openstreetmap.org/?mlat=${light.lat}&mlon=${light.lon}#map=18/${light.lat}/${light.lon}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          OSM
+        </Anchor>{' '}
+        –{' '}
+        <Anchor
+          href={`https://kyle.kiwi/iD/#overlays=openseamap-overlay&map=18/${light.lat}/${light.lon}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          iD
+        </Anchor>
+      </div>
       {status}
-
       <JsonCard
         title={t('LightPage.parsed-data')}
         json={light.tags}
@@ -409,52 +431,53 @@ export const InnerLightPage: React.FC<{
           </Table.Tbody>
         </Table>
       </JsonCard>
-
       <JsonCard title={t('LightPage.original-data')} json={light.orig}>
         <Table style={{ tableLayout: 'fixed' }}>
+          {originalCount.length > 1 && (
+            <Table.Thead>
+              <Table.Th style={{ width: 110 }} />
+              {originalCount.map((_, index) => {
+                const key = _ + index;
+                return (
+                  <Table.Th key={key}>
+                    {t('LightPage.part-n', { n: index + 1 })}
+                  </Table.Th>
+                );
+              })}
+            </Table.Thead>
+          )}
           <Table.Tbody>
-            <Table.Tr>
-              <Table.Th style={{ width: 110 }}>
-                {t('LightPage.orig.name')}
-              </Table.Th>
-              <Table.Td>
-                <Code block>{light.orig.name}</Code>
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Th>{t('LightPage.orig.characteristics')}</Table.Th>
-              <Table.Td>
-                {highlightErrors(light.orig.characteristic, light)}
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Th>{t('LightPage.orig.structure')}</Table.Th>
-              <Table.Td>
-                {highlightErrors(light.orig.structure, light)}
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Th>{t('LightPage.orig.remarks')}</Table.Th>
-              <Table.Td>{highlightErrors(light.orig.remarks, light)}</Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Th>{t('LightPage.orig.range')}</Table.Th>
-              <Table.Td>
-                {light.orig.range && <Code block>{light.orig.range}</Code>}
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Th>{t('LightPage.orig.height')}</Table.Th>
-              <Table.Td>
-                {light.orig.heightFeetMeters && (
-                  <Code block>{light.orig.heightFeetMeters}</Code>
-                )}
-              </Table.Td>
-            </Table.Tr>
+            {Object.entries({
+              name: t('LightPage.orig.name'),
+              characteristic: t('LightPage.orig.characteristics'),
+              structure: t('LightPage.orig.structure'),
+              remarks: t('LightPage.orig.remarks'),
+              range: t('LightPage.orig.range'),
+              heightFeetMeters: t('LightPage.orig.height'),
+            }).map(([field, label]) => {
+              return (
+                <Table.Tr key={field}>
+                  <Table.Th>{label}</Table.Th>
+                  {originalCount.map((_, index) => {
+                    const key = _ + index;
+                    const text =
+                      light.orig[field as keyof FELight['orig']]
+                        ?.split('---------')
+                        [index].trim() || '';
+                    return (
+                      <Table.Td key={key}>
+                        {text && (
+                          <Code block>{highlightErrors(text, light)}</Code>
+                        )}
+                      </Table.Td>
+                    );
+                  })}
+                </Table.Tr>
+              );
+            })}
           </Table.Tbody>
         </Table>
       </JsonCard>
-
       {light.warnings && (
         <JsonCard title={t('LightPage.warnings')}>
           <Table style={{ tableLayout: 'fixed' }}>
@@ -473,6 +496,9 @@ export const InnerLightPage: React.FC<{
           </Table>
         </JsonCard>
       )}
+      <JsonCard title="TEST">
+        <Test light={light} />
+      </JsonCard>
     </div>
   );
 };

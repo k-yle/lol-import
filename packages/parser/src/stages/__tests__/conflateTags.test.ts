@@ -61,4 +61,11 @@ describe('conflateTags', () => {
       'seamark:light:colour': 'red',
     });
   });
+
+  it('allows .20 vs 2.', () => {
+    const expected = { 'seamark:light:reference': 'K 1234.20' };
+    const actual = { 'seamark:light:reference': 'K 1234.2' };
+
+    expect(conflateTags(expected, actual)).toStrictEqual({});
+  });
 });

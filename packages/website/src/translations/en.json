@@ -22,6 +22,7 @@
   "LightPage.orig.structure": "Structure",
   "LightPage.original-data": "Original Data",
   "LightPage.parsed-data": "Parsed Data",
+  "LightPage.part-n": "Part {n}",
   "LightPage.status.existsAndPerfect.desc": "This light has been correctly mapped in OpenStreetMap. {viewLink}",
   "LightPage.status.existsAndPerfect.title": "Mapped in OpenStreetMap",
   "LightPage.status.existsAndSuggestionsIgnored.desc": "This light has been mapped correctly in OpenStreetMap. Some suggestions from this tool were ignored by a mapper. {viewLink}. {diffLink}.",

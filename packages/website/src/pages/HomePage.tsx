@@ -12,6 +12,7 @@ import {
   NGA_URL,
   WIKI_URL,
 } from '../helpers/constants';
+import { getFlagEmoji } from '../helpers/geo';
 
 const WELCOME_TEXT_LINKS = {
   a1: (str: string) => (
@@ -77,6 +78,8 @@ export const HomePage = () => {
                       return (
                         <div key={country}>
                           <Anchor component={Link} to={`/${country}`}>
+                            {!navigator.platform.includes('Win') &&
+                              getFlagEmoji(country)}{' '}
                             {getCountryName(country) || t('noname.country')}
                           </Anchor>{' '}
                           ({total.toLocaleString(locale)}

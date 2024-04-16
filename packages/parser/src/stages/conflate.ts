@@ -59,6 +59,14 @@ export function conflateTags(expected: Tags, actual: Tags): Tags {
       }
     }
 
+    // many values imported in 2010 don't have the trailing 0
+    if (
+      key === 'seamark:light:reference' &&
+      expected[key].replace(/0$/, '') === actual[key]
+    ) {
+      continue;
+    }
+
     // for shapes, some shapes are effectively the same
     if (key.endsWith(':shape')) {
       const synonyms: Record<string, string> = {

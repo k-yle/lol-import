@@ -22,6 +22,7 @@
   "LightPage.orig.structure": "Struktur",
   "LightPage.original-data": "Originale Daten",
   "LightPage.parsed-data": "Verarbeitete Daten",
+  "LightPage.part-n": "Teil {n}",
   "LightPage.status.existsAndPerfect.desc": "Dieses Licht wurde in OpenStreetMap korrekt gemapped. {viewLink}",
   "LightPage.status.existsAndPerfect.title": "In OpenStreetMap gemapped",
   "LightPage.status.existsAndSuggestionsIgnored.desc": "Dieses Licht wurde in OpenStreetMap korrekt gemapped. Einige Vorschläge dieses Tools wurde von ein OSM-Benutzer ignoriert. {viewLink}. {diffLink}.",
