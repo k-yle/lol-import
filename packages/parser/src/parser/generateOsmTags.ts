@@ -143,6 +143,11 @@ export function generateOsmTags(
         tags[`seamark:${topOrDayMark}:colour_pattern`] ||=
           token.colourPattern || '';
         tags[`seamark:${topOrDayMark}:construction`] = token.material || '';
+
+        // make sure at least one seamark:*mark:* tag is set. Otherwise this info gets lost.
+        if (!tags[`seamark:${topOrDayMark}:colour`]) {
+          tags[`seamark:${topOrDayMark}:shape`] ||= 'yes';
+        }
         break;
       }
 
