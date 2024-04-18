@@ -297,7 +297,7 @@ export const InnerLightPage: React.FC<{
         )}
       </Alert>
     ),
-    no: (
+    missing: (
       <Alert
         variant="light"
         color="red"
@@ -309,7 +309,8 @@ export const InnerLightPage: React.FC<{
         })}
       </Alert>
     ),
-  }[light.osm?.verdict || 'no'];
+    unexpected: null, // can never happen
+  }[light.osm?.verdict || 'missing'];
 
   return (
     <div>

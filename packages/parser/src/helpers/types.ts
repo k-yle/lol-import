@@ -82,6 +82,8 @@ export const emptyStats = () => ({
 });
 
 export type Stats = ReturnType<typeof emptyStats>;
+export type Verdict = Exclude<keyof Stats, 'ids'>;
+
 export interface StatsFile {
   /** ISO Date */
   timestamp: string;
@@ -107,7 +109,7 @@ export type FELight = LatLon & {
   >;
   osm?: {
     id: string;
-    verdict: string;
+    verdict: Verdict;
     currentTags: Tags;
     diff: Tags;
   };

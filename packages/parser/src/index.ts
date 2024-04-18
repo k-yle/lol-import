@@ -27,8 +27,8 @@ import { generateTagInfoFile } from './helpers/taginfo';
 import {
   type FELight,
   type FullFile,
-  type Stats,
   type StatsFile,
+  type Verdict,
   type Warning,
   emptyStats,
 } from './helpers/types';
@@ -122,7 +122,7 @@ async function main() {
     }
     if (!expectedTags) continue; // invalid entry, skip it
 
-    let verdict: keyof Stats;
+    let verdict: Verdict;
 
     allIDsInLOL.add(removeTrailingZeros(ialaId));
 

@@ -5,6 +5,7 @@ import {
   IconCheck,
 } from '@tabler/icons-react';
 import { Icon } from 'leaflet';
+import type { Verdict } from '../../../parser/src/helpers/types';
 
 export const MAP_ICONS = {
   GREEN: new Icon({
@@ -39,25 +40,36 @@ export const MAP_ICONS = {
   }),
 };
 
-export const getListIcon = (verdict: string | undefined) => {
-  if (verdict === 'existsAndPerfect') {
-    return (
-      <ThemeIcon color="green" size={24} radius="xl">
-        <IconCheck style={{ width: rem(16), height: rem(16) }} />
-      </ThemeIcon>
-    );
-  }
+export const getListIcon = (verdict: Verdict | undefined) => {
+  switch (verdict) {
+    case 'existsAndPerfect': {
+      return (
+        <ThemeIcon color="green" size={24} radius="xl">
+          <IconCheck style={{ width: rem(16), height: rem(16) }} />
+        </ThemeIcon>
+      );
+    }
 
-  if (verdict === 'existsButNeedsUpdate') {
-    return (
-      <ThemeIcon color="yellow" size={24} radius="xl">
-        <IconAlertTriangle style={{ width: rem(16), height: rem(16) }} />
-      </ThemeIcon>
-    );
+    case 'existsButNeedsUpdate': {
+      return (
+        <ThemeIcon color="yellow" size={24} radius="xl">
+          <IconAlertTriangle style={{ width: rem(16), height: rem(16) }} />
+        </ThemeIcon>
+      );
+    }
+
+    case undefined:
+    case 'missing':
+    case 'unexpected': {
+      return (
+        <ThemeIcon color="red" size={24} radius="xl">
+          <IconAlertHexagon style={{ width: rem(16), height: rem(16) }} />
+        </ThemeIcon>
+      );
+    }
+
+    default: {
+      return verdict satisfies never; // exhaustivity check
+    }
   }
-  return (
-    <ThemeIcon color="red" size={24} radius="xl">
-      <IconAlertHexagon style={{ width: rem(16), height: rem(16) }} />
-    </ThemeIcon>
-  );
 };
