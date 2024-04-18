@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "target": "esnext",
+    "module": "node16",
+    "lib": ["esnext"],
+    "skipLibCheck": true,
+    "noEmit": true,
+    "moduleResolution": "Node16",
+    "types": ["@cloudflare/workers-types"]
+  }
+}

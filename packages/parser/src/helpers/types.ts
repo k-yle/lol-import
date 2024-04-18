@@ -94,6 +94,19 @@ export interface StatsFile {
   continents: { [continentName: string]: string[] };
 }
 
+export type IgnoreInfo = {
+  username?: string;
+  diffHash: string;
+  comment: string;
+  date: string;
+};
+
+export type IgnoreFile = {
+  ignored: {
+    [ref: string]: IgnoreInfo;
+  };
+};
+
 export type FELight = LatLon & {
   country: string;
   tags: Tags;
