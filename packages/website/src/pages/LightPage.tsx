@@ -30,12 +30,15 @@ import {
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { LIGHT_CHARACTERISTICS } from 'light-characteristics';
 import { useLocalStorage } from '@mantine/hooks';
+import TimeAgo from 'react-timeago-i18n';
 import { DataContext } from '../context/DataContext';
 import { getCountryName, t } from '../i18n';
 import type { FELight } from '../../../parser/src/helpers/types';
 import { TagDiff, tagsToString } from '../components/TagDiff';
 import { reëncodeLight } from '../helpers/reëncodeLight';
 import { APP_NAME } from '../helpers/constants';
+import { IgnoreSuggestionsModal } from '../components/IgnoreSuggestionsModal';
+import { AuthContext } from '../context/AuthContext';
 
 const ERRORS = {
   UNPARSABLE: t('error.unparsable'),
@@ -222,6 +225,7 @@ export const InnerLightPage: React.FC<{
   const urlSafeId = id.replaceAll(' ', '');
 
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
   const { dataByCountry, loadCountry } = useContext(DataContext);
 
   const [showDiff, setShowDiff] = useLocalStorage({
@@ -255,6 +259,11 @@ export const InnerLightPage: React.FC<{
       {t('LightPage.view-on-osm')}
     </Anchor>
   );
+  const diffLink = (
+    <Anchor key={1} component="button" onClick={() => setShowDiff((c) => !c)}>
+      {showDiff ? t('LightPage.diff-link.hide') : t('LightPage.diff-link.show')}
+    </Anchor>
+  );
 
   const status = {
     existsAndPerfect: (
@@ -267,6 +276,39 @@ export const InnerLightPage: React.FC<{
         {t('LightPage.status.existsAndPerfect.desc', { viewLink })}
       </Alert>
     ),
+    existsAndSuggestionsIgnored: (
+      <Alert
+        variant="light"
+        color="green"
+        title={t('LightPage.status.existsAndSuggestionsIgnored.title')}
+        icon={<IconCheck />}
+      >
+        {t('LightPage.status.existsAndSuggestionsIgnored.desc', {
+          viewLink,
+          diffLink,
+        })}
+        {showDiff && (
+          <>
+            <br />
+            {user && (
+              <>
+                <br />
+                {t('LightPage.status.existsAndSuggestionsIgnored.extra', {
+                  username: <Code key={2}>{light.osm?.ignored?.username}</Code>,
+                  timeago: (
+                    <TimeAgo key={3} date={light.osm?.ignored?.date || ''} />
+                  ),
+                  comment: <Code key={4}>{light.osm?.ignored?.comment}</Code>,
+                })}
+                <br />
+                <br />
+              </>
+            )}
+            <TagDiff light={light} />
+          </>
+        )}
+      </Alert>
+    ),
     existsButNeedsUpdate: (
       <Alert
         variant="light"
@@ -277,22 +319,14 @@ export const InnerLightPage: React.FC<{
       >
         {t('LightPage.status.existsButNeedsUpdate.desc', {
           viewLink,
-          diffLink: (
-            <Anchor
-              key={1}
-              component="button"
-              onClick={() => setShowDiff((c) => !c)}
-            >
-              {showDiff
-                ? t('LightPage.diff-link.hide')
-                : t('LightPage.diff-link.show')}
-            </Anchor>
-          ),
+          diffLink,
         })}
         {showDiff && (
           <>
             <br />
             <TagDiff light={light} />
+            <br />
+            <IgnoreSuggestionsModal ialaId={id} light={light} />
           </>
         )}
       </Alert>

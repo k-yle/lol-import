@@ -96,7 +96,7 @@ export interface StatsFile {
 }
 
 export type IgnoreInfo = {
-  username?: string;
+  username: string;
   diffHash: string;
   comment: string;
   date: string;

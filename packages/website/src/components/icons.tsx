@@ -42,6 +42,7 @@ export const MAP_ICONS = {
 
 export const getListIcon = (verdict: Verdict | undefined) => {
   switch (verdict) {
+    case 'existsAndSuggestionsIgnored':
     case 'existsAndPerfect': {
       return (
         <ThemeIcon color="green" size={24} radius="xl">
