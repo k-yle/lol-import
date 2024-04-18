@@ -124,32 +124,6 @@ async function main() {
 
     allIDsInLOL.add(ialaId);
 
-    const osm = osmByRef[ialaId];
-
-    let tagDiff: Tags | undefined;
-    if (osm) {
-      // exists in OSM
-      tagDiff = conflateTags(expectedTags, osm.tags!);
-      const nonTrivialKeysToUpdate = Object.keys(tagDiff).filter(
-        (key) => !TRIVIAL_KEYS.has(key),
-      );
-      if (nonTrivialKeysToUpdate.length) {
-        verdict = 'existsButNeedsUpdate';
-      } else {
-        verdict = 'existsAndPerfect';
-        tagDiff = {};
-      }
-    } else {
-      verdict = 'missing';
-    }
-
-    stats.global[verdict]++;
-    stats.byCountry[country] ||= emptyStats();
-    stats.byCountry[country].ids.push(ialaId);
-    stats.byCountry[country][verdict]++;
-
-    fullData[country] ||= {};
-
     const newLight: FELight = {
       country,
       ...pos,
@@ -171,21 +145,47 @@ async function main() {
         range: lol.range,
       },
       tags: expectedTags,
-      osm:
-        osm && tagDiff
-          ? {
-              id: osm.type[0] + osm.id,
-              verdict,
-              currentTags: osm.tags!,
-              diff: tagDiff,
-            }
-          : undefined,
+      osm: undefined, // added later
     };
 
+    fullData[country] ||= {};
+
+    // merge first, then diff with osm
     const mergeWarnings: Warning[] = [];
     fullData[country][ialaId] = fullData[country][ialaId]
       ? mergeLights(fullData[country][ialaId], newLight, mergeWarnings)
       : newLight;
+
+    const osm = osmByRef[ialaId];
+
+    let tagDiff: Tags | undefined;
+    if (osm) {
+      // exists in OSM
+      tagDiff = conflateTags(fullData[country][ialaId].tags, osm.tags!);
+      const nonTrivialKeysToUpdate = Object.keys(tagDiff).filter(
+        (key) => !TRIVIAL_KEYS.has(key),
+      );
+      if (nonTrivialKeysToUpdate.length) {
+        verdict = 'existsButNeedsUpdate';
+      } else {
+        verdict = 'existsAndPerfect';
+        tagDiff = {};
+      }
+
+      fullData[country][ialaId].osm = {
+        id: osm.type[0] + osm.id,
+        verdict,
+        currentTags: osm.tags!,
+        diff: tagDiff,
+      };
+    } else {
+      verdict = 'missing';
+    }
+
+    stats.global[verdict]++;
+    stats.byCountry[country] ||= emptyStats();
+    stats.byCountry[country].ids.push(ialaId);
+    stats.byCountry[country][verdict]++;
 
     if (mergeWarnings.length) {
       fullData[country][ialaId].warnings ||= [];
