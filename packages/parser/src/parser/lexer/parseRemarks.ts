@@ -169,6 +169,29 @@ export function parseRemarks(lol: LolFeature, warnings: Warning[]): Remark[] {
         };
       }
 
+      const calendarMatch = workingString.match(
+        /shown(?<exhibition> 24 hours)? (?<startM>[a-z]+)\.? ?(?<startD>\d+) to (?<endM>[a-z]+)\.? ?(?<endD>\d+)/i,
+      );
+      if (calendarMatch?.groups) {
+        const { startM, startD, endM, endD, exhibition } = calendarMatch.groups;
+
+        const openingHours = `${capitalise(startM)} ${startD}-${capitalise(endM)} ${endD}`;
+
+        return {
+          raw: calendarMatch[0],
+          parsed: {
+            type: 'genericTags',
+            tags: exhibition
+              ? {
+                  'seamark:light:exhibition:conditional': `24h @ (${openingHours})`,
+                }
+              : { lit: 'no', 'lit:conditional': `yes @ (${openingHours})` },
+          },
+        };
+      }
+
+      // must come after lit:conditional, so that "Shown 24 hours [...]" is parsed
+      // before "Shown 24 hours".
       for (const substr in COMMON_REMARKS) {
         const index = workingString.toLowerCase().indexOf(substr);
         if (index !== -1) {
@@ -210,22 +233,6 @@ export function parseRemarks(lol: LolFeature, warnings: Warning[]): Remark[] {
               'seamark:radar_transponder:sector_start': `${parseBearing(azimuthMatch.groups.start)}`,
               'seamark:radar_transponder:sector_end': `${parseBearing(azimuthMatch.groups.end)}`,
             },
-          },
-        };
-      }
-
-      const calendarMatch = workingString.match(
-        /shown (?<startM>[a-z]+)\.? ?(?<startD>\d+) to (?<endM>[a-z]+)\.? ?(?<endD>\d+)/i,
-      );
-      if (calendarMatch?.groups) {
-        const { startM, startD, endM, endD } = calendarMatch.groups;
-
-        const openingHours = `${capitalise(startM)} ${startD}-${capitalise(endM)} ${endD}`;
-        return {
-          raw: calendarMatch[0],
-          parsed: {
-            type: 'genericTags',
-            tags: { lit: 'no', 'lit:conditional': `yes @ (${openingHours})` },
           },
         };
       }

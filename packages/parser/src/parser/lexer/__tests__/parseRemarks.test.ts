@@ -240,7 +240,12 @@ describe('parseRemarks', () => {
       [
         'R.(unintensified) 040°-062°48`, Vi. (intensified) -130°, G.-198°48`, B.-344°, W.-040°.  Shown 24 hours Nov. 1 to Mar. 31',
         [
-          { type: 'genericTags', tags: { 'seamark:light:exhibition': '24h' } },
+          {
+            type: 'genericTags',
+            tags: {
+              'seamark:light:exhibition:conditional': '24h @ (Nov 1-Mar 31)',
+            },
+          },
           {
             type: 'sectorCharacteristics',
             sectors: [
@@ -261,7 +266,6 @@ describe('parseRemarks', () => {
               { characteristics: 'W', start: 344, end: 40 },
             ],
           },
-          { type: 'unknown', line: 'Nov. 1 to Mar. 31' }, // TODO: it should parse this
         ],
       ],
       [
