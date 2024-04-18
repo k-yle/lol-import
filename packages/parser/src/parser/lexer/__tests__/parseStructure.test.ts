@@ -205,6 +205,15 @@ describe('parseStructure', () => {
           { type: 'unknown', remainder: '; 158.\n\nsecondary :' },
         ],
       ],
+      [
+        'SPECIAL Y, buoyant beacon, "x" topmark.\n',
+        [
+          { type: 'special_purpose', colour: 'yellow' },
+          { type: 'topmark', shape: 'x-shape' },
+          { type: 'shape', shape: 'beacon', structure: 'buoyant' },
+          { type: 'shape', shape: 'beacon' }, // the double match is a bit weird, but doesn't cause issues
+        ],
+      ],
     ])('%s', (input, output) => {
       const warnings: Warning[] = [];
       expect(parseStructure(input, warnings, true)).toStrictEqual(output);

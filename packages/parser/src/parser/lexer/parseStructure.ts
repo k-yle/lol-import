@@ -27,6 +27,7 @@ const SHAPES: Record<
     column: true,
     pyramid: true,
     cairn: true,
+    buoyant: true,
 
     // values that need to be standardised
     hut: 'building',
@@ -45,7 +46,6 @@ const SHAPES: Record<
     // values that need to be standardised
     superbuoy: 'super-buoy',
     monobuoy: 'super-buoy',
-    buoyant: true, // TODO: check examples
   },
 };
 const COLOURS = new Set([
@@ -190,7 +190,7 @@ export function parseStructure(
   warnings: Warning[],
   isIalaRegionA: boolean,
 ): Structure[] | undefined {
-  if (!original) return []; // TODO: how many have nothing? can we assume they're beacons?
+  if (!original) return []; // 4700 have nothing. They have to be mapped as light_minor
 
   const { output, unparsable } = tokeniser<Structure>(
     original.toLowerCase().replaceAll(/&(l|r)dquo;/g, '"'),
@@ -328,7 +328,7 @@ export function parseStructure(
       const topmarkMatch =
         workingString.match(
           new RegExp(
-            `\\b(?<prefix>((${reAdjectives}) )*)(top|day)mark(?<suffix> points? (up|down))?(, (?<stripes>((${reAdjectives}) )*)(stripes?))?\\b`,
+            `(?<prefix>((${reAdjectives}) )*)(top|day)mark(?<suffix> points? (up|down))?(, (?<stripes>((${reAdjectives}) )*)(stripes?))?\\b`,
           ),
         ) ||
         // sometimes, "x" is written without the word "topmark", because
