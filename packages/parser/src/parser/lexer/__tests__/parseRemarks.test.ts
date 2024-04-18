@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { type Remark, parseRemarks } from '../parseRemarks';
-import type { LolFeature, Warning } from '../../helpers/types';
+import type { LolFeature, Warning } from '../../../helpers/types';
 
 describe('parseRemarks', () => {
   describe('fog signals', () => {
@@ -77,7 +77,7 @@ describe('parseRemarks', () => {
       expect(parseRemarks(<LolFeature>{ remarks }, warnings)).toStrictEqual([
         {
           type: 'sectorCharacteristics',
-          sectors: [{ characteristics: '', start, end, visibility: 'visible' }],
+          sectors: [{ characteristics: '', start, end, visibility: '' }], // blank visibility means visible
         },
         ...extra,
       ]);
@@ -101,13 +101,13 @@ describe('parseRemarks', () => {
               characteristics: '',
               start: 350.6,
               end: 6.6,
-              visibility: 'visible',
+              visibility: '', // blank means visible
             },
             {
               characteristics: '',
               start: 8.3,
               end: 227,
-              visibility: 'visible',
+              visibility: '', // blank means visible
             },
           ],
         },
@@ -293,7 +293,7 @@ describe('parseRemarks', () => {
                 characteristics: '',
                 start: 204,
                 end: 359,
-                visibility: 'visible',
+                visibility: '', // blank means visible
               },
               {
                 characteristics: '',

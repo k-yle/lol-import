@@ -10,6 +10,9 @@ const SKIP_WARNING = new Set<string>([
   'seamark:information',
 ]);
 
+/** @internal, don't export */
+const ALLOW_OVERRIDE_SYMBOL = Symbol('ALLOWED_CLONE_SYMBOL');
+
 /**
  * This proxy detects when we accidentally override a tag value
  * that has already been set by another function
@@ -18,6 +21,17 @@ export const proxyTags = (tags: Tags, warnings: Warning[]) => {
   return new Proxy(tags, {
     set(target, key, newValue) {
       if (typeof key === 'symbol') return true;
+
+      // check if this override is allowed
+      if (
+        typeof newValue === 'object' &&
+        newValue &&
+        ALLOW_OVERRIDE_SYMBOL in newValue
+      ) {
+        // eslint-disable-next-line no-param-reassign
+        target[key] = newValue.toString();
+        return true;
+      }
 
       if (newValue) {
         EVERY_KEY[key] ||= {};
@@ -31,7 +45,7 @@ export const proxyTags = (tags: Tags, warnings: Warning[]) => {
         key &&
         oldValue && // no warning for the inital set
         oldValue !== newValue && // no warning if the value is unchanged
-        !newValue.startsWith(`${oldValue};`) && // no warning if appending a new value to an array tag
+        !newValue?.startsWith(`${oldValue};`) && // no warning if appending a new value to an array tag
         !SKIP_WARNING.has(key) // no warning for special tags
       ) {
         // create an error object to get the callstack which
@@ -60,3 +74,10 @@ export const proxyTags = (tags: Tags, warnings: Warning[]) => {
 // we have to use stringify, because structuredClone doesn't work on proxied objects
 export const stripProxy = (proxiedTags: Tags): Tags =>
   JSON.parse(JSON.stringify(proxiedTags));
+
+/**
+ * If you want to override a tag without emiting a warning,
+ * use `tags[key] = allowOverride(newValue);`
+ */
+export const allowOverride = (newValue: string) =>
+  Object.assign(newValue, { [ALLOW_OVERRIDE_SYMBOL]: true });

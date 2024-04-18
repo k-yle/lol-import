@@ -1,7 +1,7 @@
 import type { Tags } from 'osm-api';
-import type { LolFeature, Warning } from '../helpers/types';
-import { capitalise, isTruthy } from '../helpers/general';
-import { tokeniser } from '../helpers/tokeniser';
+import type { LolFeature, Warning } from '../../helpers/types';
+import { capitalise, isTruthy } from '../../helpers/general';
+import { tokeniser } from '../../helpers/tokeniser';
 
 const unparsableRemarks: Record<string, number> = {};
 
@@ -39,14 +39,18 @@ const COMMON_REMARKS: Record<string, Tags> = {
 };
 
 type Visibility =
-  | 'visible'
+  | '' // no value = visible (default)
   | 'unintensified'
   | 'intensified'
   | 'occasional'
+  | 'faint'
+  | 'low'
+  | 'high'
+  | 'part_obscured'
   | 'obscured';
 
 const VISIBILITIES: Record<string, Visibility> = {
-  visible: 'visible',
+  visible: '',
   unintensified: 'unintensified',
   '(unintensified)': 'unintensified',
   '(unintens.)': 'unintensified',
@@ -55,7 +59,7 @@ const VISIBILITIES: Record<string, Visibility> = {
   '(intensified)': 'intensified',
   'intens.': 'intensified',
   'occas.': 'occasional',
-  'partially obscured': 'obscured',
+  'partially obscured': 'part_obscured',
   obscured: 'obscured',
   obsc: 'obscured',
 };
@@ -298,7 +302,7 @@ export function parseRemarks(lol: LolFeature, warnings: Warning[]): Remark[] {
             };
             if (viz) {
               const mappedViz = VISIBILITIES[viz.toLowerCase()];
-              if (!mappedViz) {
+              if (mappedViz === undefined) {
                 throw new Error(`Unknown visibility “${viz}”`);
               }
               sector.visibility = mappedViz;

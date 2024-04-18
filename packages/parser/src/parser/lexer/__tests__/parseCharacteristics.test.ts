@@ -3,7 +3,7 @@ import {
   type Characteric,
   parseCharacteristics,
 } from '../parseCharacteristics';
-import type { LolFeature, Warning } from '../../helpers/types';
+import type { LolFeature, Warning } from '../../../helpers/types';
 
 describe('parseCharacteristics', () => {
   it.each<[string, Characteric[]]>([

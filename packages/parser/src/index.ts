@@ -20,9 +20,9 @@ import { getContinents, parseCoords } from './helpers/geo';
 import { loadLolFile, loadOsmFile } from './stages/fetch';
 import { conflateTags } from './stages/conflate';
 import { generateOsmTags } from './parser/generateOsmTags';
-import { getUnparsableCharactericLines } from './parser/parseCharacteristics';
-import { getUnparsableRemarks } from './parser/parseRemarks';
-import { getUnparsableStructureLines } from './parser/parseStructure';
+import { getUnparsableCharactericLines } from './parser/lexer/parseCharacteristics';
+import { getUnparsableRemarks } from './parser/lexer/parseRemarks';
+import { getUnparsableStructureLines } from './parser/lexer/parseStructure';
 import { generateTagInfoFile } from './helpers/taginfo';
 import {
   type FELight,
@@ -114,9 +114,11 @@ async function main() {
 
       warnings = result.warnings; // store for later
     } catch (ex) {
-      throw new Error(
+      const newError = new Error(
         `[${country}] [${ialaId.replaceAll('\n', '|')}] ${(<Error>ex).message}`,
       );
+      newError.cause = ex;
+      throw newError;
     }
     if (!expectedTags) continue; // invalid entry, skip it
 

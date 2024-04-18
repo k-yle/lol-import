@@ -35,7 +35,6 @@ export interface LolFeature {
    * colour. Unclear how this works when there are multiple
    * sectors with the same colour...
    */
-  // TODO: parse range
   range: string | null;
   structure: string | null;
   /**

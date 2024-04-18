@@ -5,14 +5,18 @@ import { IALA_B } from '../helpers/constants';
 import { deleteUndefinedKeys, isTruthy, sortObject } from '../helpers/general';
 import { proxyTags, stripProxy } from '../helpers/proxy';
 import { appendToTag } from '../helpers/tags';
-import { duplicateLightTags } from '../helpers/duplicateLightTags';
 import {
   parseCharacteristicForSector,
   parseCharacteristics,
-} from './parseCharacteristics';
-import { type Sector, parseRemarks } from './parseRemarks';
-import { type Structure, parseStructure } from './parseStructure';
-import { parseName } from './parseName';
+} from './lexer/parseCharacteristics';
+import { type Sector, parseRemarks } from './lexer/parseRemarks';
+import { type Structure, parseStructure } from './lexer/parseStructure';
+import { parseName } from './lexer/parseName';
+import { checkPeriodSum } from './work/checkPeriodSum';
+import { moveUnsectoredTags } from './work/moveUnsectoredTags';
+import { splitMultiLights } from './work/splitMultiLights';
+import { parseLensHeight } from './lexer/parseLensHeight';
+import { parseRange } from './lexer/parseRange';
 
 const CATEGORY_TYPES = new Set<Structure['type']>([
   'cardinal',
@@ -181,20 +185,6 @@ export function generateOsmTags(
   // this one never has sectors
   tags['seamark:light:reference'] = ialaId;
 
-  const lensHeightsMetres = light.heightFeetMeters
-    ?.split('\n')
-    .filter((_, index) => index % 2) // even numbers are metres
-    .filter((v) => v !== 'null');
-
-  if (lensHeightsMetres?.some((v) => Number.isNaN(+v))) {
-    throw new Error('NaN lens height');
-  }
-
-  if (lensHeightsMetres && new Set(lensHeightsMetres).size === 1) {
-    // i.e. every value is the same, so reduce the array to a single value
-    lensHeightsMetres.splice(1);
-  }
-
   // this tag is special cased in the conflation function
   tags['seamark:type'] = type;
 
@@ -233,128 +223,121 @@ export function generateOsmTags(
     }
   }
 
-  if (true) {
-    const lightsToMap = sectors === false ? [undefined] : sectors;
-    for (const [index, sector] of lightsToMap.entries()) {
-      // for sectored lights, you have to use :1: to keep
-      // OpenSeaMap happy, even if there's only 1 sector.
-      const lxType = tokenFromName.has('RACON')
-        ? 'radar_transponder'
-        : sector
-          ? `light:${index + 1}`
-          : 'light';
+  const lightsToMap = sectors === false ? [undefined] : sectors;
 
-      if (lensHeightsMetres?.length === 1) {
-        // single value, so we can add it now
-        tags[`seamark:${lxType}:height`] = lensHeightsMetres[0];
-      }
+  const lensHeight = parseLensHeight(
+    light.heightFeetMeters,
+    lightsToMap.length,
+  );
 
-      if (sector) {
-        tags[`seamark:${lxType}:sector_start`] = `${sector.start}`;
-        tags[`seamark:${lxType}:sector_end`] = `${sector.end}`;
-        tags[`seamark:${lxType}:visibility`] = sector.visibility || '';
-      }
+  const range = parseRange(light.range, lightsToMap.length, warnings);
 
-      const sequence: string[] = [];
-      const parsedLines = parseCharacteristics(light, warnings);
+  for (const [index, sector] of lightsToMap.entries()) {
+    // for sectored lights, you have to use :1: to keep
+    // OpenSeaMap happy, even if there's only 1 sector.
+    const lxType = tokenFromName.has('RACON')
+      ? 'radar_transponder'
+      : sector
+        ? `light:${index + 1}`
+        : 'light';
 
-      const parsedTypes = new Set(parsedLines.map((line) => line.type));
-      if (parsedTypes.has('morse') && parsedTypes.has('characteristic')) {
-        throw new Error('morse and characteristic would override each other');
-      }
+    // if these are single values, add them now
+    tags[`seamark:${lxType}:height`] =
+      (typeof lensHeight === 'string' ? lensHeight : lensHeight[index]) || '';
+    tags[`seamark:${lxType}:range`] =
+      (typeof range === 'string' ? range : range[index]) || '';
 
-      for (const line of parsedLines) {
-        switch (line.type) {
-          case 'period': {
-            tags[`seamark:${lxType}:period`] = `${line.seconds}`;
-            break;
+    if (sector) {
+      tags[`seamark:${lxType}:sector_start`] = `${sector.start}`;
+      tags[`seamark:${lxType}:sector_end`] = `${sector.end}`;
+      tags[`seamark:${lxType}:visibility`] = sector.visibility || '';
+    }
+
+    const sequence: string[] = [];
+    const parsedLines = parseCharacteristics(light, warnings);
+
+    const parsedTypes = new Set(parsedLines.map((line) => line.type));
+    if (parsedTypes.has('morse') && parsedTypes.has('characteristic')) {
+      throw new Error('morse and characteristic would override each other');
+    }
+
+    for (const line of parsedLines) {
+      switch (line.type) {
+        case 'period': {
+          tags[`seamark:${lxType}:period`] = `${line.seconds}`;
+          break;
+        }
+
+        case 'morse': {
+          tags[`seamark:${lxType}:group`] = line.letters;
+          if (lxType !== 'radar_transponder') {
+            tags[`seamark:${lxType}:category`] = 'Mo';
           }
+          break;
+        }
 
-          case 'morse': {
-            tags[`seamark:${lxType}:group`] = line.letters;
-            if (lxType !== 'radar_transponder') {
-              tags[`seamark:${lxType}:category`] = 'Mo';
+        case 'sequence': {
+          // format is `light+(eclipse)` per the S-57 spec for SIGSEQ
+          sequence.push(`${line.flash}+(${line.eclipse})`);
+          break;
+        }
+
+        case 'characteristic': {
+          // these are encoded separate, so they shouldn't
+          // appear in the characteristic.
+          if (line.parsed.HEIGHT) throw new Error('Unexpected height');
+          if (line.parsed.SIGPER) throw new Error('Unexpected period');
+          if (line.parsed.VALMXR) throw new Error('Unexpected range');
+
+          // for sectored lights, get the overrides for this sector.
+          const overrides = ((): Partial<Light> => {
+            if (!sector?.characteristics) return {};
+
+            if (sector.characteristics in COLOURS) {
+              // it's just a colour
+              return { COLOUR: [<Colour>sector.characteristics] };
             }
-            break;
-          }
 
-          case 'sequence': {
-            // format is `light+(eclipse)` per the S-57 spec for SIGSEQ
-            sequence.push(`${line.flash}+(${line.eclipse})`);
-            break;
-          }
+            // more complicated than just a colour
+            return parseCharacteristicForSector(sector.characteristics) || {};
+          })();
 
-          case 'characteristic': {
-            // these are encoded separate, so they shouldn't
-            // appear in the characteristic.
-            if (line.parsed.HEIGHT) throw new Error('Unexpected height');
-            if (line.parsed.SIGPER) throw new Error('Unexpected period');
-            if (line.parsed.VALMXR) throw new Error('Unexpected range');
+          const parsed: Light = { ...line.parsed, ...overrides };
 
-            // for sectored lights, get the overrides for this sector.
-            const overrides = ((): Partial<Light> => {
-              if (!sector?.characteristics) return {};
+          tags[`seamark:${lxType}:colour`] = parsed.COLOUR.map(
+            (code) => COLOURS[code],
+          ).join(';');
+          tags[`seamark:${lxType}:character`] = parsed.LITCHR;
+          tags[`seamark:${lxType}:group`] = parsed.SIGGRP || '';
+          tags[`seamark:${lxType}:multiple`] = `${parsed.MLTYLT || ''}`;
+          appendToTag(tags, `seamark:${lxType}:category`, parsed.CATLIT);
 
-              if (sector.characteristics in COLOURS) {
-                // it's just a colour
-                return { COLOUR: [<Colour>sector.characteristics] };
-              }
+          break;
+        }
 
-              // more complicated than just a colour
-              return parseCharacteristicForSector(sector.characteristics) || {};
-            })();
+        case 'unknown':
+        case 'unsupported': {
+          appendToTag(tags, 'seamark:information', line.line);
+          break;
+        }
 
-            const parsed: Light = { ...line.parsed, ...overrides };
-
-            tags[`seamark:${lxType}:colour`] = parsed.COLOUR.map(
-              (code) => COLOURS[code],
-            ).join(';');
-            tags[`seamark:${lxType}:character`] = parsed.LITCHR;
-            tags[`seamark:${lxType}:group`] = parsed.SIGGRP || '';
-            tags[`seamark:${lxType}:multiple`] = `${parsed.MLTYLT || ''}`;
-            appendToTag(tags, `seamark:${lxType}:category`, parsed.CATLIT);
-
-            break;
-          }
-
-          case 'unknown':
-          case 'unsupported': {
-            appendToTag(tags, 'seamark:information', line.line);
-            break;
-          }
-
-          default: {
-            line satisfies never; // exhaustivity check
-          }
+        default: {
+          line satisfies never; // exhaustivity check
         }
       }
+    }
 
-      // after we've looped through all lines:
-      tags[`seamark:${lxType}:sequence`] = sequence.join('+');
+    // after we've looped through all lines:
+    tags[`seamark:${lxType}:sequence`] = sequence.join('+');
 
-      if (tokenFromName.has('AVIATION LIGHT')) {
-        appendToTag(tags, `seamark:${lxType}:category`, 'aero');
-      }
+    if (tokenFromName.has('AVIATION LIGHT')) {
+      appendToTag(tags, `seamark:${lxType}:category`, 'aero');
     }
   }
 
-  if (lensHeightsMetres && lensHeightsMetres.length > 1) {
-    const multiple = tags['seamark:light:multiple'];
-    if (!multiple) {
-      warnings.push({
-        type: 'invalid_lens_height',
-        value: `${lensHeightsMetres.length} different lens heights (${lensHeightsMetres.join(', ')}), but only 1 light was detected`,
-      });
-    } else if (lensHeightsMetres.length === +multiple) {
-      duplicateLightTags(tags, lensHeightsMetres.length);
-      for (const [index, height] of lensHeightsMetres.entries()) {
-        tags[`seamark:light:${index + 1}:height`] = height;
-      }
-    } else {
-      // mismatch
-      throw new Error('Mismatched number of lights vs lens heights');
-    }
-  }
+  moveUnsectoredTags(tags);
+
+  splitMultiLights(tags, warnings, { lensHeight, range });
 
   // remove double spaces
   tags['seamark:information'] = tags['seamark:information']?.replace(
@@ -362,24 +345,7 @@ export function generateOsmTags(
     ' ',
   );
 
-  // sanity check that the period = ∑ of the sequence
-  for (const key in tags) {
-    const sequenceKey = key.replace(':period', ':sequence');
-    if (key.endsWith(':period') && tags[sequenceKey]) {
-      const period = +tags[key];
-      const sequence = tags[sequenceKey]
-        .replaceAll(/[()]/g, '')
-        .split('+')
-        .map(Number);
-      const sequenceSum = sequence.reduce((a, b) => a + b, 0);
-      if (period !== sequenceSum) {
-        warnings.push({
-          type: 'period_sum',
-          value: `The ${key.split(':')[1]} sequence “${tags[sequenceKey]}” does not add up to ${period}.`,
-        });
-      }
-    }
-  }
+  checkPeriodSum(tags, warnings);
 
   return {
     tags: sortObject(deleteUndefinedKeys(stripProxy(tags))),

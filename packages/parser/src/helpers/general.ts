@@ -22,3 +22,5 @@ export function sortObject<T extends Record<string, unknown>>(object: T): T {
     )
   );
 }
+
+export const isNotNaN = (n: number) => !Number.isNaN(n);

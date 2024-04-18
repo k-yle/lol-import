@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { type Structure, parseStructure } from '../parseStructure';
-import type { Warning } from '../../helpers/types';
+import type { Warning } from '../../../helpers/types';
 
 describe('parseStructure', () => {
   describe('physicalHeight', () => {
