@@ -32,7 +32,7 @@ import {
   type Warning,
   emptyStats,
 } from './helpers/types';
-import { isTruthy, sortObject } from './helpers/general';
+import { isTruthy, removeTrailingZeros, sortObject } from './helpers/general';
 import { mergeLights } from './stages/merge';
 
 /** if the only thing that needs changing are these keys, then abort */
@@ -78,7 +78,7 @@ async function main() {
   const osmByRef: Record<string, OsmFeature> = {};
   for (const feature of osmData.elements) {
     const ref = feature.tags!['seamark:light:reference'];
-    osmByRef[ref] = feature;
+    osmByRef[removeTrailingZeros(ref)] = feature;
   }
 
   const allIDsInLOL = new Set<string>();
@@ -124,7 +124,7 @@ async function main() {
 
     let verdict: keyof Stats;
 
-    allIDsInLOL.add(ialaId);
+    allIDsInLOL.add(removeTrailingZeros(ialaId));
 
     const newLight: FELight = {
       country,
@@ -158,7 +158,7 @@ async function main() {
       ? mergeLights(fullData[country][ialaId], newLight, mergeWarnings)
       : newLight;
 
-    const osm = osmByRef[ialaId];
+    const osm = osmByRef[removeTrailingZeros(ialaId)];
 
     let tagDiff: Tags | undefined;
     if (osm) {
