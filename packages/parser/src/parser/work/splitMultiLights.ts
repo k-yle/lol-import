@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import type { Tags } from 'osm-api';
 import type { Warning } from '../../helpers/types';
 import { getHighestSector } from '../../stages/merge';
@@ -50,7 +49,6 @@ export function splitMultiLights(
 
       if (multiple) {
         if (requiredSectors === +multiple) {
-          // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
           delete tags[multipleKey]; // no longer required since we've split the light
           duplicateLightTags(tags, requiredSectors, highestSector);
 

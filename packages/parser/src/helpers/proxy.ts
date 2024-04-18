@@ -28,7 +28,6 @@ export const proxyTags = (tags: Tags, warnings: Warning[]) => {
         newValue &&
         ALLOW_OVERRIDE_SYMBOL in newValue
       ) {
-        // eslint-disable-next-line no-param-reassign
         target[key] = newValue.toString();
         return true;
       }
@@ -64,7 +63,6 @@ export const proxyTags = (tags: Tags, warnings: Warning[]) => {
           value: `${key} “${oldValue}” --> “${newValue}” ${stack}`,
         });
       }
-      // eslint-disable-next-line no-param-reassign
       target[key] = newValue;
       return true;
     },

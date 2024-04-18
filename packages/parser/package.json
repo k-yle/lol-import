@@ -21,6 +21,10 @@
   },
   "eslintConfig": {
     "extends": "kyle",
+    "rules": {
+      "no-param-reassign": 0,
+      "@typescript-eslint/no-dynamic-delete": 0
+    },
     "settings": {
       "jest": {
         "version": 29

@@ -1,4 +1,3 @@
-/* eslint-disable no-param-reassign */
 import type { Tags } from 'osm-api';
 import { getHighestSector } from '../../stages/merge';
 import { isLightTag } from '../../helpers/duplicateLightTags';
@@ -25,7 +24,6 @@ export function moveUnsectoredTags(tags: Tags) {
       for (let index = 1; index <= highestSector; index++) {
         tags[`seamark:light:${index}:${subKey}`] = tags[key];
       }
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       delete tags[key];
     }
   }

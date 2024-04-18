@@ -17,7 +17,6 @@ export function conflateTags(expected: Tags, actual: Tags): Tags {
     // …but OSM already has a specific type
     /^(beacon|buoy)_/.test(actualType)
   ) {
-    /* eslint-disable no-param-reassign, @typescript-eslint/no-dynamic-delete */
     expected['seamark:type'] = actualType;
 
     // rename seamark:(beacon|buoy):* tags to use the actual type

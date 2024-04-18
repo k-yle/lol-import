@@ -14,6 +14,5 @@ export function appendToTag(
   if (!newItem || existing.includes(newItem)) return;
 
   existing.push(newItem);
-  // eslint-disable-next-line no-param-reassign
   tags[key] = existing.join(';');
 }

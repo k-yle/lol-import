@@ -12,7 +12,6 @@ export function duplicateLightTags(
 ) {
   const lightKeys = Object.keys(tags).filter(isLightTag);
   for (const key of lightKeys) {
-    /* eslint-disable no-param-reassign */
     for (let index = 1; index <= copies; index++) {
       if (index === sectorToCopy) continue;
       const newKey = key.replace(
@@ -28,7 +27,6 @@ export function duplicateLightTags(
     }
 
     // if we're duplicating an existing sector, don't delete those tags
-    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
     if (!sectorToCopy) delete tags[key];
   }
 }
