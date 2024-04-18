@@ -5,6 +5,7 @@ export const outputFolder = join(__dirname, '../../out');
 
 export const lolFile = join(tempFolder, 'lol.json');
 export const osmFile = join(tempFolder, 'osm.json');
+export const ignoreFile = join(tempFolder, 'ignore.json');
 
 export const outputStatsFile = join(outputFolder, 'stats.json');
 export const warningsFile = join(outputFolder, 'warnings.json');

@@ -17,7 +17,7 @@ import {
   warningsFile,
 } from './helpers/constants';
 import { getContinents, parseCoords } from './helpers/geo';
-import { loadLolFile, loadOsmFile } from './stages/fetch';
+import { loadIgnoreFile, loadLolFile, loadOsmFile } from './stages/fetch';
 import { conflateTags } from './stages/conflate';
 import { generateOsmTags } from './parser/generateOsmTags';
 import { getUnparsableCharactericLines } from './parser/lexer/parseCharacteristics';
@@ -27,6 +27,7 @@ import { generateTagInfoFile } from './helpers/taginfo';
 import {
   type FELight,
   type FullFile,
+  type IgnoreInfo,
   type StatsFile,
   type Verdict,
   type Warning,
@@ -34,6 +35,7 @@ import {
 } from './helpers/types';
 import { isTruthy, removeTrailingZeros, sortObject } from './helpers/general';
 import { mergeLights } from './stages/merge';
+import { createDiffHash } from './helpers/createDiffHash';
 
 /** if the only thing that needs changing are these keys, then abort */
 const TRIVIAL_KEYS = new Set(['source', 'seamark:name', 'seamark:information']);
@@ -61,6 +63,7 @@ async function main() {
 
   const lolData = await loadLolFile();
   const osmData = await loadOsmFile();
+  const ignoreData = await loadIgnoreFile();
 
   // make debugging the massive json files a bit easier
   await fs.writeFile(
@@ -174,11 +177,25 @@ async function main() {
         tagDiff = {};
       }
 
+      const diffHash = createDiffHash(osm.tags!, tagDiff);
+
+      // check if someone has ignored this suggested change
+      let ignored: IgnoreInfo | undefined;
+      if (
+        verdict === 'existsButNeedsUpdate' &&
+        ignoreData.ignored[ialaId]?.diffHash === diffHash
+      ) {
+        verdict = 'existsAndSuggestionsIgnored';
+        ignored = ignoreData.ignored[ialaId];
+      }
+
       fullData[country][ialaId].osm = {
         id: osm.type[0] + osm.id,
         verdict,
         currentTags: osm.tags!,
         diff: tagDiff,
+        diffHash,
+        ignored,
       };
     } else {
       verdict = 'missing';

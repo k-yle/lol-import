@@ -76,6 +76,7 @@ export interface Warning {
 export const emptyStats = () => ({
   ids: <string[]>[],
   existsAndPerfect: 0,
+  existsAndSuggestionsIgnored: 0,
   existsButNeedsUpdate: 0,
   missing: 0,
   unexpected: 0,
@@ -125,6 +126,9 @@ export type FELight = LatLon & {
     verdict: Verdict;
     currentTags: Tags;
     diff: Tags;
+    diffHash: string;
+    /** when `verdict` is `existsAndSuggestionsIgnored`, this is the information about the ignored suggestion */
+    ignored?: IgnoreInfo;
   };
 };
 

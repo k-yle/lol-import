@@ -1,6 +1,9 @@
 import { EVERY_KEY } from './proxy';
 import template from './taginfo_template.json';
 
+export const BASE_URL = new URL(template.project.icon_url).origin;
+export const API_BASE_URL = new URL(template.data_url).origin;
+
 export function generateTagInfoFile() {
   // @ts-expect-error -- see https://github.com/taginfo/taginfo-projects/pull/109#issuecomment-831076209
   delete template.$schema;

@@ -1,7 +1,8 @@
 import { promises as fs } from 'node:fs';
 import { join } from 'node:path';
-import { USER_AGENT, lolFile, osmFile } from '../helpers/constants';
-import type { LolFile, OsmFile } from '../helpers/types';
+import { USER_AGENT, ignoreFile, lolFile, osmFile } from '../helpers/constants';
+import type { IgnoreFile, LolFile, OsmFile } from '../helpers/types';
+import { BASE_URL } from '../helpers/taginfo';
 
 export async function loadLolFile() {
   try {
@@ -43,6 +44,23 @@ export async function loadOsmFile() {
 
     // save to cache
     await fs.writeFile(osmFile, JSON.stringify(fetched));
+    return fetched;
+  }
+}
+
+export async function loadIgnoreFile() {
+  try {
+    const file: IgnoreFile = JSON.parse(await fs.readFile(ignoreFile, 'utf8'));
+    console.log('Using cached ignore data');
+    return file;
+  } catch {
+    console.log('Fetching ignore data from our api...');
+    const fetched = await fetch(`${BASE_URL}/api/ignore`).then(
+      (response) => <Promise<IgnoreFile>>response.json(),
+    );
+
+    // save to cache
+    await fs.writeFile(ignoreFile, JSON.stringify(fetched));
     return fetched;
   }
 }
