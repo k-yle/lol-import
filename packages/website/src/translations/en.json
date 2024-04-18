@@ -1,4 +1,6 @@
 {
+  "AuthContext.error.desc": "Maybe the login was cancelled?",
+  "AuthContext.error.title": "Failed to login",
   "Breadcrumbs.home": "Home",
   "ChangeLanguageInput.placeholder": "Change Language",
   "CountryPage.country-not-found": "No data for {countryName}",
@@ -31,6 +33,9 @@
   "LightPage.status.no.title": "Not mapped in OpenStreetMap",
   "LightPage.view-on-osm": "View Feature",
   "LightPage.warnings": "Warnings",
+  "LoginStatus.btn-login": "Login",
+  "LoginStatus.btn-logout": "Logout",
+  "LoginStatus.github-link": "View Source Code",
   "Navbar.search-placeholder": "Search by ID",
   "StatsBar.existsAndPerfect": "Perfect",
   "StatsBar.existsButNeedsUpdate": "Data Wrong",

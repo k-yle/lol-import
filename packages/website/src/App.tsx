@@ -10,6 +10,7 @@ import { CountryPage } from './pages/CountryPage/CountryPage';
 import { locale } from './i18n';
 import '@mantine/core/styles.css';
 import './main.css';
+import { AuthWrapper } from './context/AuthContext';
 
 const theme = createTheme({});
 
@@ -18,20 +19,22 @@ export const App = () => (
     <MantineProvider theme={theme}>
       <BrowserRouter>
         <TimeAgoProvider locale={locale}>
-          <DataWrapper>
-            <AppShell header={{ height: 50 }} padding="md">
-              <AppShell.Header>
-                <Navbar />
-              </AppShell.Header>
-              <AppShell.Main>
-                <Routes>
-                  <Route path="/" element={<HomePage />} />
-                  <Route path="/:country" element={<CountryPage />} />
-                  <Route path="/:country/:ref" element={<LightPage />} />
-                </Routes>
-              </AppShell.Main>
-            </AppShell>
-          </DataWrapper>
+          <AuthWrapper>
+            <DataWrapper>
+              <AppShell header={{ height: 50 }} padding="md">
+                <AppShell.Header>
+                  <Navbar />
+                </AppShell.Header>
+                <AppShell.Main>
+                  <Routes>
+                    <Route path="/" element={<HomePage />} />
+                    <Route path="/:country" element={<CountryPage />} />
+                    <Route path="/:country/:ref" element={<LightPage />} />
+                  </Routes>
+                </AppShell.Main>
+              </AppShell>
+            </DataWrapper>
+          </AuthWrapper>
         </TimeAgoProvider>
       </BrowserRouter>
     </MantineProvider>

@@ -1,7 +1,7 @@
 {
   "private": true,
   "scripts": {
-    "start": "wrangler pages dev --proxy 5123 -- npm run start-only-client",
+    "start": "wrangler pages dev --port 5124 --proxy 5123 -- npm run start-only-client",
     "start-only-client": "vite",
     "build": "vite build",
     "lint": "tsc && tsc -p functions/tsconfig.json && eslint src"
@@ -11,6 +11,7 @@
     "@formatjs/intl": "^2.9.0",
     "@mantine/core": "^7.7.1",
     "@mantine/hooks": "^7.7.1",
+    "@mantine/notifications": "^7.8.0",
     "@tabler/icons-react": "^2.25.0",
     "leaflet": "^1.9.4",
     "light-characteristics": "^1.0.0",

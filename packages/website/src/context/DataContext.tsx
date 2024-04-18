@@ -22,7 +22,7 @@ type IDataContext = {
 };
 
 const CDN_URL =
-  localStorage.isDev && window.location.hostname === 'localhost'
+  localStorage.isDev && window.location.hostname === '127.0.0.1'
     ? 'http://localhost:3000'
     : 'https://cdn.list.lighting';
 

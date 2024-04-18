@@ -1,6 +1,5 @@
 import { memo, useContext, useState } from 'react';
 import {
-  ActionIcon,
   Autocomplete,
   Button,
   Flex,
@@ -10,13 +9,12 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import '@mantine/core/styles.css';
-import { IconBrandGithub } from '@tabler/icons-react';
 import { useNavigate } from 'react-router-dom';
 import { useDisclosure } from '@mantine/hooks';
 import { DataContext } from '../context/DataContext';
-import { APP_NAME, GITHUB_URL } from '../helpers/constants';
+import { APP_NAME } from '../helpers/constants';
 import { t } from '../i18n';
-import { ChangeLanguageInput } from './ChangeLanguageInput';
+import { LoginStatus } from './LoginStatus';
 
 const b = (str: string) => <b key={0}>{str}</b>;
 
@@ -67,15 +65,7 @@ export const Navbar = memo(() => {
         }}
       />
       <Flex align="center">
-        <ChangeLanguageInput />
-        <ActionIcon
-          variant="default"
-          component="a"
-          target="_blank"
-          href={GITHUB_URL}
-        >
-          <IconBrandGithub />
-        </ActionIcon>
+        <LoginStatus />
       </Flex>
     </Flex>
   );

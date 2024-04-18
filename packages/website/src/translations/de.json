@@ -1,4 +1,6 @@
 {
+  "AuthContext.error.desc": "Vielleicht wurde die Anmeldung abgebrochen?",
+  "AuthContext.error.title": "Einloggen fehlgeschlagen",
   "Breadcrumbs.home": "Startseite",
   "ChangeLanguageInput.placeholder": "Sprache ändern",
   "CountryPage.country-not-found": "Keine Daten für {countryName}",
@@ -31,6 +33,9 @@
   "LightPage.status.no.title": "Nicht in OpenStreetMap gemapped",
   "LightPage.view-on-osm": "Feature ansehen",
   "LightPage.warnings": "Warnungen",
+  "LoginStatus.btn-login": "Einloggen",
+  "LoginStatus.btn-logout": "Abmelden",
+  "LoginStatus.github-link": "Quellcode anzeigen",
   "Navbar.search-placeholder": "Nach ID suchen",
   "StatsBar.existsAndPerfect": "Perfekt",
   "StatsBar.existsButNeedsUpdate": "Daten falsch",
