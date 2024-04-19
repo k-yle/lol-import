@@ -37,9 +37,12 @@ import { isTruthy, removeTrailingZeros, sortObject } from './helpers/general';
 import { mergeLights } from './stages/merge';
 import { createDiffHash } from './helpers/createDiffHash';
 import { removeDuplicateSectors } from './parser/work/removeDuplicateSectors';
+import { renumberSectors } from './parser/work/renumberSectors';
 
 /** if the only thing that needs changing are these keys, then abort */
 const TRIVIAL_KEYS = new Set(['source', 'seamark:name', 'seamark:information']);
+
+const renumberStats: Record<number, number> = {};
 
 async function main() {
   // create folder if they doesn't exist
@@ -170,6 +173,21 @@ async function main() {
     if (osm) {
       // exists in OSM
       tagDiff = conflateTags(fullData[country][ialaId].tags, osm.tags!);
+      const tagDiffAfterRenumbering = conflateTags(
+        renumberSectors(fullData[country][ialaId].tags, osm.tags!).tags,
+        osm.tags!,
+      );
+
+      /** a negative number means renumbering sectors reduced the diff */
+      const renumberingEffect =
+        Object.keys(tagDiffAfterRenumbering).length -
+        Object.keys(tagDiff).length;
+
+      /// original:20, after: 10 = negative number (good). POsitive is bad
+      renumberStats[renumberingEffect] ||= 0;
+      renumberStats[renumberingEffect]++;
+      if (renumberingEffect <= 0) tagDiff = tagDiffAfterRenumbering;
+
       const nonTrivialKeysToUpdate = Object.keys(tagDiff).filter(
         (key) => !TRIVIAL_KEYS.has(key),
       );
@@ -269,6 +287,8 @@ async function main() {
       printWidth: 150,
     }),
   );
+
+  console.log('Renumbering:', renumberStats);
 }
 
 main();
