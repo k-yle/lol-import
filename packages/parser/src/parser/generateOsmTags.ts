@@ -1,4 +1,4 @@
-import { COLOURS, type Colour, type Light } from 'light-characteristics';
+import { COLOURS, type Light } from 'light-characteristics';
 import type { Tags } from 'osm-api';
 import type { LolFeature, Warning } from '../helpers/types';
 import { IALA_B } from '../helpers/constants';
@@ -235,7 +235,7 @@ export function generateOsmTags(
     lightsToMap.length,
   );
 
-  const range = parseRange(light.range, lightsToMap.length, warnings);
+  const range = parseRange(light.range, lightsToMap, warnings);
 
   for (const [index, sector] of lightsToMap.entries()) {
     // for sectored lights, you have to use :1: to keep
@@ -295,17 +295,8 @@ export function generateOsmTags(
           if (line.parsed.VALMXR) throw new Error('Unexpected range');
 
           // for sectored lights, get the overrides for this sector.
-          const overrides = ((): Partial<Light> => {
-            if (!sector?.characteristics) return {};
-
-            if (sector.characteristics in COLOURS) {
-              // it's just a colour
-              return { COLOUR: [<Colour>sector.characteristics] };
-            }
-
-            // more complicated than just a colour
-            return parseCharacteristicForSector(sector.characteristics) || {};
-          })();
+          const overrides =
+            parseCharacteristicForSector(sector?.characteristics) || {};
 
           const parsed: Light = { ...line.parsed, ...overrides };
 

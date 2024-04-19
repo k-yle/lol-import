@@ -70,10 +70,13 @@ export function splitMultiLights(
           // mismatch
           throw new Error('Mismatched number of lights vs lens heights');
         }
+      } else if (requiredSectors === highestSector) {
+        // everything is okay and we don't need to make any changes, since
+        // the values have already been added.
       } else {
         warnings.push({
           type: 'invalid_lens_height_or_range',
-          value: `${requiredSectors} sectors required for lens and/or range, but only 1 light was detected`,
+          value: `${requiredSectors} sectors required for lens and/or range, but only one light was detected. range=${range} / lensHeight=${lensHeight}`,
         });
       }
     }

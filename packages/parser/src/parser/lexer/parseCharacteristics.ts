@@ -1,4 +1,9 @@
-import { type Light, decodeLight } from 'light-characteristics';
+import {
+  COLOURS,
+  type Colour,
+  type Light,
+  decodeLight,
+} from 'light-characteristics';
 import type { LolFeature, Warning } from '../../helpers/types';
 import { isTruthy } from '../../helpers/general';
 
@@ -105,8 +110,16 @@ export function parseCharacteristics(
   });
 }
 
-export function parseCharacteristicForSector(str: string) {
+export function parseCharacteristicForSector(
+  str: string | undefined,
+): Partial<Light> | undefined {
   try {
+    if (!str) return undefined;
+    if (str in COLOURS) {
+      // it's just a colour
+      return { COLOUR: [<Colour>str] };
+    }
+
     return decodeLight(cleanCharacteristic(str));
   } catch {
     const key = `[Sector] ${str}`;
