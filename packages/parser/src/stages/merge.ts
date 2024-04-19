@@ -1,6 +1,10 @@
 import type { Tags } from 'osm-api';
 import type { FELight, Warning } from '../helpers/types';
-import { duplicateLightTags, isLightTag } from '../helpers/duplicateLightTags';
+import {
+  duplicateLightTags,
+  isLightTag,
+  isUnsectoredLightTag,
+} from '../helpers/duplicateLightTags';
 import { isTruthy, sortObject } from '../helpers/general';
 
 const SECTOR_KEY_REGEX = /seamark:light:(?<sector>\d+):/;
@@ -85,9 +89,7 @@ export function mergeLights(
   }
 
   // Part 2: If `a` is a simple light, convert :light: to :light:1:
-  const isAUnSectored = Object.keys(mergedLightTags).some(
-    (key) => isLightTag(key) && key.split(':').length === 3,
-  );
+  const isAUnSectored = Object.keys(mergedLightTags).some(isUnsectoredLightTag);
   if (isAUnSectored && bothHaveLightTags) {
     duplicateLightTags(mergedLightTags, 1);
   }

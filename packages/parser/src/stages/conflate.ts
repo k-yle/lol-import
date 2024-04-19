@@ -1,4 +1,10 @@
 import type { Tags } from 'osm-api';
+import { sortObject } from '../helpers/general';
+import {
+  isLightTag,
+  isUnsectoredLightTag,
+} from '../helpers/duplicateLightTags';
+import { getHighestSector } from './merge';
 
 /**
  * Compares the expected vs actual tags, returns a diff
@@ -106,5 +112,15 @@ export function conflateTags(expected: Tags, actual: Tags): Tags {
     // if we get to here, the value needs updating
     diff[key] = expected[key];
   }
-  return diff;
+
+  // lastly, if we expect sectored light tags, and there are any unsectored tag,
+  // then suggest deleting those unsectored tags. Also vice-versa
+  const expectedSectored = getHighestSector(expected) > 0;
+  for (const key in actual) {
+    if (isLightTag(key) && expectedSectored === isUnsectoredLightTag(key)) {
+      diff[key] = '🗑️';
+    }
+  }
+
+  return sortObject(diff);
 }

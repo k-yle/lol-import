@@ -4,6 +4,9 @@ import type { Tags } from 'osm-api';
 export const isLightTag = (key: string) =>
   key.startsWith('seamark:light:') && !key.endsWith(':reference');
 
+export const isUnsectoredLightTag = (key: string) =>
+  isLightTag(key) && key.split(':').length === 3;
+
 /** mutates instead of returning, to preserve the {@link Proxy} */
 export function duplicateLightTags(
   tags: Tags,

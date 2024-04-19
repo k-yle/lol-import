@@ -29,4 +29,36 @@ describe('conflateTags', () => {
       'seamark:beacon:colour': 'pink',
     });
   });
+
+  it("deletes unsectored light tags if we're adding sectored tags", () => {
+    const expeced = {
+      'seamark:light:reference': 'K1234',
+      'seamark:light:1:colour': 'red',
+    };
+    const actual = {
+      'seamark:light:reference': 'K1234',
+      'seamark:light:colour': 'red',
+    };
+
+    expect(conflateTags(expeced, actual)).toStrictEqual({
+      'seamark:light:colour': '🗑️',
+      'seamark:light:1:colour': 'red',
+    });
+  });
+
+  it("deletes sectored light tags if we're adding unsectored tags", () => {
+    const expeced = {
+      'seamark:light:reference': 'K1234',
+      'seamark:light:colour': 'red',
+    };
+    const actual = {
+      'seamark:light:reference': 'K1234',
+      'seamark:light:1:colour': 'red',
+    };
+
+    expect(conflateTags(expeced, actual)).toStrictEqual({
+      'seamark:light:1:colour': '🗑️',
+      'seamark:light:colour': 'red',
+    });
+  });
 });

@@ -1,6 +1,6 @@
 import type { Tags } from 'osm-api';
 import { getHighestSector } from '../../stages/merge';
-import { isLightTag } from '../../helpers/duplicateLightTags';
+import { isUnsectoredLightTag } from '../../helpers/duplicateLightTags';
 
 const ALLOW_CLONE = new Set(['exhibition', 'category']);
 
@@ -13,9 +13,7 @@ export function moveUnsectoredTags(tags: Tags) {
   const highestSector = getHighestSector(tags);
   if (highestSector > 0) {
     // we know there are some sectored tags.
-    const unsectoredKeys = Object.keys(tags).filter(
-      (key) => isLightTag(key) && key.split(':').length === 3,
-    );
+    const unsectoredKeys = Object.keys(tags).filter(isUnsectoredLightTag);
     for (const key of unsectoredKeys) {
       const subKey = key.split(':')[2];
       if (!ALLOW_CLONE.has(subKey)) {
