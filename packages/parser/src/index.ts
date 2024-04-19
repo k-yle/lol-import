@@ -36,6 +36,7 @@ import {
 import { isTruthy, removeTrailingZeros, sortObject } from './helpers/general';
 import { mergeLights } from './stages/merge';
 import { createDiffHash } from './helpers/createDiffHash';
+import { removeDuplicateSectors } from './parser/work/removeDuplicateSectors';
 
 /** if the only thing that needs changing are these keys, then abort */
 const TRIVIAL_KEYS = new Set(['source', 'seamark:name', 'seamark:information']);
@@ -160,6 +161,8 @@ async function main() {
     fullData[country][ialaId] = fullData[country][ialaId]
       ? mergeLights(fullData[country][ialaId], newLight, mergeWarnings)
       : newLight;
+
+    removeDuplicateSectors(fullData[country][ialaId], mergeWarnings);
 
     const osm = osmByRef[removeTrailingZeros(ialaId)];
 

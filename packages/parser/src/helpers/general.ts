@@ -1,3 +1,5 @@
+import type { Tags } from 'osm-api';
+
 export const capitalise = (string: string) => {
   const lower = string.toLowerCase();
   return lower[0].toUpperCase() + lower.slice(1);
@@ -26,3 +28,23 @@ export const isNotNaN = (n: number) => !Number.isNaN(n);
 
 export const removeTrailingZeros = (str: string) =>
   str.replace(/(\.\d+?)0+$/, '$1');
+
+/** like {@link Array.filter}, but for objects */
+export const pick = <T extends object, K extends keyof T>(
+  object: T,
+  keysToKeep: K[] | ((key: K, value: T[K]) => boolean),
+) =>
+  <Pick<T, K>>(
+    Object.fromEntries(
+      Object.entries(object).filter(([key, value]) =>
+        Array.isArray(keysToKeep)
+          ? keysToKeep.includes(<K>key)
+          : keysToKeep(<K>key, value),
+      ),
+    )
+  );
+
+export const mapObject = (
+  object: Tags,
+  callback: (kv: [string, string]) => [string, string],
+) => Object.fromEntries(Object.entries(object).map(callback));

@@ -69,6 +69,7 @@ export interface OsmFile {
 }
 
 export interface Warning {
+  severity?: 'info';
   type: string;
   value: string;
 }
