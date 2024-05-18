@@ -1,6 +1,7 @@
 # List of Lights
 
 ![](https://github.com/k-yle/lol-import/actions/workflows/ci.yml/badge.svg)
+![](https://github.com/k-yle/lol-import/actions/workflows/sync.yml/badge.svg)
 ![](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fcdn.list.lighting%2Fstats.json&query=%24.timestampNoTime&label=last%20updated&color=31c654)
 
 🛥️🔦 This code parses the [**List of Lights**](https://msi.nga.mil/Publications/NGALOL) into an S-57 compatible format, and then conflates the data with OpenStreetMap's seamarks. The results can be viewed and downloaded from [https://list.lighting](https://list.lighting)

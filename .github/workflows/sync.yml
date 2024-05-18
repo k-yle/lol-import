@@ -1,0 +1,16 @@
+name: sync
+
+on:
+  schedule:
+    - cron: "14 14 * * 1,3,6" # 3 times per week (Mo, We, Sa)
+  workflow_dispatch:
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📦 Redeploy
+        run: curl -X POST "https://api.cloudflare.com/client/v4/pages/webhooks/deploy_hooks/$CF_DEPLOY_ID"
+        env:
+          CF_DEPLOY_ID: ${{ secrets.CF_DEPLOY_ID }}
