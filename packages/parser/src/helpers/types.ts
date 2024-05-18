@@ -113,6 +113,7 @@ export type FELight = LatLon & {
   country: string;
   tags: Tags;
   warnings: Warning[];
+  typeIsGuess: true | undefined;
   orig: Pick<
     LolFeature,
     | 'remarks'

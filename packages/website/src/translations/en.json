@@ -52,7 +52,7 @@
   "disclaimer.short": "Not for navigation!",
   "disclaimer.title": "Disclaimer",
   "error.fetch": "Failed to load data",
-  "error.generic_buoy_beacon": "The type of {type} could not be determined, please replace with a proper type or {tag}.",
+  "error.generic_buoy_beacon": "The type of {type} could not be determined, so {tag} was used.",
   "error.unparsable": "This text could not be understood",
   "error.unparsable_info": "This text could not be understood, please replace with proper tags if possible",
   "noname.country": "Unknown",

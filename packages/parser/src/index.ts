@@ -110,11 +110,12 @@ async function main() {
     let ialaId: string = lol.featureNumber;
 
     let expectedTags: Tags | undefined;
+    let typeIsGuess: boolean | undefined;
     let warnings: Warning[] | undefined;
     try {
       const result = generateOsmTags(lol, country, timestampNoTime);
       expectedTags = result.tags;
-      ialaId = result.ialaId;
+      ({ ialaId, typeIsGuess } = result);
 
       warnings = result.warnings; // store for later
     } catch (ex) {
@@ -134,6 +135,7 @@ async function main() {
       country,
       ...pos,
       warnings,
+      typeIsGuess: typeIsGuess || undefined,
       orig: {
         characteristic: lol.characteristic,
         name: [

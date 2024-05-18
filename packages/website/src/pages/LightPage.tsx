@@ -47,7 +47,7 @@ const ERRORS = {
   GENERIC_BUOY_BEACON: (type: string) =>
     t('error.generic_buoy_beacon', {
       type: type === 'beacon' ? t('type.beacon') : t('type.buoy'),
-      tag: <Code key={0}>{type}_special_purpose</Code>,
+      tag: <Code key={0}>{type}</Code>,
     }),
 };
 
@@ -123,13 +123,17 @@ function renderKey(key: string) {
   return key;
 }
 
-function renderValue(key: string, value: string) {
+function renderValue(
+  key: string,
+  value: string,
+  typeIsGuess: boolean | undefined,
+) {
   if (key === 'seamark:information') {
     const Markk = createMarkWithReason(ERRORS.UNPARSABLE_INFO);
     return <Markk>{value}</Markk>;
   }
   if (key === 'seamark:type') {
-    if (value === 'buoy' || value === 'beacon') {
+    if (typeIsGuess) {
       const Markk = createMarkWithReason(ERRORS.GENERIC_BUOY_BEACON(value));
       return <Markk>{value}</Markk>;
     } else {
@@ -425,7 +429,9 @@ export const InnerLightPage: React.FC<{
                     {/* hidden equals sign to save time when you copy-paste a row */}
                     <div style={{ width: 1, overflow: 'hidden' }}>=</div>
                   </Table.Td>
-                  <Table.Td>{renderValue(key, value)}</Table.Td>
+                  <Table.Td>
+                    {renderValue(key, value, light.typeIsGuess)}
+                  </Table.Td>
                 </Table.Tr>
               ))}
           </Table.Tbody>

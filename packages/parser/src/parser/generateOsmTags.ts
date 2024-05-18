@@ -36,7 +36,12 @@ export function generateOsmTags(
   light: LolFeature,
   country: string,
   date: string,
-): { tags?: Tags; ialaId: string; warnings: Warning[] } {
+): {
+  tags?: Tags;
+  typeIsGuess?: boolean;
+  ialaId: string;
+  warnings: Warning[];
+} {
   const warnings: Warning[] = [];
   const tags = proxyTags({}, warnings);
 
@@ -78,7 +83,7 @@ export function generateOsmTags(
 
   const type = (() => {
     if (shape && categoryToken) return `${shape}_${categoryToken}`;
-    if (shape) return shape;
+    if (shape) return `${shape}_special_purpose`;
     if (tokenFromName.has('LIGHTSHIP')) return 'light_ship';
     if (tokenFromName.has('LIGHTFLOAT')) return 'light_float';
     if (tokenFromName.has('RACON') || tokenFromName.has('RAMARK')) {
@@ -345,6 +350,7 @@ export function generateOsmTags(
 
   return {
     tags: sortObject(deleteUndefinedKeys(stripProxy(tags))),
+    typeIsGuess: shape && !categoryToken,
     ialaId,
     warnings,
   };

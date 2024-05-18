@@ -52,7 +52,7 @@
   "disclaimer.short": "Nicht für die Navigation!",
   "disclaimer.title": "Haftungsausschluss",
   "error.fetch": "Daten konnten nicht geladen werden",
-  "error.generic_buoy_beacon": "Der Art {type} konnte nicht bestimmt werden. Bitte ersetzen Sie diesen Text mit einen richtigen Typ oder mit „{tag}“",
+  "error.generic_buoy_beacon": "Der Art {type} konnte nicht bestimmt werden, daher wurde „{tag}“ verwendet.",
   "error.unparsable": "Dieser Text konnte nicht verstanden werden",
   "error.unparsable_info": "Dieser Text konnte nicht verstanden werden. Wenn möglich, bitte ersetzen Sie diesen Text mit geeignete Tags",
   "noname.country": "Unbekannt",

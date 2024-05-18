@@ -19,7 +19,8 @@ export function conflateTags(expected: Tags, actual: Tags): Tags {
   const actualType = actual['seamark:type'];
   if (
     // if LOL doesn't know the exact beacon/buoy…
-    (expectedType === 'beacon' || expectedType === 'buoy') &&
+    (expectedType === 'beacon_special_purpose' ||
+      expectedType === 'buoy_special_purpose') &&
     // …but OSM already has a specific type
     /^(beacon|buoy)_/.test(actualType)
   ) {
