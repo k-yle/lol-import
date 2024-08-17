@@ -10,7 +10,11 @@ import {
   parseCharacteristics,
 } from './lexer/parseCharacteristics';
 import { type Sector, parseRemarks } from './lexer/parseRemarks';
-import { type Structure, parseStructure } from './lexer/parseStructure';
+import {
+  type Structure,
+  getMoreSignificantStructure,
+  parseStructure,
+} from './lexer/parseStructure';
 import { parseName } from './lexer/parseName';
 import { checkPeriodSum } from './work/checkPeriodSum';
 import { moveUnsectoredTags } from './work/moveUnsectoredTags';
@@ -160,6 +164,15 @@ export function generateOsmTags(
         appendToTag(tags, `seamark:${type}:colour`, token.colour);
         appendToTag(tags, `seamark:${type}:construction`, token.material);
         appendToTag(tags, `seamark:${type}:shape`, token.structure);
+
+        // if there are multiple, pick the most significant one
+        if (tags[`seamark:${type}:shape`]?.includes(';')) {
+          tags[`seamark:${type}:shape`] = getMoreSignificantStructure(
+            token.shape,
+            ...(tags[`seamark:${type}:shape`].split(';') as [string, string]),
+          );
+        }
+
         break;
       }
 

@@ -26,6 +26,7 @@ export type Remark =
   | { type: 'genericTags'; tags: Tags }
   | { type: 'unknown'; line: string };
 
+/** MUST be lowercase */
 const COMMON_REMARKS: Record<string, Tags> = {
   'private light': { 'operator:type': 'private' },
   seasonal: { 'seamark:light:exhibition': 'seasonal' },
@@ -34,8 +35,8 @@ const COMMON_REMARKS: Record<string, Tags> = {
   'shown 24 hours': { 'seamark:light:exhibition': '24h' },
   'operates at night only': { 'seamark:light:exhibition': 'night' },
   'storm signals': { 'seamark:light:exhibition': 'storm' },
+  'shown on request': { 'seamark:light:exhibition': 'on_request' },
   'radar reflector': { 'seamark:radar_reflector': 'yes' },
-  'Shown on request': { 'seamark:radar_reflector': 'on_request' },
 };
 
 type Visibility =
@@ -71,7 +72,7 @@ export function parseBearing(_string: string): number | undefined {
   const dmMatch = string.match(/^(\d+)[?°]([\d.]+)('|`)?\.?$/);
   if (dmMatch) {
     const [, d, m] = dmMatch;
-    return +d + +m / 60;
+    return +(+d + +m / 60).toFixed(2);
   }
 
   // could be a decimal

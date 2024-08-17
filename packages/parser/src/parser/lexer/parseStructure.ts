@@ -2,6 +2,11 @@ import { deleteUndefinedKeys, isTruthy } from '../../helpers/general';
 import { tokeniser } from '../../helpers/tokeniser';
 import type { Warning } from '../../helpers/types';
 
+/**
+ * the order of this object matters! the earlier it's defined,
+ * the higher the priority if there are multiple detected for
+ * one light.
+ */
 const SHAPES: Record<
   'beacon' | 'buoy',
   Record<string, string | true | undefined>
@@ -11,28 +16,30 @@ const SHAPES: Record<
     beacon: undefined,
     structure: undefined,
     superstructure: undefined,
+    lantern: undefined,
 
     // values that are exactly equal to OSM tags
     tower: true,
-    pillar: 'pile',
-    post: 'pole',
-    pole: true,
     pile: true,
-    pipe: 'pole',
-    mast: 'pole',
-    dolphin: true,
+    pole: true,
     tripod: true,
     pylon: true,
-    platform: true,
-    column: 'pile',
     pyramid: true,
     cairn: true,
+    platform: true,
+    dolphin: true,
     buoyant: true,
 
     // values that need to be standardised
     hut: 'building',
     dwelling: 'building',
     piles: 'pile',
+    pipe: 'pole',
+    mast: 'pole',
+    pillar: 'pile',
+    post: 'pole',
+    column: 'pile',
+    tank: 'tower',
   },
   buoy: {
     // generic match = no shape
@@ -138,6 +145,16 @@ const reAdjectives = [
 const reJunkTokens = new RegExp(`\\b(${JUNK_TOKENS.join('|')})\\b`);
 
 const unparsableStructureLines: Record<string, number> = {};
+
+export const getMoreSignificantStructure = (
+  type: 'buoy' | 'beacon',
+  a: string,
+  b: string,
+): string => {
+  const heirachy = Object.keys(SHAPES[type]);
+
+  return heirachy.indexOf(a) > heirachy.indexOf(b) ? b : a;
+};
 
 export const getUnparsableStructureLines = () =>
   Object.entries(unparsableStructureLines)
@@ -365,6 +382,15 @@ export function parseStructure(
           .map((value) => TOPMARK_SHAPES[value] || value); // maybe apply overrides
 
         const materials = allWords.filter((word) => word in MATERIALS);
+
+        // shapes default to "point up" unless "point down" is specified
+        if (
+          suffix?.includes('down') &&
+          shapes.length === 1 &&
+          shapes[0].includes('point up')
+        ) {
+          shapes[0] = shapes[0].replace(/\bup\b/, 'down');
+        }
 
         return {
           raw: topmarkMatch[0],

@@ -9,7 +9,7 @@ import {
   useMantineTheme,
 } from '@mantine/core';
 import '@mantine/core/styles.css';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDisclosure } from '@mantine/hooks';
 import { DataContext } from '../context/DataContext';
 import { APP_NAME } from '../helpers/constants';
@@ -46,7 +46,16 @@ export const Navbar = memo(() => {
 
       <Flex direction="column" align="flex-start">
         <Title order={5} fw={500} size="1.25rem">
-          {APP_NAME}
+          <Link
+            to="/"
+            style={{
+              textDecoration: 'none',
+              color: 'inherit',
+              cursor: 'inherit',
+            }}
+          >
+            {APP_NAME}
+          </Link>
         </Title>
         <Button variant="transparent" onClick={open} size="0.5rem" pl={0}>
           {t('disclaimer.short')}

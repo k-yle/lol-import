@@ -60,22 +60,22 @@ export const IgnoreSuggestionsModal: React.FC<{
           <Alert
             variant="light"
             color="red"
-            title="Failed to save changes."
+            title={t('IgnoreSuggestionsModal.error')}
             icon={<IconAlertTriangle />}
           />
         ) : state === STATE.SUCCESS ? (
           <Alert
             variant="light"
             color="green"
-            title="Saved! Changes may take a few days to appear."
+            title={t('IgnoreSuggestionsModal.success')}
             icon={<IconCheck />}
           />
         ) : (
           <>
             <TextInput
-              label="Comment"
-              description="Explain why you’re ignoring these changes"
-              placeholder="e.g. “surveyed today”"
+              label={t('IgnoreSuggestionsModal.comment')}
+              description={t('IgnoreSuggestionsModal.comment-desc')}
+              placeholder={t('IgnoreSuggestionsModal.comment-placeholder')}
               value={comment}
               onChange={(event) => setComment(event.target.value)}
             />
@@ -84,7 +84,7 @@ export const IgnoreSuggestionsModal: React.FC<{
               loading={state === STATE.LOADING}
               mt={16}
             >
-              Submit
+              {t('_.submit')}
             </Button>
           </>
         )}

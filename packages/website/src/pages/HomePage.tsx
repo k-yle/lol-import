@@ -34,7 +34,7 @@ const WELCOME_TEXT_LINKS = {
 };
 
 export const HomePage = () => {
-  const [tab, setTag] = useState<string | null>(null);
+  const [tab, setTab] = useState<string | null>(null);
   const { indexFile } = useContext(DataContext);
 
   useEffect(() => {
@@ -61,7 +61,7 @@ export const HomePage = () => {
       </Card>
       <Title order={4}>Import Progress</Title>
       <StatsBar stats={indexFile.global} />
-      <Accordion variant="contained" mt={16} value={tab} onChange={setTag}>
+      <Accordion variant="contained" mt={16} value={tab} onChange={setTab}>
         {Object.entries(CONTINENTS).map(([continent, continentName]) => {
           return (
             <Accordion.Item key={continent} value={continent}>

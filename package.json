@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "eslint": "^9.9.0",
+    "eslint-config-kyle": "^24.0.0"
+  }
+}

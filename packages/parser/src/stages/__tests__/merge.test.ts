@@ -159,6 +159,7 @@ describe('mergeLights', () => {
       lat: -39.8506,
       lon: 174.1202,
       warnings: [{ type: 'a', value: 'a' }],
+      typeIsGuess: undefined,
       orig: {
         characteristic: 'Mo.(U)W.\nperiod 15s \n',
         name: 'NEW ZEALAND-NORTH ISLAND\nKupe Platform.',
@@ -187,6 +188,7 @@ describe('mergeLights', () => {
       lat: -39.8506,
       lon: 174.1202,
       warnings: [{ type: 'b', value: 'b' }],
+      typeIsGuess: undefined,
       orig: {
         characteristic: 'U(• • - )\n',
         name: 'NEW ZEALAND-NORTH ISLAND\nRACON',
@@ -208,6 +210,7 @@ describe('mergeLights', () => {
       lat: -39.8506,
       lon: 174.1202,
       warnings: [],
+      typeIsGuess: undefined,
       orig: {
         characteristic: 'U(• • - )\n',
         name: 'NEW ZEALAND-NORTH ISLAND\nRACON',
@@ -293,6 +296,7 @@ RACON`,
             '2 different lens heights (69, 161), but only 1 light was detected',
         },
       ],
+      typeIsGuess: undefined,
       orig: {
         characteristic:
           'Oc.R.\nperiod 10s \nnullfl. 6.0s, ec. 4.0s \nfl. 3.0s, ec. 1.0s \nfl. 1.0s, ec. 1.0s \n',
@@ -320,6 +324,7 @@ RACON`,
       lat: -39.5552,
       lon: 173.4493,
       warnings: [],
+      typeIsGuess: undefined,
       orig: {
         characteristic:
           'Mo.(U)W.\nperiod 15s \nfl. 1.2s, ec. 12.0s \nfl. 0.4s, ec. 0.5s \nfl. 0.4s, ec. 0.5s \n',

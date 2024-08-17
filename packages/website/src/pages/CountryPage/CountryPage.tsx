@@ -4,6 +4,7 @@ import {
   Alert,
   Anchor,
   Breadcrumbs,
+  Button,
   Code,
   List,
   Loader,
@@ -51,6 +52,28 @@ const InnerCountryPage: React.FC<{
           setHidden((c) => ({ ...c, [section]: !c[section] }))
         }
       />
+      <Button
+        onClick={async () => {
+          const geojson = Object.values(data).map((light) => ({
+            type: 'Feature',
+            geometry: { type: 'Point', coordinates: [light.lon, light.lat] },
+            properties: light.tags,
+          }));
+          await navigator.clipboard.writeText(
+            JSON.stringify(
+              {
+                type: 'FeatureCollection',
+                features: geojson,
+              },
+              null,
+              2,
+            ),
+          );
+          alert('copied!');
+        }}
+      >
+        Copy as geojson
+      </Button>
       <List spacing="xs" size="sm" center mt={32}>
         {Object.entries(data)
           .sort(([, a], [, b]) =>

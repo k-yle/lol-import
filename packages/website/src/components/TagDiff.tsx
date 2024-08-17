@@ -8,14 +8,13 @@ export const tagsToString = (tags: Tags) =>
   Object.entries(tags)
     .sort(([a], [b]) => b.localeCompare(a))
     .filter(([, v]) => !!v)
-    .map(([k, v]) => `${k}=${v!.replaceAll('\n', '\\n')}`)
+    .map(([k, v]) => `${k}=${v!.replaceAll('\n', String.raw`\n`)}`)
     .join('\n');
 
 export const TagDiff: React.FC<{ light: FELight }> = ({ light }) => {
   const newTags = useMemo(() => {
     const out = { ...light.osm!.currentTags };
     for (const [key, value] of Object.entries(light.osm!.diff)) {
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       if (value === '🗑️') delete out[key];
       out[key] = value;
     }

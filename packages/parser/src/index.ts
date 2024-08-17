@@ -206,11 +206,6 @@ async function main() {
       verdict = 'missing';
     }
 
-    stats.global[verdict]++;
-    stats.byCountry[country] ||= emptyStats();
-    stats.byCountry[country].ids.push(ialaId);
-    stats.byCountry[country][verdict]++;
-
     if (mergeWarnings.length) {
       fullData[country][ialaId].warnings ||= [];
       fullData[country][ialaId].warnings?.push(...mergeWarnings);
@@ -221,6 +216,17 @@ async function main() {
       allWarnings[warning.type].push(
         `[${country}] [${ialaId}] ${warning.value}`,
       );
+    }
+  }
+
+  // generate stats after merging to ensure the totals add up
+  for (const country in fullData) {
+    for (const ialaId in fullData[country]) {
+      const verdict = fullData[country][ialaId].osm?.verdict || 'missing';
+      stats.global[verdict]++;
+      stats.byCountry[country] ||= emptyStats();
+      stats.byCountry[country].ids.push(ialaId);
+      stats.byCountry[country][verdict]++;
     }
   }
 

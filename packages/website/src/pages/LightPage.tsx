@@ -149,7 +149,6 @@ function renderValue(
       <Flex align="center" gap={4}>
         {value.split(';').map((colour, index) => (
           <ColorSwatch
-            // eslint-disable-next-line react/no-array-index-key
             key={colour + index}
             size={rem(14)}
             color={colour}
@@ -182,7 +181,7 @@ const JsonCard: React.FC<{
       <Card.Section withBorder inheritPadding py="xs">
         <Group justify="space-between">
           <Text fw={500}>{title}</Text>
-          {json && (
+          {!!json && (
             <Menu withinPortal position="bottom-end" shadow="sm">
               <Menu.Target>
                 <ActionIcon variant="subtle" color="gray">
@@ -256,7 +255,11 @@ export const InnerLightPage: React.FC<{
   }, [countryFromUrl, country, urlSafeId, navigate]);
 
   const reëncodedLight = useMemo(
-    () => light && reëncodeLight(light.tags),
+    () =>
+      light &&
+      // this check is to ensure the link is only enabled for non-sectored lights
+      !!light.tags['seamark:light:character'] &&
+      reëncodeLight(light.tags),
     [light],
   );
 
@@ -295,10 +298,10 @@ export const InnerLightPage: React.FC<{
           viewLink,
           diffLink,
         })}
-        {showDiff && (
+        {!!showDiff && (
           <>
             <br />
-            {user && (
+            {!!user && (
               <>
                 <br />
                 {t('LightPage.status.existsAndSuggestionsIgnored.extra', {
@@ -329,7 +332,7 @@ export const InnerLightPage: React.FC<{
           viewLink,
           diffLink,
         })}
-        {showDiff && (
+        {!!showDiff && (
           <>
             <br />
             <TagDiff light={light} />
@@ -375,7 +378,11 @@ export const InnerLightPage: React.FC<{
         </Title>{' '}
         –{' '}
         <Anchor
-          href={`https://www.openstreetmap.org/?mlat=${light.lat}&mlon=${light.lon}#map=18/${light.lat}/${light.lon}`}
+          href={
+            light.osm
+              ? createOsmLink(light.osm.id)
+              : `https://openstreetmap.org/?mlat=${light.lat}&mlon=${light.lon}#map=18/${light.lat}/${light.lon}`
+          }
           target="_blank"
           rel="noreferrer"
         >
@@ -427,7 +434,15 @@ export const InnerLightPage: React.FC<{
                   </Table.Th>
                   <Table.Td>
                     {/* hidden equals sign to save time when you copy-paste a row */}
-                    <div style={{ width: 1, overflow: 'hidden' }}>=</div>
+                    <div
+                      style={{
+                        width: 1,
+                        overflow: 'hidden',
+                        display: 'inline-block',
+                      }}
+                    >
+                      =
+                    </div>
                   </Table.Td>
                   <Table.Td>
                     {renderValue(key, value, light.typeIsGuess)}
@@ -472,7 +487,7 @@ export const InnerLightPage: React.FC<{
                         [index].trim() || '';
                     return (
                       <Table.Td key={key}>
-                        {text && (
+                        {!!text && (
                           <Code block>{highlightErrors(text, light)}</Code>
                         )}
                       </Table.Td>
@@ -484,7 +499,7 @@ export const InnerLightPage: React.FC<{
           </Table.Tbody>
         </Table>
       </JsonCard>
-      {light.warnings && (
+      {!!light.warnings && (
         <JsonCard title={t('LightPage.warnings')}>
           <Table style={{ tableLayout: 'fixed' }}>
             <Table.Tbody>

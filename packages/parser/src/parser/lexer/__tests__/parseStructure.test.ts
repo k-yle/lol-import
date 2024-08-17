@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { type Structure, parseStructure } from '../parseStructure';
+import {
+  type Structure,
+  getMoreSignificantStructure,
+  parseStructure,
+} from '../parseStructure';
 import type { Warning } from '../../../helpers/types';
 
 describe('parseStructure', () => {
@@ -149,7 +153,7 @@ describe('parseStructure', () => {
             colour: 'black;white',
             colourPattern: 'squared',
           },
-          { type: 'shape', shape: 'beacon', structure: 'column' },
+          { type: 'shape', shape: 'beacon', structure: 'pile' },
           { type: 'physicalHeight', metres: '6.1' },
         ],
       ],
@@ -214,10 +218,29 @@ describe('parseStructure', () => {
           { type: 'shape', shape: 'beacon' }, // the double match is a bit weird, but doesn't cause issues
         ],
       ],
+      [
+        'Post, orange triangular daymark point down; 26.',
+        [
+          { type: 'daymark', colour: 'orange', shape: 'triangle, point down' },
+          { type: 'shape', shape: 'beacon', structure: 'pole' },
+          { type: 'physicalHeight', metres: '7.9' },
+        ],
+      ],
     ])('%s', (input, output) => {
       const warnings: Warning[] = [];
       expect(parseStructure(input, warnings, true)).toStrictEqual(output);
       expect(warnings).toStrictEqual([]);
     });
+  });
+});
+
+describe('getMoreSignificantStructure', () => {
+  it.each`
+    a          | b          | result
+    ${'tower'} | ${'pile'}  | ${'tower'}
+    ${'pile'}  | ${'tower'} | ${'tower'}
+    ${'pile'}  | ${'pole'}  | ${'pile'}
+  `('picks $result given $a and $b', ({ a, b, result }) => {
+    expect(getMoreSignificantStructure('beacon', a, b)).toBe(result);
   });
 });
