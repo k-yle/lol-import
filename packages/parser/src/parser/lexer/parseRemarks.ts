@@ -102,7 +102,7 @@ export function parseRemarks(lol: LolFeature, warnings: Warning[]): Remark[] {
           .filter(isTruthy)
           .map((segment) => {
             const match = segment.match(
-              /(bl\.|stroke) (?<stroke>[\d.]+)s, +si\. (?<silence>[\d.]+)s/,
+              /(bl\.|stroke) ?(?<stroke>[\d.]+)s, +si\. (?<silence>[\d.]+)s/,
             );
             if (!match) {
               throw new Error(`Invalid blast sequence: “${segment}”`);

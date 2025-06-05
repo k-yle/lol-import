@@ -8,7 +8,9 @@ export function generateTagInfoFile() {
   // @ts-expect-error -- see https://github.com/taginfo/taginfo-projects/pull/109#issuecomment-831076209
   delete template.$schema;
 
-  template.data_updated = new Date().toISOString();
+  template.data_updated = new Date()
+    .toISOString()
+    .replaceAll(/[:-]|(\.\d+)/g, '');
 
   (<unknown[]>template.tags) = Object.keys(EVERY_KEY)
     .sort((a, b) => a.localeCompare(b))

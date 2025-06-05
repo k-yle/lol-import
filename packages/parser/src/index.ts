@@ -52,11 +52,10 @@ async function main() {
   if (!process.env.CI) {
     await promisify(exec)(
       [
-        //
         'rm -rf .git',
         'git init',
         'git add .',
-        "git commit -m '.'",
+        "git commit -m '.' --allow-empty",
       ].join(' && '),
       { cwd: outputFolder },
     );
