@@ -14,7 +14,7 @@
     "@types/node": "^20.11.28",
     "eslint": "^8.57.0",
     "eslint-config-kyle": "^19.6.1",
-    "osm-api": "^2.1.1",
+    "osm-api": "^3.0.0-beta",
     "tsx": "^4.7.1",
     "typescript": "^5.4.2",
     "vitest": "^1.4.0"
