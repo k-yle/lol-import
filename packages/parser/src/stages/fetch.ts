@@ -36,7 +36,7 @@ export async function loadOsmFile() {
       'utf8',
     );
     const fetched = await fetch(
-      `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`,
+      `https://maps.mail.ru/osm/tools/overpass/api/interpreter?data=${encodeURIComponent(query)}`,
       { headers: { 'User-Agent': USER_AGENT } },
     ).then((response) => <Promise<OsmFile>>response.json());
 
