@@ -39,6 +39,7 @@ export const CountryPageMap: React.FC<{
         <ScaleControl position="bottomleft" />
         <TileLayer
           url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+          referrerPolicy="strict-origin-when-cross-origin"
           maxNativeZoom={19}
           maxZoom={23}
           attribution='<a href="https://osm.org/copyright">&copy; OpenStreetMap contributors</a>'
@@ -46,6 +47,7 @@ export const CountryPageMap: React.FC<{
         />
         <TileLayer
           url="https://tiles.openseamap.org/seamark/{z}/{x}/{y}.png"
+          referrerPolicy="strict-origin-when-cross-origin"
           maxNativeZoom={18}
           maxZoom={23}
           noWrap
