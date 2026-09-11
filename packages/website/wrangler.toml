@@ -1,5 +1,5 @@
 name = "lol-import"
-compatibility_date = "2024-04-18"
+compatibility_date = "2026-09-08"
 kv_namespaces = [
     { binding = "KV_STORE", id = "5445b144a0674b648dcad748d073b248" }
 ]
