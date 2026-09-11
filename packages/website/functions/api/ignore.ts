@@ -1,7 +1,8 @@
+/* eslint-disable unicorn/prefer-response-static-json */
 import { configure, getUser } from 'osm-api';
 import { z } from 'zod';
+import type { IgnoreFile, IgnoreInfo } from '@lol-import/parser';
 import type { Handler } from '../_helpers/types.def';
-import type { IgnoreFile, IgnoreInfo } from '../../../parser/src/helpers/types';
 
 async function safely<T>(f: () => T | Promise<T>): Promise<T | undefined> {
   try {

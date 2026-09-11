@@ -16,8 +16,8 @@ export function parseName(name: string) {
   }
 
   const cleanedName = name
-    .split(',')[0]
-    .split('.')[0]
+    .split(',', 1)[0]
+    .split('.', 1)[0]
     // remove all known tokens
     .replaceAll(reTokens, '')
     // splitting at the comma and dot automatically

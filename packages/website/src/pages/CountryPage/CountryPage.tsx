@@ -10,10 +10,10 @@ import {
   Title,
 } from '@mantine/core';
 import { IconAlertHexagon } from '@tabler/icons-react';
+import type { Stats } from '@lol-import/parser';
 import { DataContext } from '../../context/DataContext';
 import { getCountryName, locale, t } from '../../i18n';
 import { StatsBar, getTotal } from '../../components/StatsBar';
-import type { Stats } from '../../../../parser/src/helpers/types';
 import 'leaflet/dist/leaflet.css';
 import { getListIcon } from '../../components/icons';
 import { createBbox } from '../../helpers/geo';
@@ -53,7 +53,7 @@ const InnerCountryPage: React.FC<{
       />
       <List spacing="xs" size="sm" center mt={32}>
         {Object.entries(data)
-          .sort(([, a], [, b]) =>
+          .toSorted(([, a], [, b]) =>
             (a.tags['seamark:name'] || 'Z').localeCompare(
               b.tags['seamark:name'] || 'Z',
             ),

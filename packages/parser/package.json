@@ -1,7 +1,10 @@
 {
+  "name": "@lol-import/parser",
+  "private": true,
+  "types": "./src/index.def.ts",
   "scripts": {
     "start": "tsx src",
-    "lint": "tsc && eslint src",
+    "typecheck": "tsc",
     "test": "vitest"
   },
   "dependencies": {
@@ -12,24 +15,9 @@
   },
   "devDependencies": {
     "@types/node": "^20.11.28",
-    "eslint": "^8.57.0",
-    "eslint-config-kyle": "^19.6.1",
-    "osm-api": "^3.0.0-beta",
+    "osm-api": "catalog:",
     "tsx": "^4.7.1",
-    "typescript": "^5.4.2",
+    "typescript": "catalog:",
     "vitest": "^1.4.0"
-  },
-  "eslintConfig": {
-    "extends": "kyle",
-    "rules": {
-      "no-param-reassign": 0,
-      "@typescript-eslint/no-dynamic-delete": 0
-    },
-    "settings": {
-      "jest": {
-        "version": 29
-      }
-    }
-  },
-  "prettier": "eslint-config-kyle/prettier"
+  }
 }

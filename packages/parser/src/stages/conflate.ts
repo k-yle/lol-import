@@ -53,7 +53,7 @@ export function conflateTags(expected: Tags, actual: Tags): Tags {
     // special case: sequence is valid in reverse if it only has 2 parts
     if (key === 'seamark:light:sequence') {
       const existing = actual[key]?.split('+');
-      const existingReversed = existing?.reverse().join('+');
+      const existingReversed = existing?.toReversed().join('+');
       if (existing?.length === 2 && existingReversed === expected[key]) {
         continue;
       }

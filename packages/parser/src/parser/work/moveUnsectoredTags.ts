@@ -15,7 +15,7 @@ export function moveUnsectoredTags(tags: Tags) {
     // we know there are some sectored tags.
     const unsectoredKeys = Object.keys(tags).filter(isUnsectoredLightTag);
     for (const key of unsectoredKeys) {
-      const subKey = key.split(':')[2];
+      const subKey = key.split(':', 3)[2];
       if (!ALLOW_CLONE.has(subKey)) {
         throw new Error(`Not allowed to clone ${key}`);
       }

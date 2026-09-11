@@ -5,7 +5,7 @@ import {
 } from '../parseCharacteristics';
 import type { LolFeature, Warning } from '../../../helpers/types';
 
-describe('parseCharacteristics', () => {
+describe(parseCharacteristics, () => {
   it.each<[string, Characteric[]]>([
     ['Period 1.23s', [{ type: 'period', seconds: 1.23 }]],
     [

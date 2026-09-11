@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { duplicateLightTags } from '../duplicateLightTags';
 
-describe('duplicateLightTags', () => {
+describe(duplicateLightTags, () => {
   it('can duplicate simple` light tags', () => {
     const tags = {
       'seamark:something': 'a',

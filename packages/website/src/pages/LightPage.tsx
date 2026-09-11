@@ -31,9 +31,9 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { LIGHT_CHARACTERISTICS } from 'light-characteristics';
 import { useLocalStorage } from '@mantine/hooks';
 import TimeAgo from 'react-timeago-i18n';
+import type { FELight } from '@lol-import/parser';
 import { DataContext } from '../context/DataContext';
 import { getCountryName, t } from '../i18n';
-import type { FELight } from '../../../parser/src/helpers/types';
 import { TagDiff, tagsToString } from '../components/TagDiff';
 import { reëncodeLight } from '../helpers/reëncodeLight';
 import { APP_NAME } from '../helpers/constants';
@@ -144,7 +144,7 @@ function renderValue(key: string, value: string) {
       <Flex align="center" gap={4}>
         {value.split(';').map((colour, index) => (
           <ColorSwatch
-            // eslint-disable-next-line react/no-array-index-key
+            // eslint-disable-next-line @eslint-react/no-array-index-key
             key={colour + index}
             size={rem(14)}
             color={colour}
@@ -388,7 +388,7 @@ export const InnerLightPage: React.FC<{
         <Table>
           <Table.Tbody>
             {Object.entries(light.tags)
-              .sort(([a], [b]) => b.localeCompare(a))
+              .toSorted(([a], [b]) => b.localeCompare(a))
               .map(([key, value]) => (
                 <Table.Tr key={key}>
                   <Table.Th>

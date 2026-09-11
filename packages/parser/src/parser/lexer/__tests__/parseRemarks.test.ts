@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { type Remark, parseRemarks } from '../parseRemarks';
 import type { LolFeature, Warning } from '../../../helpers/types';
 
-describe('parseRemarks', () => {
+describe(parseRemarks, () => {
   describe('fog signals', () => {
     it.each`
       group   | period    | category     | sequence                 | remarks

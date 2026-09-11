@@ -3,7 +3,7 @@ import type { Tags } from 'osm-api';
 import { getHighestSector, mergeLights } from '../merge';
 import type { FELight, LolFeature } from '../../helpers/types';
 
-describe('getHighestSector', () => {
+describe(getHighestSector, () => {
   it.each<[number, Tags]>([
     [0, {}],
     [0, { 'seamark:light:colour': 'green' }],
@@ -24,7 +24,7 @@ describe('getHighestSector', () => {
 const partialMock = (lx: Partial<FELight>) =>
   <FELight>{ warnings: [], orig: {}, tags: {}, ...lx };
 
-describe('mergeLights', () => {
+describe(mergeLights, () => {
   describe('orig', () => {
     it('can merge the original data', () => {
       expect(

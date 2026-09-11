@@ -12,9 +12,9 @@ export function tokeniser<T>(
   /** we chop out parts of this string until there's nothing left that we understand */
   let workingString = original;
 
-  function removeFromWorkingString(subString: string) {
+  function removeFromWorkingString(substring: string) {
     workingString = workingString
-      .replace(subString, '')
+      .replace(substring, '')
       .replaceAll(/(^[\n ,.]+|[\n ,.]+$)/g, ''); // like String#trim, but includes punctuation
   }
 
@@ -24,7 +24,7 @@ export function tokeniser<T>(
   const output: T[] = [];
 
   let lastIteration: string | undefined;
-  // eslint-disable-next-line no-constant-condition
+
   while (true) {
     // if nothing has changed in the last iteration, then we're done
     if (lastIteration === workingString) break;

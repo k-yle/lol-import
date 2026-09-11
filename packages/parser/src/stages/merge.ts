@@ -14,7 +14,7 @@ export const getHighestSector = (tags: Tags) =>
     .map((key) => key.match(SECTOR_KEY_REGEX)?.groups?.sector)
     .filter(isTruthy)
     .map(Number)
-    .sort((a, b) => b - a)[0] || 0;
+    .toSorted((a, b) => b - a)[0] || 0;
 
 /**
  * The LOL dataset has several lights with the same ID,

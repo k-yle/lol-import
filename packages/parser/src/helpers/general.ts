@@ -19,7 +19,7 @@ export const deleteUndefinedKeys = <T>(object: T): T => {
 export function sortObject<T extends Record<string, unknown>>(object: T): T {
   return <T>(
     Object.fromEntries(
-      Object.entries(object).sort(([a], [b]) => a.localeCompare(b)),
+      Object.entries(object).toSorted(([a], [b]) => a.localeCompare(b)),
     )
   );
 }

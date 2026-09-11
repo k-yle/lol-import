@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { generateOsmTags } from '../generateOsmTags';
 import type { LolFeature } from '../../helpers/types';
 
-describe('generateOsmTags', () => {
+describe(generateOsmTags, () => {
   it('splits the multi-light and uses the correct height and range per lamp', () => {
     const light: LolFeature = {
       volumeNumber: 'PUB 114',

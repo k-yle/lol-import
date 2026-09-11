@@ -135,13 +135,13 @@ const reAdjectives = [
   ...JUNK_ADJECTIVES,
 ].join('|');
 
-const reJunkTokens = new RegExp(`\\b(${JUNK_TOKENS.join('|')})\\b`);
+const reJunkTokens = new RegExp(String.raw`\b(${JUNK_TOKENS.join('|')})\b`);
 
 const unparsableStructureLines: Record<string, number> = {};
 
 export const getUnparsableStructureLines = () =>
   Object.entries(unparsableStructureLines)
-    .sort((a, b) => b[1] - a[1])
+    .toSorted((a, b) => b[1] - a[1])
     .map((line) => line.join('\t').replaceAll('\n', '⏎'))
     .join('\n');
 
@@ -328,13 +328,15 @@ export function parseStructure(
       const topmarkMatch =
         workingString.match(
           new RegExp(
-            `(?<prefix>((${reAdjectives}) )*)(top|day)mark(?<suffix> points? (up|down))?(, (?<stripes>((${reAdjectives}) )*)(stripes?))?\\b`,
+            String.raw`(?<prefix>((${reAdjectives}) )*)(top|day)mark(?<suffix> points? (up|down))?(, (?<stripes>((${reAdjectives}) )*)(stripes?))?\b`,
           ),
         ) ||
         // sometimes, "x" is written without the word "topmark", because
         // it's so well-understood.
         workingString.match(
-          new RegExp(`\\b(?<prefix>((${reAdjectives}) )*)(?<suffix>"x")`),
+          new RegExp(
+            String.raw`\b(?<prefix>((${reAdjectives}) )*)(?<suffix>"x")`,
+          ),
         );
       if (topmarkMatch) {
         const type = topmarkMatch[0].includes('daymark')
@@ -386,7 +388,7 @@ export function parseStructure(
 
       // this should come towards the end.
       const shapeMatch = workingString.match(
-        new RegExp(`\\b(((${reAdjectives}) )*)(${reNouns})\\b`),
+        new RegExp(String.raw`\b(((${reAdjectives}) )*)(${reNouns})\b`),
       );
       if (shapeMatch) {
         const adjectives = shapeMatch[1].trim().split(' ');
@@ -440,7 +442,7 @@ export function parseStructure(
       // to the topmark or the structure.
       const bandMatch = workingString.match(
         new RegExp(
-          `\\b(((${reAdjectives}) )*)(?<bandOrStripe>band|stripe)(s|ed|d)?\\b`,
+          String.raw`\b(((${reAdjectives}) )*)(?<bandOrStripe>band|stripe)(s|ed|d)?\b`,
         ),
       );
       if (bandMatch) {

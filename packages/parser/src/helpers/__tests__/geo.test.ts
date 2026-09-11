@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { parseCoords } from '../geo';
 
-describe('parseCoords', () => {
+describe(parseCoords, () => {
   it.each`
     input                                | lat         | lon
     ${'20°56\'09.24"S \n55°16\'56.64"E'} | ${-20.9359} | ${55.2824}

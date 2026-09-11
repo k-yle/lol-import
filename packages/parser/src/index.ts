@@ -86,7 +86,7 @@ async function main() {
 
   const allIDsInLOL = new Set<string>();
 
-  const timestampNoTime = lolData.timestamp.split('T')[0]; // date only
+  const timestampNoTime = lolData.timestamp.split('T', 1)[0]; // date only
 
   const stats: StatsFile = {
     timestamp: lolData.timestamp,

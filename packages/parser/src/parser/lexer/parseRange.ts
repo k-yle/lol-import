@@ -44,8 +44,7 @@ export function parseRange(
 
       // if that fails, try to parse as an object
       return s.match(/^ *(?<char>[a-z]+)\.? +(?<range>[\d.]+) *$/i)?.groups as
-        | { char: string; range: string }
-        | undefined;
+        { char: string; range: string } | undefined;
     })
     .filter((x) => x !== null); // null is okay, undefined is a bad thing
 

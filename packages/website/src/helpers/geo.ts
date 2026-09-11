@@ -1,4 +1,4 @@
-import type { LatLon } from '../../../parser/src/helpers/types';
+import type { LatLon } from '@lol-import/parser';
 
 export function createBbox(data: LatLon[]) {
   let [minLat, maxLat, minLon, maxLon] = [

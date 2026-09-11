@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { createDiffHash } from '../createDiffHash';
 
-describe('createDiffHash', () => {
+describe(createDiffHash, () => {
   it('produces a consistent hash', () => {
     expect(createDiffHash({}, {})).toBe('');
     expect(createDiffHash({ a: '1' }, { a: '2' })).toBe('af3393');

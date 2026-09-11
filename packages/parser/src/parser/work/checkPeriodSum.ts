@@ -15,7 +15,7 @@ export function checkPeriodSum(tags: Tags, warnings: Warning[]) {
       if (period !== sequenceSum) {
         warnings.push({
           type: 'period_sum',
-          value: `The ${key.split(':')[1]} sequence “${tags[sequenceKey]}” does not add up to ${period}.`,
+          value: `The ${key.split(':', 2)[1]} sequence “${tags[sequenceKey]}” does not add up to ${period}.`,
         });
       }
     }

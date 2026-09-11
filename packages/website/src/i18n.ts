@@ -10,7 +10,7 @@ export function getDefaultLanguage(): SupportedLanguage {
   return (
     navigator.languages
       // strip out the country code to get just the language
-      .map((fullLocale) => fullLocale.split('-')[0])
+      .map((fullLocale) => fullLocale.split('-', 1)[0])
       // if the user has multiple system languages, find the first one we support
       .find((lang): lang is SupportedLanguage => lang in translations) || 'en'
   );
@@ -31,7 +31,7 @@ export const i18nReady = (async () => {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- literally anything is allowed
 export const t = (id: string, values?: Record<string, any>) =>
-  intl.formatMessage({ id }, values);
+  intl.formatMessage({ id }, values) as string;
 
 const COUNTRY_NAMES = new Intl.DisplayNames(locale, {
   type: 'region',

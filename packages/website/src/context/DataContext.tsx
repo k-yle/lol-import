@@ -8,7 +8,7 @@ import {
 } from 'react';
 import { Alert } from '@mantine/core';
 import { IconAlertHexagon } from '@tabler/icons-react';
-import type { FullFile, StatsFile } from '../../../parser/src/helpers/types';
+import type { FullFile, StatsFile } from '@lol-import/parser';
 import { useRefState } from '../hooks/useRefState';
 import { t } from '../i18n';
 
@@ -27,6 +27,7 @@ const CDN_URL =
     : 'https://cdn.list.lighting';
 
 export const DataContext = createContext({} as IDataContext);
+DataContext.displayName = 'DataContext';
 
 export const DataWrapper: React.FC<PropsWithChildren> = ({ children }) => {
   const [indexFile, setIndexFile] = useState<StatsFile>();
@@ -35,6 +36,7 @@ export const DataWrapper: React.FC<PropsWithChildren> = ({ children }) => {
   const [error, setError] = useState<unknown>();
 
   useEffect(() => {
+    // eslint-disable-next-line @eslint-react/web-api-no-leaked-fetch
     fetch(`${CDN_URL}/stats.json`)
       .then((r) => r.json())
       .then(setIndexFile)

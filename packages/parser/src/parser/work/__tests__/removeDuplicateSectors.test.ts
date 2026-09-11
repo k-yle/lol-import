@@ -6,7 +6,7 @@ import {
 } from '../removeDuplicateSectors';
 import type { FELight, Warning } from '../../../helpers/types';
 
-describe('deleteSector', () => {
+describe(deleteSector, () => {
   it('works', () => {
     expect(
       deleteSector(
@@ -29,7 +29,7 @@ describe('deleteSector', () => {
   });
 });
 
-describe('reshuffleSectors', () => {
+describe(reshuffleSectors, () => {
   it('fills up the gaps of sectors', () => {
     expect(
       reshuffleSectors({
@@ -63,7 +63,7 @@ describe('reshuffleSectors', () => {
   });
 });
 
-describe('removeDuplicateSectors', () => {
+describe(removeDuplicateSectors, () => {
   it('works', () => {
     const warnings: Warning[] = [];
     const light: Partial<FELight> = {

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { conflateTags } from '../conflate';
 
-describe('conflateTags', () => {
+describe(conflateTags, () => {
   it('replaces generic buoy/beacon tags with the value from osm', () => {
     const expeced = {
       'seamark:type': 'beacon',

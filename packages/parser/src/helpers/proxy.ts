@@ -71,6 +71,7 @@ export const proxyTags = (tags: Tags, warnings: Warning[]) => {
 
 // we have to use stringify, because structuredClone doesn't work on proxied objects
 export const stripProxy = (proxiedTags: Tags): Tags =>
+  // eslint-disable-next-line unicorn/prefer-structured-clone -- see comment above
   JSON.parse(JSON.stringify(proxiedTags));
 
 /**

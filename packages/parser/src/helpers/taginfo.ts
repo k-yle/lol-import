@@ -13,7 +13,7 @@ export function generateTagInfoFile() {
     .replaceAll(/[:-]|(\.\d+)/g, '');
 
   (<unknown[]>template.tags) = Object.keys(EVERY_KEY)
-    .sort((a, b) => a.localeCompare(b))
+    .toSorted((a, b) => a.localeCompare(b))
     .map((key) => {
       const values = Object.keys(EVERY_KEY[key]);
       return {

@@ -11,7 +11,7 @@ const unparsableCharactericLines: Record<string, number> = {};
 
 export const getUnparsableCharactericLines = () =>
   Object.entries(unparsableCharactericLines)
-    .sort((a, b) => b[1] - a[1])
+    .toSorted((a, b) => b[1] - a[1])
     .map((line) => line.join('\t'))
     .join('\n');
 

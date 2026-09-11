@@ -30,7 +30,7 @@ AuthContext.displayName = 'AuthContext';
 
 export const AuthWrapper: React.FC<PropsWithChildren> = ({ children }) => {
   const [loading, setLoading] = useState(false);
-  const [loggedIn, setLoggedIn] = useState(isLoggedIn());
+  const [loggedIn, setLoggedIn] = useState(isLoggedIn);
   const [user, setUser] = useState<OsmOwnUser>();
 
   const login = useCallback(async () => {

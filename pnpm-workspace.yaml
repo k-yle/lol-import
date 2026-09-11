@@ -1,0 +1,12 @@
+packages:
+  - 'packages/*'
+
+allowBuilds:
+  esbuild: true
+  sharp: true
+  unrs-resolver: true
+  workerd: true
+
+catalog:
+  'osm-api': ^3.0.0-beta
+  'typescript': ^6.0.0

@@ -1,14 +1,11 @@
 {
+  "extends": "eslint-config-kyle/tsconfig.base.json",
   "compilerOptions": {
-    "lib": ["dom", "es2023"],
-    "strict": true,
-    "noEmit": true,
-    "skipLibCheck": true,
-    "downlevelIteration": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "jsx": "react-jsx"
+    "lib": ["dom", "esnext"],
+    "noUncheckedIndexedAccess": false,
+    "noPropertyAccessFromIndexSignature": false,
+    "types": ["vite/client"]
   },
   "exclude": ["functions/**/*"],
-  "include": ["src"]
+  "include": ["src", "**/*.json"]
 }

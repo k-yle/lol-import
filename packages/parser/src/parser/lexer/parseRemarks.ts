@@ -7,8 +7,8 @@ const unparsableRemarks: Record<string, number> = {};
 
 export const getUnparsableRemarks = () =>
   Object.entries(unparsableRemarks)
-    .sort((a, b) => b[1] - a[1])
-    .map((line) => line.reverse().join('\t'))
+    .toSorted((a, b) => b[1] - a[1])
+    .map((line) => line.toReversed().join('\t'))
     .join('\n');
 
 export type Sector = {

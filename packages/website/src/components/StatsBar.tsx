@@ -1,5 +1,5 @@
 import { Progress, Tooltip } from '@mantine/core';
-import type { Stats, Verdict } from '../../../parser/src/helpers/types';
+import type { Stats, Verdict } from '@lol-import/parser';
 import { locale, t } from '../i18n';
 
 const SECTIONS: Partial<Record<Verdict, [colour: string, label: string]>> = {

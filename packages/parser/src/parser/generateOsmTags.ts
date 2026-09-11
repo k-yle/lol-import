@@ -40,7 +40,7 @@ export function generateOsmTags(
   const warnings: Warning[] = [];
   const tags = proxyTags({}, warnings);
 
-  const standardId = light.featureNumber.split('\n')[1];
+  const standardId = light.featureNumber.split('\n', 2)[1];
 
   const ialaId = (standardId || `X${light.featureNumber}`)
     // add space after the first letter
@@ -336,7 +336,7 @@ export function generateOsmTags(
   splitMultiLights(tags, warnings, { lensHeight, range });
 
   // remove double spaces
-  tags['seamark:information'] = tags['seamark:information']?.replace(
+  tags['seamark:information'] = tags['seamark:information']?.replaceAll(
     / +/g,
     ' ',
   );

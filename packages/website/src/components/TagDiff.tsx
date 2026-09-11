@@ -1,21 +1,20 @@
 import { useMemo } from 'react';
 import Diff from 'react-diff-viewer-continued';
-import type { FELight } from '../../../parser/src/helpers/types';
+import type { FELight } from '@lol-import/parser';
 
 export type Tags = Record<string, string | null>;
 
 export const tagsToString = (tags: Tags) =>
   Object.entries(tags)
-    .sort(([a], [b]) => b.localeCompare(a))
+    .toSorted(([a], [b]) => b.localeCompare(a))
     .filter(([, v]) => !!v)
-    .map(([k, v]) => `${k}=${v!.replaceAll('\n', '\\n')}`)
+    .map(([k, v]) => `${k}=${v!.replaceAll('\n', String.raw`\n`)}`)
     .join('\n');
 
 export const TagDiff: React.FC<{ light: FELight }> = ({ light }) => {
   const newTags = useMemo(() => {
     const out = { ...light.osm!.currentTags };
     for (const [key, value] of Object.entries(light.osm!.diff)) {
-      // eslint-disable-next-line @typescript-eslint/no-dynamic-delete
       if (value === '🗑️') delete out[key];
       out[key] = value;
     }

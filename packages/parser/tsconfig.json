@@ -1,12 +1,9 @@
 {
+  "extends": "eslint-config-kyle/tsconfig.base.json",
   "compilerOptions": {
-    "lib": ["esnext"],
-    "strict": true,
-    "noEmit": true,
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "downlevelIteration": true,
-    "skipLibCheck": true
+    "types": ["node"],
+    "noUncheckedIndexedAccess": false,
+    "noPropertyAccessFromIndexSignature": false
   },
-  "include": ["src"]
+  "include": ["src", "src/**/*.json"]
 }

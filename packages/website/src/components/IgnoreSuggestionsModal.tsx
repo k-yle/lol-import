@@ -2,7 +2,7 @@ import { useContext, useState } from 'react';
 import { Alert, Button, Modal, TextInput } from '@mantine/core';
 import { IconAlertTriangle, IconCheck } from '@tabler/icons-react';
 import { getAuthToken } from 'osm-api';
-import type { FELight } from '../../../parser/src/helpers/types';
+import type { FELight } from '@lol-import/parser';
 import { t } from '../i18n';
 import { AuthContext } from '../context/AuthContext';
 

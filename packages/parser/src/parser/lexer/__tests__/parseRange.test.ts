@@ -4,11 +4,13 @@ import type { Warning } from '../../../helpers/types';
 import type { Sector } from '../parseRemarks';
 
 const createSectors = (...characteristics: string[]) =>
-  characteristics.map(
-    (c): Sector => ({ start: 0, end: 0, characteristics: c }),
-  );
+  characteristics.map((c): Sector => ({
+    start: 0,
+    end: 0,
+    characteristics: c,
+  }));
 
-describe('parseRange', () => {
+describe(parseRange, () => {
   it.each`
     input             | output         | expectedWarnings
     ${''}             | ${[]}          | ${[]}

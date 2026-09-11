@@ -5,7 +5,7 @@ import {
   type LightCharacteristic,
   encodeLight,
 } from 'light-characteristics';
-import type { FELight } from '../../../parser/src/helpers/types';
+import type { FELight } from '@lol-import/parser';
 
 /**
  * Converts the OSM tags back into a compressed light

@@ -27,7 +27,7 @@ export const ChangeLanguageInput: React.FC = () => {
         label:
           code === DEFAULT
             ? t('ChangeLanguageInput.placeholder')
-            : languageNames.of(code),
+            : languageNames.of(code)!,
       }))}
     />
   );

@@ -5,7 +5,7 @@ import {
   IconCheck,
 } from '@tabler/icons-react';
 import { Icon } from 'leaflet';
-import type { Verdict } from '../../../parser/src/helpers/types';
+import type { Verdict } from '@lol-import/parser';
 
 export const MAP_ICONS = {
   GREEN: new Icon({

@@ -3,7 +3,7 @@ import { MapContainer, Marker, ScaleControl, TileLayer } from 'react-leaflet';
 import MarkerClusterGroup from 'react-leaflet-cluster';
 import { Drawer } from '@mantine/core';
 import { useLocation, useNavigate } from 'react-router-dom';
-import type { FullFile, LatLon } from '../../../../parser/src/helpers/types';
+import type { FullFile, LatLon } from '@lol-import/parser';
 import { InnerLightPage } from '../LightPage';
 import { MAP_ICONS } from '../../components/icons';
 import { DataContext } from '../../context/DataContext';
