@@ -41,10 +41,11 @@ export function generateOsmTags(
   const tags = proxyTags({}, warnings);
 
   const standardId = light.featureNumber.split('\n', 2)[1];
+  const volume = light.volumeNumber.replaceAll(/\D/g, '');
 
-  const ialaId = (standardId || `X${light.featureNumber}`)
-    // add space after the first letter
-    .replace(/^([A-Z])/, '$1 ');
+  const ialaId = standardId
+    ? standardId.replace(/^([A-Z])/, '$1 ') // add space after the first letter
+    : `X${volume}-${light.featureNumber}`;
 
   if (!ialaId) {
     throw new Error(`Could not parse ID: “${light.featureNumber}”`);
