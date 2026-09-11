@@ -1,11 +1,11 @@
 import type { Tags } from 'osm-api';
-import type { FELight, Warning } from '../helpers/types';
+import type { FELight, Warning } from '../helpers/types.js';
 import {
   duplicateLightTags,
   isLightTag,
   isUnsectoredLightTag,
-} from '../helpers/duplicateLightTags';
-import { isTruthy, sortObject } from '../helpers/general';
+} from '../helpers/duplicateLightTags.js';
+import { isTruthy, sortObject } from '../helpers/general.js';
 
 const SECTOR_KEY_REGEX = /seamark:light:(?<sector>\d+):/;
 

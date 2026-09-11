@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import type { Tags } from 'osm-api';
-import { getHighestSector, mergeLights } from '../merge';
-import type { FELight, LolFeature } from '../../helpers/types';
+import { getHighestSector, mergeLights } from '../merge.js';
+import type { FELight, LolFeature } from '../../helpers/types.js';
 
 describe(getHighestSector, () => {
   it.each<[number, Tags]>([

@@ -1,8 +1,13 @@
 import { promises as fs } from 'node:fs';
 import { join } from 'node:path';
-import { USER_AGENT, ignoreFile, lolFile, osmFile } from '../helpers/constants';
-import type { IgnoreFile, LolFile, OsmFile } from '../helpers/types';
-import { BASE_URL } from '../helpers/taginfo';
+import {
+  USER_AGENT,
+  ignoreFile,
+  lolFile,
+  osmFile,
+} from '../helpers/constants.js';
+import type { IgnoreFile, LolFile, OsmFile } from '../helpers/types.js';
+import { BASE_URL } from '../helpers/taginfo.js';
 
 export async function loadLolFile() {
   try {
@@ -32,7 +37,7 @@ export async function loadOsmFile() {
   } catch {
     console.log('Fetching data from overpass...');
     const query = await fs.readFile(
-      join(__dirname, '../query.overpassql'),
+      join(import.meta.dirname, '../query.overpassql'),
       'utf8',
     );
     const fetched = await fetch(

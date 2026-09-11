@@ -1,5 +1,5 @@
 import { countries as COUNTRIES_DB, type TCountryCode } from 'countries-list';
-import type { LatLon } from './types';
+import type { LatLon } from './types.js';
 
 interface DMS {
   d: number;

@@ -1,5 +1,5 @@
 import type { Tags } from 'osm-api';
-import type { Warning } from './types';
+import type { Warning } from './types.js';
 
 /** every tag that this project sets, and its count */
 export const EVERY_KEY: { [key: string]: { [value: string]: number } } = {};

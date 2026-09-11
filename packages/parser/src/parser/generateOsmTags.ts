@@ -1,22 +1,26 @@
 import { COLOURS, type Light } from 'light-characteristics';
 import type { Tags } from 'osm-api';
-import type { LolFeature, Warning } from '../helpers/types';
-import { IALA_B } from '../helpers/constants';
-import { deleteUndefinedKeys, isTruthy, sortObject } from '../helpers/general';
-import { proxyTags, stripProxy } from '../helpers/proxy';
-import { appendToTag } from '../helpers/tags';
+import type { LolFeature, Warning } from '../helpers/types.js';
+import { IALA_B } from '../helpers/constants.js';
+import {
+  deleteUndefinedKeys,
+  isTruthy,
+  sortObject,
+} from '../helpers/general.js';
+import { proxyTags, stripProxy } from '../helpers/proxy.js';
+import { appendToTag } from '../helpers/tags.js';
 import {
   parseCharacteristicForSector,
   parseCharacteristics,
-} from './lexer/parseCharacteristics';
-import { type Sector, parseRemarks } from './lexer/parseRemarks';
-import { type Structure, parseStructure } from './lexer/parseStructure';
-import { parseName } from './lexer/parseName';
-import { checkPeriodSum } from './work/checkPeriodSum';
-import { moveUnsectoredTags } from './work/moveUnsectoredTags';
-import { splitMultiLights } from './work/splitMultiLights';
-import { parseLensHeight } from './lexer/parseLensHeight';
-import { parseRange } from './lexer/parseRange';
+} from './lexer/parseCharacteristics.js';
+import { type Sector, parseRemarks } from './lexer/parseRemarks.js';
+import { type Structure, parseStructure } from './lexer/parseStructure.js';
+import { parseName } from './lexer/parseName.js';
+import { checkPeriodSum } from './work/checkPeriodSum.js';
+import { moveUnsectoredTags } from './work/moveUnsectoredTags.js';
+import { splitMultiLights } from './work/splitMultiLights.js';
+import { parseLensHeight } from './lexer/parseLensHeight.js';
+import { parseRange } from './lexer/parseRange.js';
 
 const CATEGORY_TYPES = new Set<Structure['type']>([
   'cardinal',

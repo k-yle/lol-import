@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest';
 import {
   type Characteric,
   parseCharacteristics,
-} from '../parseCharacteristics';
-import type { LolFeature, Warning } from '../../../helpers/types';
+} from '../parseCharacteristics.js';
+import type { LolFeature, Warning } from '../../../helpers/types.js';
 
 describe(parseCharacteristics, () => {
   it.each<[string, Characteric[]]>([

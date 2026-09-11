@@ -4,8 +4,8 @@ import {
   type Light,
   decodeLight,
 } from 'light-characteristics';
-import type { LolFeature, Warning } from '../../helpers/types';
-import { isTruthy } from '../../helpers/general';
+import type { LolFeature, Warning } from '../../helpers/types.js';
+import { isTruthy } from '../../helpers/general.js';
 
 const unparsableCharactericLines: Record<string, number> = {};
 

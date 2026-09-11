@@ -1,6 +1,6 @@
-import { deleteUndefinedKeys, isTruthy } from '../../helpers/general';
-import { tokeniser } from '../../helpers/tokeniser';
-import type { Warning } from '../../helpers/types';
+import { deleteUndefinedKeys, isTruthy } from '../../helpers/general.js';
+import { tokeniser } from '../../helpers/tokeniser.js';
+import type { Warning } from '../../helpers/types.js';
 
 const SHAPES: Record<
   'beacon' | 'buoy',

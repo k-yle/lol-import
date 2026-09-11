@@ -1,6 +1,6 @@
 import type { Tags } from 'osm-api';
-import { getHighestSector } from '../../stages/merge';
-import { isUnsectoredLightTag } from '../../helpers/duplicateLightTags';
+import { getHighestSector } from '../../stages/merge.js';
+import { isUnsectoredLightTag } from '../../helpers/duplicateLightTags.js';
 
 const ALLOW_CLONE = new Set(['exhibition', 'category']);
 

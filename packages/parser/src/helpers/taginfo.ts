@@ -1,5 +1,5 @@
-import { EVERY_KEY } from './proxy';
-import template from './taginfo_template.json';
+import { EVERY_KEY } from './proxy.js';
+import template from './taginfo_template.json' with { type: 'json' };
 
 export const BASE_URL = new URL(template.project.icon_url).origin;
 export const API_BASE_URL = new URL(template.data_url).origin;

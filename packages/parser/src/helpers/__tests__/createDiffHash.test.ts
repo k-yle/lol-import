@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createDiffHash } from '../createDiffHash';
+import { createDiffHash } from '../createDiffHash.js';
 
 describe(createDiffHash, () => {
   it('produces a consistent hash', () => {

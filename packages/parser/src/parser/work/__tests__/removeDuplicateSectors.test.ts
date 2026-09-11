@@ -3,8 +3,8 @@ import {
   deleteSector,
   removeDuplicateSectors,
   reshuffleSectors,
-} from '../removeDuplicateSectors';
-import type { FELight, Warning } from '../../../helpers/types';
+} from '../removeDuplicateSectors.js';
+import type { FELight, Warning } from '../../../helpers/types.js';
 
 describe(deleteSector, () => {
   it('works', () => {

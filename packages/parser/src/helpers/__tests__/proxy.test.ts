@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { allowOverride, proxyTags } from '../proxy';
-import type { Warning } from '../types';
+import { allowOverride, proxyTags } from '../proxy.js';
+import type { Warning } from '../types.js';
 
 describe('proxy', () => {
   it('emits a warning when tags are overriden', () => {

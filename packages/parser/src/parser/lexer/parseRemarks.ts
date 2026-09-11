@@ -1,7 +1,7 @@
 import type { Tags } from 'osm-api';
-import type { LolFeature, Warning } from '../../helpers/types';
-import { capitalise, isTruthy } from '../../helpers/general';
-import { tokeniser } from '../../helpers/tokeniser';
+import type { LolFeature, Warning } from '../../helpers/types.js';
+import { capitalise, isTruthy } from '../../helpers/general.js';
+import { tokeniser } from '../../helpers/tokeniser.js';
 
 const unparsableRemarks: Record<string, number> = {};
 

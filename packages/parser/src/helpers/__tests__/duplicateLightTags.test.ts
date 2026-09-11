@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { duplicateLightTags } from '../duplicateLightTags';
+import { duplicateLightTags } from '../duplicateLightTags.js';
 
 describe(duplicateLightTags, () => {
   it('can duplicate simple` light tags', () => {

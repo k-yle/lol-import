@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { type Remark, parseRemarks } from '../parseRemarks';
-import type { LolFeature, Warning } from '../../../helpers/types';
+import { type Remark, parseRemarks } from '../parseRemarks.js';
+import type { LolFeature, Warning } from '../../../helpers/types.js';
 
 describe(parseRemarks, () => {
   describe('fog signals', () => {

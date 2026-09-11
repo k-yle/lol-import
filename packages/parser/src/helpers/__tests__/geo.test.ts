@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { parseCoords } from '../geo';
+import { parseCoords } from '../geo.js';
 
 describe(parseCoords, () => {
   it.each`

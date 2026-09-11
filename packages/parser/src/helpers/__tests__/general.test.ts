@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { pick, removeTrailingZeros } from '../general';
+import { pick, removeTrailingZeros } from '../general.js';
 
 describe('removeTrailing', () => {
   it.each`

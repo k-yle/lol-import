@@ -1,5 +1,5 @@
 import type { Tags } from 'osm-api';
-import type { Warning } from '../../helpers/types';
+import type { Warning } from '../../helpers/types.js';
 
 /**  sanity check that the period = ∑ of the sequence */
 export function checkPeriodSum(tags: Tags, warnings: Warning[]) {

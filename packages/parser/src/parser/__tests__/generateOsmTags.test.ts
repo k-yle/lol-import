@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { generateOsmTags } from '../generateOsmTags';
-import type { LolFeature } from '../../helpers/types';
+import { generateOsmTags } from '../generateOsmTags.js';
+import type { LolFeature } from '../../helpers/types.js';
 
 describe(generateOsmTags, () => {
   it('splits the multi-light and uses the correct height and range per lamp', () => {

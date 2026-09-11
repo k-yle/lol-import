@@ -1,10 +1,10 @@
 import type { Tags } from 'osm-api';
-import { sortObject } from '../helpers/general';
+import { sortObject } from '../helpers/general.js';
 import {
   isLightTag,
   isUnsectoredLightTag,
-} from '../helpers/duplicateLightTags';
-import { getHighestSector } from './merge';
+} from '../helpers/duplicateLightTags.js';
+import { getHighestSector } from './merge.js';
 
 /**
  * Compares the expected vs actual tags, returns a diff

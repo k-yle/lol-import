@@ -1,8 +1,8 @@
 import type { Tags } from 'osm-api';
-import type { Warning } from '../../helpers/types';
-import { getHighestSector } from '../../stages/merge';
-import { duplicateLightTags } from '../../helpers/duplicateLightTags';
-import { allowOverride } from '../../helpers/proxy';
+import type { Warning } from '../../helpers/types.js';
+import { getHighestSector } from '../../stages/merge.js';
+import { duplicateLightTags } from '../../helpers/duplicateLightTags.js';
+import { allowOverride } from '../../helpers/proxy.js';
 
 /**
  * if there are multiple ranges and/or lensHeights, but only 1 light,

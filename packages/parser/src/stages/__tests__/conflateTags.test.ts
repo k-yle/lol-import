@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { conflateTags } from '../conflate';
+import { conflateTags } from '../conflate.js';
 
 describe(conflateTags, () => {
   it('replaces generic buoy/beacon tags with the value from osm', () => {

@@ -15,15 +15,15 @@ import {
   tempFolder,
   unparsableFile,
   warningsFile,
-} from './helpers/constants';
-import { getContinents, parseCoords } from './helpers/geo';
-import { loadIgnoreFile, loadLolFile, loadOsmFile } from './stages/fetch';
-import { conflateTags } from './stages/conflate';
-import { generateOsmTags } from './parser/generateOsmTags';
-import { getUnparsableCharactericLines } from './parser/lexer/parseCharacteristics';
-import { getUnparsableRemarks } from './parser/lexer/parseRemarks';
-import { getUnparsableStructureLines } from './parser/lexer/parseStructure';
-import { generateTagInfoFile } from './helpers/taginfo';
+} from './helpers/constants.js';
+import { getContinents, parseCoords } from './helpers/geo.js';
+import { loadIgnoreFile, loadLolFile, loadOsmFile } from './stages/fetch.js';
+import { conflateTags } from './stages/conflate.js';
+import { generateOsmTags } from './parser/generateOsmTags.js';
+import { getUnparsableCharactericLines } from './parser/lexer/parseCharacteristics.js';
+import { getUnparsableRemarks } from './parser/lexer/parseRemarks.js';
+import { getUnparsableStructureLines } from './parser/lexer/parseStructure.js';
+import { generateTagInfoFile } from './helpers/taginfo.js';
 import {
   type FELight,
   type FullFile,
@@ -32,11 +32,15 @@ import {
   type Verdict,
   type Warning,
   emptyStats,
-} from './helpers/types';
-import { isTruthy, removeTrailingZeros, sortObject } from './helpers/general';
-import { mergeLights } from './stages/merge';
-import { createDiffHash } from './helpers/createDiffHash';
-import { removeDuplicateSectors } from './parser/work/removeDuplicateSectors';
+} from './helpers/types.js';
+import {
+  isTruthy,
+  removeTrailingZeros,
+  sortObject,
+} from './helpers/general.js';
+import { mergeLights } from './stages/merge.js';
+import { createDiffHash } from './helpers/createDiffHash.js';
+import { removeDuplicateSectors } from './parser/work/removeDuplicateSectors.js';
 
 /** if the only thing that needs changing are these keys, then abort */
 const TRIVIAL_KEYS = new Set(['source', 'seamark:name', 'seamark:information']);

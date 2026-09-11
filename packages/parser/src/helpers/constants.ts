@@ -1,7 +1,7 @@
 import { join } from 'node:path';
 
-export const tempFolder = join(__dirname, '../../tmp');
-export const outputFolder = join(__dirname, '../../out');
+export const tempFolder = join(import.meta.dirname, '../../tmp');
+export const outputFolder = join(import.meta.dirname, '../../out');
 
 export const lolFile = join(tempFolder, 'lol.json');
 export const osmFile = join(tempFolder, 'osm.json');

@@ -1,5 +1,6 @@
 {
   "private": true,
+  "type": "module",
   "scripts": {
     "start": "wrangler pages dev --port 5124 --proxy 5123 -- npm run start-only-client",
     "start-only-client": "vite",

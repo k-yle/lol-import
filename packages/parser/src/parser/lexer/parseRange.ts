@@ -1,7 +1,7 @@
-import { isNotNaN } from '../../helpers/general';
-import type { Warning } from '../../helpers/types';
-import { parseCharacteristicForSector } from './parseCharacteristics';
-import type { Sector } from './parseRemarks';
+import { isNotNaN } from '../../helpers/general.js';
+import type { Warning } from '../../helpers/types.js';
+import { parseCharacteristicForSector } from './parseCharacteristics.js';
+import type { Sector } from './parseRemarks.js';
 
 /** either a single value, or a per-sector value */
 export function parseRange(

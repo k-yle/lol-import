@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { parseRange } from '../parseRange';
-import type { Warning } from '../../../helpers/types';
-import type { Sector } from '../parseRemarks';
+import { parseRange } from '../parseRange.js';
+import type { Warning } from '../../../helpers/types.js';
+import type { Sector } from '../parseRemarks.js';
 
 const createSectors = (...characteristics: string[]) =>
   characteristics.map((c): Sector => ({

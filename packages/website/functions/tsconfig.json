@@ -2,11 +2,11 @@
   "compilerOptions": {
     "strict": true,
     "target": "esnext",
-    "module": "node16",
+    "module": "preserve",
     "lib": ["esnext"],
     "skipLibCheck": true,
     "noEmit": true,
-    "moduleResolution": "Node16",
+    "moduleResolution": "bundler",
     "types": ["@cloudflare/workers-types"]
   }
 }

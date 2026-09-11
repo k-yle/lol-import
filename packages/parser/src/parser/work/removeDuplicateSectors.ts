@@ -1,8 +1,8 @@
 import type { Tags } from 'osm-api';
-import { mapObject, pick, sortObject } from '../../helpers/general';
-import type { FELight, Warning } from '../../helpers/types';
-import { getHighestSector } from '../../stages/merge';
-import { isLightTag } from '../../helpers/duplicateLightTags';
+import { mapObject, pick, sortObject } from '../../helpers/general.js';
+import type { FELight, Warning } from '../../helpers/types.js';
+import { getHighestSector } from '../../stages/merge.js';
+import { isLightTag } from '../../helpers/duplicateLightTags.js';
 
 export function deleteSector(tags: Tags, sectorToRemove: number) {
   return pick(

@@ -1,6 +1,7 @@
 {
   "name": "@lol-import/parser",
   "private": true,
+  "type": "module",
   "types": "./src/index.def.ts",
   "scripts": {
     "start": "tsx src",
