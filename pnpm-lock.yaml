@@ -27,8 +27,8 @@ importers:
   packages/parser:
     dependencies:
       '@osm-conflation-engine/cli':
-        specifier: ^3.6.0
-        version: 3.6.0
+        specifier: ^3.7.0
+        version: 3.7.0
       '@rapideditor/country-coder':
         specifier: ^5.2.2
         version: 5.6.1
@@ -842,8 +842,8 @@ packages:
       '@emnapi/core': ^1.7.1 || ^2.0.0-alpha.4
       '@emnapi/runtime': ^1.7.1 || ^2.0.0-alpha.4
 
-  '@osm-conflation-engine/cli@3.6.0':
-    resolution: {integrity: sha512-y3FRsAcWaHQVtrNgC582Zh85Hrc3dCTokCKLFqpIKRokpUF8N6xjHQuiw3OI1t4Fm3vsoTYkXQKbbDxaY6KvMg==}
+  '@osm-conflation-engine/cli@3.7.0':
+    resolution: {integrity: sha512-Zg5hgs1Qj5GHp1o9ncEpgKOeRd2LHAwJ3CSSBGcN2H4G14UDdVsJsWcAJmOqygwn9O1Fjy5lwjt8pXXtPl1gfw==}
 
   '@pkgr/core@0.3.6':
     resolution: {integrity: sha512-SEeaJLb3qBNF/OaXnaR1NmmBbFYk1zC0ZH/52fATcRPLFg/p791YrcyFFy44Bo9sLaGuSuLp5Q6axbb/O+v/RA==}
@@ -3660,7 +3660,7 @@ snapshots:
       '@tybys/wasm-util': 0.10.3
     optional: true
 
-  '@osm-conflation-engine/cli@3.6.0':
+  '@osm-conflation-engine/cli@3.7.0':
     dependencies:
       '@actions/core': 3.0.1
       ajv: 8.20.0

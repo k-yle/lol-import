@@ -69,10 +69,8 @@ const config: Config = {
   },
   o_data: {
     source: {
-      type: 'overpass',
-      // overpass_query_file is not specified, so it'll default to downloading everything with seamark:light:reference=*
-      overpass_server_url:
-        'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
+      type: 'postpass',
+      // postpass_query_file is not specified, so it'll default to downloading everything with seamark:light:reference=*
     },
     tags_to_keep: [REF_KEY, 'check_date', '/.+/'],
   },

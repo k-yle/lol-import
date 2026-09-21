@@ -9,7 +9,7 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@osm-conflation-engine/cli": "^3.6.0",
+    "@osm-conflation-engine/cli": "^3.7.0",
     "@rapideditor/country-coder": "^5.2.2",
     "light-characteristics": "^1.0.0",
     "prettier": "^3.2.5"
