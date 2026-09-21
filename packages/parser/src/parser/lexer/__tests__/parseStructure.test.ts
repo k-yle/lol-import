@@ -149,7 +149,7 @@ describe(parseStructure, () => {
             colour: 'black;white',
             colourPattern: 'squared',
           },
-          { type: 'shape', shape: 'beacon', structure: 'column' },
+          { type: 'shape', shape: 'beacon', structure: 'pile' },
           { type: 'physicalHeight', metres: '6.1' },
         ],
       ],

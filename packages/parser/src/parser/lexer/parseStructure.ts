@@ -2,6 +2,11 @@ import { deleteUndefinedKeys, isTruthy } from '../../helpers/general.js';
 import { tokeniser } from '../../helpers/tokeniser.js';
 import type { Warning } from '../../helpers/types.js';
 
+/**
+ * the order of this object matters! the earlier it's defined,
+ * the higher the priority if there are multiple detected for
+ * one light.
+ */
 const SHAPES: Record<
   'beacon' | 'buoy',
   Record<string, string | true | undefined>
@@ -11,28 +16,31 @@ const SHAPES: Record<
     beacon: undefined,
     structure: undefined,
     superstructure: undefined,
+    lantern: undefined,
 
     // values that are exactly equal to OSM tags
     tower: true,
-    pillar: true,
-    post: true,
-    pole: true,
     pile: true,
-    pipe: true,
-    mast: true,
-    dolphin: true,
+    stake: true,
     tripod: true,
     pylon: true,
-    platform: true,
-    column: true,
     pyramid: true,
     cairn: true,
+    platform: true,
+    dolphin: true,
     buoyant: true,
 
     // values that need to be standardised
     hut: 'building',
     dwelling: 'building',
+    pole: 'stake',
     piles: 'pile',
+    pipe: 'stake',
+    mast: 'stake',
+    pillar: 'pile',
+    post: 'stake',
+    column: 'pile',
+    tank: 'tower',
   },
   buoy: {
     // generic match = no shape

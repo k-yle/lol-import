@@ -66,6 +66,7 @@ export function conflateTags(expected: Tags, actual: Tags): Tags {
     if (key.endsWith(':shape')) {
       const synonyms: Record<string, string> = {
         square: 'cylinder',
+        triangle: 'cone',
       };
 
       if (
