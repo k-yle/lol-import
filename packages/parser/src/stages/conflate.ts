@@ -62,6 +62,21 @@ export function conflateTags(expected: Tags, actual: Tags): Tags {
       }
     }
 
+    // for colour pattern, allow horizontal and vertical to be
+    // used interchangably, since our guesswork is often wrong.
+    if (key.endsWith(':colour_pattern')) {
+      const synonyms: Record<string, string> = {
+        horizontal: 'vertical',
+      };
+
+      if (
+        (synonyms[actual[key]] || actual[key]) ===
+        (synonyms[expected[key]] || expected[key])
+      ) {
+        continue;
+      }
+    }
+
     // for shapes, some shapes are effectively the same
     if (key.endsWith(':shape')) {
       const synonyms: Record<string, string> = {
