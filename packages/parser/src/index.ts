@@ -74,7 +74,7 @@ const config: Config = {
       overpass_server_url:
         'https://maps.mail.ru/osm/tools/overpass/api/interpreter',
     },
-    tags_to_keep: ['/.+/'],
+    tags_to_keep: [REF_KEY, 'check_date', '/.+/'],
   },
   merge: {
     osm_key: REF_KEY,
