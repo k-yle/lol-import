@@ -32,9 +32,6 @@ importers:
       '@rapideditor/country-coder':
         specifier: ^5.2.2
         version: 5.6.1
-      countries-list:
-        specifier: ^3.1.0
-        version: 3.4.1
       light-characteristics:
         specifier: ^1.0.0
         version: 1.0.1
@@ -1470,9 +1467,6 @@ packages:
   cosmiconfig@7.1.0:
     resolution: {integrity: sha512-AdmX6xUzdNASswsFtmwSt7Vj8po9IuqXm0UXz7QKPuEUmPB4XyjGfaAr2PSuELMwkRMVH1EpIkX5bTZGRB3eCA==}
     engines: {node: '>=10'}
-
-  countries-list@3.4.1:
-    resolution: {integrity: sha512-sKLGAZD5EAdzQwQ19vOp/9u33MTjmZ0CkdXPYtp/An6cyIlJ/E8TwGf2FcPe1AnzHO+h7nbTfoHyXIi58Hpa+Q==}
 
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
@@ -4253,8 +4247,6 @@ snapshots:
       parse-json: 5.2.0
       path-type: 4.0.0
       yaml: 1.10.3
-
-  countries-list@3.4.1: {}
 
   cross-spawn@7.0.6:
     dependencies:

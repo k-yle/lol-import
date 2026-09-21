@@ -1,4 +1,3 @@
-import { countries as COUNTRIES_DB, type TCountryCode } from 'countries-list';
 import type { LatLon } from './types.js';
 
 interface DMS {
@@ -38,11 +37,31 @@ export function parseCoords(stringifiedCoords: string): LatLon {
   return { lat, lon };
 }
 
+function getContinent(country: string) {
+  try {
+    const regions =
+      new Intl.Locale(`zxx-${country}`)
+        .getTimeZones()
+        ?.map((tz) => tz.split('/', 1)[0]) || [];
+
+    // pick the most frequent
+    const counts: Record<string, number> = {};
+    for (const region of regions) {
+      counts[region] ||= 0;
+      counts[region]++;
+    }
+    return Object.entries(counts).toSorted((a, b) => b[1] - a[1])[0][0];
+  } catch {
+    // skip invalid country codes
+    return '--';
+  }
+}
+
 /** iD's country-coder library doesn't include continent information :( */
 export function getContinents(countryCodes: string[]) {
   const continents: Record<string, string[]> = {};
   for (const country of countryCodes) {
-    const continent = COUNTRIES_DB[<TCountryCode>country]?.continent || '--';
+    const continent = getContinent(country);
     continents[continent] ||= [];
     continents[continent].push(country);
   }
