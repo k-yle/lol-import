@@ -246,7 +246,14 @@ export const InnerLightPage: React.FC<{
     }
   }, [countryFromUrl, country, urlSafeId, navigate]);
 
-  const reëncodedLight = useMemo(() => light && reëncodeLight(light), [light]);
+  const reëncodedLight = useMemo(
+    () =>
+      light &&
+      // this check is to ensure the link is only enabled for non-sectored lights
+      !!light.tags['seamark:light:character'] &&
+      reëncodeLight(light),
+    [light],
+  );
 
   if (!light) return <Loader />;
 
@@ -306,6 +313,8 @@ export const InnerLightPage: React.FC<{
     ),
     unexpected: null, // can never happen
   }[light.osm?.verdict || 'missing'];
+
+  const originalCount = light.orig.name.split('---------');
 
   return (
     <div>
@@ -395,45 +404,48 @@ export const InnerLightPage: React.FC<{
 
       <JsonCard title={t('LightPage.original-data')} json={light.orig}>
         <Table style={{ tableLayout: 'fixed' }}>
+          {originalCount.length > 1 && (
+            <Table.Thead>
+              <Table.Tr>
+                <Table.Th style={{ width: 110 }} />
+                {originalCount.map((_, index) => {
+                  const key = _ + index;
+                  return (
+                    <Table.Th key={key}>
+                      {t('LightPage.part-n', { n: index + 1 })}
+                    </Table.Th>
+                  );
+                })}
+              </Table.Tr>
+            </Table.Thead>
+          )}
           <Table.Tbody>
-            <Table.Tr>
-              <Table.Th style={{ width: 110 }}>
-                {t('LightPage.orig.name')}
-              </Table.Th>
-              <Table.Td>
-                <Code block>{light.orig.name}</Code>
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Th>{t('LightPage.orig.characteristics')}</Table.Th>
-              <Table.Td>
-                {highlightErrors(light.orig.characteristic, light)}
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Th>{t('LightPage.orig.structure')}</Table.Th>
-              <Table.Td>
-                {highlightErrors(light.orig.structure, light)}
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Th>{t('LightPage.orig.remarks')}</Table.Th>
-              <Table.Td>{highlightErrors(light.orig.remarks, light)}</Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Th>{t('LightPage.orig.range')}</Table.Th>
-              <Table.Td>
-                {light.orig.range && <Code block>{light.orig.range}</Code>}
-              </Table.Td>
-            </Table.Tr>
-            <Table.Tr>
-              <Table.Th>{t('LightPage.orig.height')}</Table.Th>
-              <Table.Td>
-                {light.orig.heightFeetMeters && (
-                  <Code block>{light.orig.heightFeetMeters}</Code>
-                )}
-              </Table.Td>
-            </Table.Tr>
+            {Object.entries({
+              name: t('LightPage.orig.name'),
+              characteristic: t('LightPage.orig.characteristics'),
+              structure: t('LightPage.orig.structure'),
+              remarks: t('LightPage.orig.remarks'),
+              range: t('LightPage.orig.range'),
+              heightFeetMeters: t('LightPage.orig.height'),
+            }).map(([field, label]) => {
+              return (
+                <Table.Tr key={field}>
+                  <Table.Th style={{ width: 110 }}>{label}</Table.Th>
+                  {originalCount.map((_, index) => {
+                    const key = _ + index;
+                    const text =
+                      light.orig[field as keyof FELight['orig']]
+                        ?.split('---------')
+                        [index]?.trim() || '';
+                    return (
+                      <Table.Td key={key}>
+                        {highlightErrors(text, light)}
+                      </Table.Td>
+                    );
+                  })}
+                </Table.Tr>
+              );
+            })}
           </Table.Tbody>
         </Table>
       </JsonCard>
