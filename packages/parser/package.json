@@ -9,12 +9,14 @@
     "test": "vitest"
   },
   "dependencies": {
+    "@osm-conflation-engine/cli": "^3.6.0",
     "@rapideditor/country-coder": "^5.2.2",
     "countries-list": "^3.1.0",
     "light-characteristics": "^1.0.0",
     "prettier": "^3.2.5"
   },
   "devDependencies": {
+    "@types/geojson": "^7946.0.16",
     "@types/node": "^20.11.28",
     "osm-api": "catalog:",
     "tsx": "^4.7.1",

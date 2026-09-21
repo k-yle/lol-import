@@ -4,15 +4,15 @@ export const tempFolder = join(import.meta.dirname, '../../tmp');
 export const outputFolder = join(import.meta.dirname, '../../out');
 
 export const lolFile = join(tempFolder, 'lol.json');
+export const lolConvertedFile = join(tempFolder, 'lol-parser.jsonl');
 export const osmFile = join(tempFolder, 'osm.json');
-export const ignoreFile = join(tempFolder, 'ignore.json');
 
 export const outputStatsFile = join(outputFolder, 'stats.json');
 export const warningsFile = join(outputFolder, 'warnings.json');
 export const unparsableFile = (type: string) =>
   join(outputFolder, `unparsable_${type}.txt`);
 export const outputFullFile = join(outputFolder, 'full', '%s.json');
-export const taginfoFile = join(outputFolder, 'taginfo.json');
+export const taginfoFile = join(outputFolder, 'taginfo.generated.json');
 
 /* https://osm.wiki/File:IALA_Maritime_Buoyage_System_Regions.svg */
 export const IALA_B = new Set([

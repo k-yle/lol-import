@@ -9,10 +9,7 @@ const SECTIONS: Partial<Record<Verdict, [colour: string, label: string]>> = {
 };
 
 export const getTotal = (stats: Stats) =>
-  stats.existsAndPerfect +
-  stats.existsAndSuggestionsIgnored +
-  stats.existsButNeedsUpdate +
-  stats.missing;
+  stats.existsAndPerfect + stats.existsButNeedsUpdate + stats.missing;
 
 export const StatsBar: React.FC<{
   stats: Stats;
@@ -26,11 +23,7 @@ export const StatsBar: React.FC<{
       {Object.entries(SECTIONS).map(([_section, [colour, label]]) => {
         const section = _section as keyof Stats;
 
-        let count = +stats[section];
-        if (section === 'existsAndPerfect') {
-          // add perfect and SuggestionsIgnored into the same group
-          count += stats.existsAndSuggestionsIgnored;
-        }
+        const count = +stats[section];
 
         const fullLabel = `${label} (${count.toLocaleString(locale)})`;
         return (
@@ -38,12 +31,7 @@ export const StatsBar: React.FC<{
             <Progress.Section
               value={(count / total) * 100}
               color={hidden?.[section] ? 'grey' : colour}
-              onClick={() => {
-                onClick?.(section);
-                if (section === 'existsAndPerfect') {
-                  onClick?.('existsAndSuggestionsIgnored');
-                }
-              }}
+              onClick={() => onClick?.(section)}
               style={onClick ? { cursor: 'pointer' } : {}}
             >
               <Progress.Label

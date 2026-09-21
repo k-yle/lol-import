@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import type { Tags } from 'osm-api';
+import type { DatasetId } from '@osm-conflation-engine/cli';
 import { getHighestSector, mergeLights } from '../merge.js';
 import type { FELight, LolFeature } from '../../helpers/types.js';
 
@@ -155,6 +156,7 @@ describe(mergeLights, () => {
 
   it('can recursively merge 3 features, where only 1 is a light (real case)', () => {
     const a: FELight = {
+      ialaId: <DatasetId>'K 4084.5',
       country: 'NZ',
       lat: -39.8506,
       lon: 174.1202,
@@ -183,6 +185,7 @@ describe(mergeLights, () => {
       },
     };
     const b: FELight = {
+      ialaId: <DatasetId>'K 4084.5',
       country: 'NZ',
       lat: -39.8506,
       lon: 174.1202,
@@ -204,6 +207,7 @@ describe(mergeLights, () => {
       },
     };
     const c: FELight = {
+      ialaId: <DatasetId>'K 4084.5',
       country: 'NZ',
       lat: -39.8506,
       lon: 174.1202,
@@ -225,6 +229,7 @@ describe(mergeLights, () => {
       },
     };
     expect(mergeLights(mergeLights(a, b, []), c, [])).toStrictEqual({
+      ialaId: 'K 4084.5',
       country: 'NZ',
       lat: -39.8506,
       lon: 174.1202,
@@ -283,6 +288,7 @@ RACON`,
 
   it('can recursively merge 3 features (where both are lights)', () => {
     const a: FELight = {
+      ialaId: <DatasetId>'K 4087',
       country: 'NZ',
       lat: -39.5552,
       lon: 173.4493,
@@ -316,6 +322,7 @@ RACON`,
       },
     };
     const b: FELight = {
+      ialaId: <DatasetId>'K 4087',
       country: 'NZ',
       lat: -39.5552,
       lon: 173.4493,
@@ -347,6 +354,7 @@ RACON`,
       },
     };
     expect(mergeLights(a, b, [])).toStrictEqual({
+      ialaId: 'K 4087',
       country: 'NZ',
       lat: -39.5552,
       lon: 173.4493,

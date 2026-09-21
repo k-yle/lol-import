@@ -1,6 +1,8 @@
 packages:
   - 'packages/*'
 
+blockExoticSubdeps: false # bc of our fork of pbf2json
+
 allowBuilds:
   esbuild: true
   sharp: true

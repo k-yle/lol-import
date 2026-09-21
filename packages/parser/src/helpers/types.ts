@@ -1,3 +1,5 @@
+import type { DatasetId } from '@osm-conflation-engine/cli';
+import type { Feature, Point } from 'geojson';
 import type { OsmFeature, Tags } from 'osm-api';
 
 export interface LatLon {
@@ -77,7 +79,6 @@ export interface Warning {
 export const emptyStats = () => ({
   ids: <string[]>[],
   existsAndPerfect: 0,
-  existsAndSuggestionsIgnored: 0,
   existsButNeedsUpdate: 0,
   missing: 0,
   unexpected: 0,
@@ -96,20 +97,8 @@ export interface StatsFile {
   continents: { [continentName: string]: string[] };
 }
 
-export type IgnoreInfo = {
-  username: string;
-  diffHash: string;
-  comment: string;
-  date: string;
-};
-
-export type IgnoreFile = {
-  ignored: {
-    [ref: string]: IgnoreInfo;
-  };
-};
-
 export type FELight = LatLon & {
+  ialaId: DatasetId;
   country: string;
   tags: Tags;
   warnings: Warning[];
@@ -127,11 +116,10 @@ export type FELight = LatLon & {
     verdict: Verdict;
     currentTags: Tags;
     diff: Tags;
-    diffHash: string;
-    /** when `verdict` is `existsAndSuggestionsIgnored`, this is the information about the ignored suggestion */
-    ignored?: IgnoreInfo;
   };
 };
+
+export type FELightGeoJson = Feature<Point, FELight>;
 
 export interface FullFile {
   [country: string]: {

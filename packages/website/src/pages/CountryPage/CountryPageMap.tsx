@@ -64,8 +64,7 @@ export const CountryPageMap: React.FC<{
                   position={{ lat: light.lat, lng: light.lon }}
                   title={`${id} / ${light.tags['seamark:name']}`}
                   icon={
-                    light.osm?.verdict === 'existsAndPerfect' ||
-                    light.osm?.verdict === 'existsAndSuggestionsIgnored'
+                    light.osm?.verdict === 'existsAndPerfect'
                       ? MAP_ICONS.GREEN
                       : light.osm?.verdict === 'existsButNeedsUpdate'
                         ? MAP_ICONS.YELLOW

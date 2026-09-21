@@ -5,12 +5,39 @@ on:
     - cron: "14 14 * * 1,3,6" # 3 times per week (Mo, We, Sa)
   workflow_dispatch:
 
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
 jobs:
   sync:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📦 Redeploy
-        run: curl -X POST "https://api.cloudflare.com/client/v4/pages/webhooks/deploy_hooks/$CF_DEPLOY_ID"
-        env:
-          CF_DEPLOY_ID: ${{ secrets.CF_DEPLOY_ID }}
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 26.x
+
+      - run: corepack enable
+      - run: pnpm i
+
+      - run: pnpm start
+        working-directory: packages/parser
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: packages/parser/out/
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: sync
+    steps:
+      - name: 🚀 Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

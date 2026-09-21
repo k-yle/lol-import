@@ -6,12 +6,15 @@ import {
 } from '../helpers/duplicateLightTags.js';
 import { getHighestSector } from './merge.js';
 
+/** if the only thing that needs changing are these keys, then abort */
+const TRIVIAL_KEYS = new Set(['source', 'seamark:name', 'seamark:information']);
+
 /**
  * Compares the expected vs actual tags, returns a diff
  * of which tags need updating.
  */
 export function conflateTags(expected: Tags, actual: Tags): Tags {
-  const diff: Tags = {};
+  let diff: Tags = {};
 
   // part 1: ensure the semark:type is correct, prefer the value in OSM if we're unsure
 
@@ -122,5 +125,13 @@ export function conflateTags(expected: Tags, actual: Tags): Tags {
     }
   }
 
-  return sortObject(diff);
+  diff = sortObject(diff);
+
+  // if the only thing that needs to change is these trivial keys,
+  // then abort, and pretend it's perfect.
+  const nonTrivialKeysToUpdate = Object.keys(diff).some(
+    (key) => !TRIVIAL_KEYS.has(key),
+  );
+  if (nonTrivialKeysToUpdate) return diff;
+  return {};
 }
