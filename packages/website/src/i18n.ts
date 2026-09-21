@@ -1,5 +1,15 @@
-import { type IntlShape, createIntl, createIntlCache } from '@formatjs/intl';
-import { translations } from './translations';
+import { Code } from '@mantine/core';
+import { MessageFormat } from 'messageformat';
+import { type MarkupHandlers, formatToJsx } from 'react-mf2';
+import { type TranslationKey, translations } from './translations';
+
+const MARKUP: MarkupHandlers = {
+  b: 'b',
+  i: 'i',
+  em: 'em',
+  br: 'br',
+  code: Code,
+};
 
 export type SupportedLanguage = keyof typeof translations;
 export function getDefaultLanguage(): SupportedLanguage {
@@ -20,18 +30,40 @@ export const locale = getDefaultLanguage();
 
 document.querySelector('html')!.setAttribute('lang', locale);
 
-const cache = createIntlCache();
-let intl: IntlShape;
+let messages: Record<TranslationKey, string>;
+const cache: Partial<Record<TranslationKey, MessageFormat>> = {};
 
 export const i18nReady = (async () => {
-  const { default: messages } = await translations[locale]();
-
-  intl = createIntl({ locale, messages }, cache);
+  ({ default: messages } = await translations[locale]());
 })();
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any -- literally anything is allowed
-export const t = (id: string, values?: Record<string, any>) =>
-  intl.formatMessage({ id }, values) as string;
+function getMessage(key: TranslationKey) {
+  const value = messages[key];
+
+  if (!value) return '❓';
+
+  // MessageFormat() is expensive, avoid it for trivial strings
+  if (!value.includes('{')) return value;
+
+  cache[key] ||= new MessageFormat(locale, value);
+  return cache[key];
+}
+
+export const t = (key: TranslationKey, params?: Record<string, unknown>) => {
+  const message = getMessage(key);
+  if (typeof message === 'string') return message;
+  return message.format(params);
+};
+
+t.jsx = (
+  key: TranslationKey,
+  params?: Record<string, unknown>,
+  markup?: MarkupHandlers,
+): React.ReactNode => {
+  const message = getMessage(key);
+  if (typeof message === 'string') return message;
+  return formatToJsx(message, params, { ...MARKUP, ...markup });
+};
 
 const COUNTRY_NAMES = new Intl.DisplayNames(locale, {
   type: 'region',

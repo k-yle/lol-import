@@ -41,9 +41,9 @@ const ERRORS = {
   UNPARSABLE: t('error.unparsable'),
   UNPARSABLE_INFO: t('error.unparsable_info'),
   GENERIC_BUOY_BEACON: (type: string) =>
-    t('error.generic_buoy_beacon', {
+    t.jsx('error.generic_buoy_beacon', {
       type: type === 'beacon' ? t('type.beacon') : t('type.buoy'),
-      tag: <Code key={0}>{type}_special_purpose</Code>,
+      tag: `${type}_special_purpose`,
     }),
 };
 
@@ -257,13 +257,13 @@ export const InnerLightPage: React.FC<{
 
   if (!light) return <Loader />;
 
-  const viewLink = (
-    <Anchor key={0} href={createOsmLink(light.osm?.id || '')} target="_blank">
+  const viewLink = () => (
+    <Anchor href={createOsmLink(light.osm?.id || '')} target="_blank">
       {t('LightPage.view-on-osm')}
     </Anchor>
   );
-  const diffLink = (
-    <Anchor key={1} component="button" onClick={() => setShowDiff((c) => !c)}>
+  const diffLink = () => (
+    <Anchor component="button" onClick={() => setShowDiff((c) => !c)}>
       {showDiff ? t('LightPage.diff-link.hide') : t('LightPage.diff-link.show')}
     </Anchor>
   );
@@ -276,7 +276,7 @@ export const InnerLightPage: React.FC<{
         title={t('LightPage.status.existsAndPerfect.title')}
         icon={<IconCheck />}
       >
-        {t('LightPage.status.existsAndPerfect.desc', { viewLink })}
+        {t.jsx('LightPage.status.existsAndPerfect.desc', {}, { viewLink })}
       </Alert>
     ),
     existsButNeedsUpdate: (
@@ -287,10 +287,11 @@ export const InnerLightPage: React.FC<{
         icon={<IconAlertTriangle />}
         styles={{ body: { width: '100%' } }}
       >
-        {t('LightPage.status.existsButNeedsUpdate.desc', {
-          viewLink,
-          diffLink,
-        })}
+        {t.jsx(
+          'LightPage.status.existsButNeedsUpdate.desc',
+          {},
+          { viewLink, diffLink },
+        )}
         {showDiff && (
           <>
             <br />
@@ -306,8 +307,8 @@ export const InnerLightPage: React.FC<{
         title={t('LightPage.status.no.title')}
         icon={<IconAlertTriangle />}
       >
-        {t('LightPage.status.no.desc', {
-          tag: <Code key={0}>seamark:light:reference</Code>,
+        {t.jsx('LightPage.status.no.desc', {
+          tag: 'seamark:light:reference',
         })}
       </Alert>
     ),
@@ -489,9 +490,7 @@ export const LightPage: React.FC = () => {
         title={t('CountryPage.not-found.title')}
         color="red"
       >
-        {t('CountryPage.not-found.desc', {
-          ref: <Code key={0}>{ref}</Code>,
-        })}
+        {t.jsx('CountryPage.not-found.desc', { ref })}
       </Alert>
     );
   }

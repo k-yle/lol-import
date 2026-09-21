@@ -6,8 +6,8 @@ languageIds:
   - typescriptreact
 
 usageMatchRegex:
-  - "[^\\w\\d]t\\(['\"`]({key})['\"`]" # matches t("{key}"
-  - "[^\\w\\d]t\\(\\n? +['\"`]({key})['\"`]" # matches t(\n "{key}"
+  - "[^\\w\\d]t(?:\\.jsx)?\\(['\"`]({key})['\"`]" # matches t("{key}" and t.jsx("{key}"
+  - "[^\\w\\d]t(?:\\.jsx)?\\(\\n? +['\"`]({key})['\"`]" # matches t(\n "{key}" and t.jsx(\n "{key}"
 
 refactorTemplates:
   - t("$1")

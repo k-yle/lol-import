@@ -1,18 +1,10 @@
 import { useContext, useEffect, useMemo, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import {
-  Alert,
-  Anchor,
-  Breadcrumbs,
-  Code,
-  List,
-  Loader,
-  Title,
-} from '@mantine/core';
+import { Alert, Anchor, Breadcrumbs, List, Loader, Title } from '@mantine/core';
 import { IconAlertHexagon } from '@tabler/icons-react';
 import type { Stats } from '@lol-import/parser';
 import { DataContext } from '../../context/DataContext';
-import { getCountryName, locale, t } from '../../i18n';
+import { getCountryName, t } from '../../i18n';
 import { StatsBar, getTotal } from '../../components/StatsBar';
 import 'leaflet/dist/leaflet.css';
 import { getListIcon } from '../../components/icons';
@@ -43,7 +35,7 @@ const InnerCountryPage: React.FC<{
   return (
     <div style={{ width: 'calc(50% - 24px)' }}>
       <Title order={3}>{countryName}</Title>
-      {t('CountryPage.subtitle', { n: getTotal(stats).toLocaleString(locale) })}
+      {t('CountryPage.subtitle', { n: getTotal(stats) })}
       <StatsBar
         stats={stats}
         hidden={hidden}
@@ -119,9 +111,7 @@ export const CountryPage: React.FC = () => {
         title={t('CountryPage.not-found.title')}
         color="red"
       >
-        {t('CountryPage.not-found.desc', {
-          ref: <Code key={0}>{country}</Code>,
-        })}
+        {t.jsx('CountryPage.not-found.desc', { ref: country })}
       </Alert>
     );
   }

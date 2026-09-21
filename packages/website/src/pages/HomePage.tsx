@@ -1,6 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { Accordion, Anchor, Card, Loader, Title } from '@mantine/core';
 import { Link } from 'react-router-dom';
+import type { MarkupHandlers } from 'react-mf2';
 import TimeAgo from 'react-timeago-i18n';
 import { DataContext } from '../context/DataContext';
 import { getCountryName, locale, t } from '../i18n';
@@ -8,23 +9,22 @@ import { StatsBar, getTotal } from '../components/StatsBar';
 import { APP_NAME, GITHUB_URL, NGA_URL, WIKI_URL } from '../helpers/constants';
 import { getFlagEmoji } from '../helpers/geo';
 
-const WELCOME_TEXT_LINKS = {
-  a1: (str: string) => (
-    <Anchor key="a1" href={NGA_URL} target="_blank">
-      {str}
+const WELCOME_TEXT_LINKS: MarkupHandlers = {
+  a1: ({ children }) => (
+    <Anchor href={NGA_URL} target="_blank">
+      {children}
     </Anchor>
   ),
-  a2: (str: string) => (
-    <Anchor key="a2" href={WIKI_URL} target="_blank">
-      {str}
+  a2: ({ children }) => (
+    <Anchor href={WIKI_URL} target="_blank">
+      {children}
     </Anchor>
   ),
-  a3: (str: string) => (
-    <Anchor key="a3" href={GITHUB_URL} target="_blank">
-      {str}
+  a3: ({ children }) => (
+    <Anchor href={GITHUB_URL} target="_blank">
+      {children}
     </Anchor>
   ),
-  br: () => <br key={Math.random()} />,
 };
 
 export const HomePage = () => {
@@ -41,16 +41,16 @@ export const HomePage = () => {
     <div>
       <Card withBorder px={12} py={6} mb={16}>
         <div>
-          {t('HomePage.welcome', {
-            ...WELCOME_TEXT_LINKS,
-            lastUpdated: (
-              <TimeAgo
-                key="timeago"
-                date={indexFile.timestamp}
-                locale={locale}
-              />
-            ),
-          })}
+          {t.jsx(
+            'HomePage.welcome',
+            {},
+            {
+              ...WELCOME_TEXT_LINKS,
+              lastUpdated: () => (
+                <TimeAgo date={indexFile.timestamp} locale={locale} />
+              ),
+            },
+          )}
         </div>
       </Card>
       <Title order={4}>Import Progress</Title>

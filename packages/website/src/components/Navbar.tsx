@@ -16,8 +16,6 @@ import { APP_NAME } from '../helpers/constants';
 import { t } from '../i18n';
 import { LoginStatus } from './LoginStatus';
 
-const b = (str: string) => <b key={0}>{str}</b>;
-
 export const Navbar = memo(() => {
   const theme = useMantineTheme();
   const navigate = useNavigate();
@@ -41,7 +39,7 @@ export const Navbar = memo(() => {
         onClose={close}
         title={<strong>{t('disclaimer.title')}</strong>}
       >
-        {t('disclaimer.long', { b })}
+        {t.jsx('disclaimer.long')}
       </Modal>
 
       <Flex direction="column" align="flex-start">
