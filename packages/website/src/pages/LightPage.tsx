@@ -320,9 +320,31 @@ export const InnerLightPage: React.FC<{
           {id}
         </Anchor>
       </Breadcrumbs>
-      <Title order={3}>
-        {light.tags['seamark:name'] || <em>{t('noname.light')}</em>}
-      </Title>
+      <div>
+        <Title order={3} display="inline">
+          {light.tags['seamark:name'] || <em>{t('noname.light')}</em>}
+        </Title>{' '}
+        –{' '}
+        <Anchor
+          href={
+            light.osm
+              ? createOsmLink(light.osm.id)
+              : `https://openstreetmap.org/?mlat=${light.lat}&mlon=${light.lon}#map=18/${light.lat}/${light.lon}`
+          }
+          target="_blank"
+          rel="noreferrer"
+        >
+          OSM
+        </Anchor>{' '}
+        –{' '}
+        <Anchor
+          href={`https://kyle.kiwi/iD/#overlays=openseamap-overlay&map=18/${light.lat}/${light.lon}&id=${light.osm?.id || ''}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          iD
+        </Anchor>
+      </div>
 
       {status}
 
