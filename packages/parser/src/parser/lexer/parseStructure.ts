@@ -147,6 +147,16 @@ const reJunkTokens = new RegExp(String.raw`\b(${JUNK_TOKENS.join('|')})\b`);
 
 const unparsableStructureLines: Record<string, number> = {};
 
+export const getMoreSignificantStructure = (
+  type: 'buoy' | 'beacon',
+  a: string,
+  b: string,
+): string => {
+  const heirachy = Object.keys(SHAPES[type]);
+
+  return heirachy.indexOf(a) > heirachy.indexOf(b) ? b : a;
+};
+
 export const getUnparsableStructureLines = () =>
   Object.entries(unparsableStructureLines)
     .toSorted((a, b) => b[1] - a[1])

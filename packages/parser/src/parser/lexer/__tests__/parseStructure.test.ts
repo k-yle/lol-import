@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest';
-import { type Structure, parseStructure } from '../parseStructure.js';
+import {
+  type Structure,
+  getMoreSignificantStructure,
+  parseStructure,
+} from '../parseStructure.js';
 import type { Warning } from '../../../helpers/types.js';
 
 describe(parseStructure, () => {
@@ -227,5 +231,16 @@ describe(parseStructure, () => {
       expect(parseStructure(input, warnings, true)).toStrictEqual(output);
       expect(warnings).toStrictEqual([]);
     });
+  });
+});
+
+describe(getMoreSignificantStructure, () => {
+  it.each`
+    a          | b          | result
+    ${'tower'} | ${'pile'}  | ${'tower'}
+    ${'pile'}  | ${'tower'} | ${'tower'}
+    ${'pile'}  | ${'pole'}  | ${'pile'}
+  `('picks $result given $a and $b', ({ a, b, result }) => {
+    expect(getMoreSignificantStructure('beacon', a, b)).toBe(result);
   });
 });
