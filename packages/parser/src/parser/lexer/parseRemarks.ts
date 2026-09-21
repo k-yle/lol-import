@@ -34,8 +34,8 @@ const COMMON_REMARKS: Record<string, Tags> = {
   'shown 24 hours': { 'seamark:light:exhibition': '24h' },
   'operates at night only': { 'seamark:light:exhibition': 'night' },
   'storm signals': { 'seamark:light:exhibition': 'storm' },
+  'shown on request': { 'seamark:light:exhibition': 'on_request' },
   'radar reflector': { 'seamark:radar_reflector': 'yes' },
-  'Shown on request': { 'seamark:radar_reflector': 'on_request' },
 };
 
 type Visibility =
