@@ -214,6 +214,14 @@ describe(parseStructure, () => {
           { type: 'shape', shape: 'beacon' }, // the double match is a bit weird, but doesn't cause issues
         ],
       ],
+      [
+        'Post, orange triangular daymark point down; 26.',
+        [
+          { type: 'daymark', colour: 'orange', shape: 'triangle, point down' },
+          { type: 'shape', shape: 'beacon', structure: 'stake' },
+          { type: 'physicalHeight', metres: '7.9' },
+        ],
+      ],
     ])('%s', (input, output) => {
       const warnings: Warning[] = [];
       expect(parseStructure(input, warnings, true)).toStrictEqual(output);

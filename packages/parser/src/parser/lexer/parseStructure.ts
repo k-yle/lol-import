@@ -376,6 +376,15 @@ export function parseStructure(
 
         const materials = allWords.filter((word) => word in MATERIALS);
 
+        // shapes default to "point up" unless "point down" is specified
+        if (
+          suffix?.includes('down') &&
+          shapes.length === 1 &&
+          shapes[0].includes('point up')
+        ) {
+          shapes[0] = shapes[0].replace(/\bup\b/, 'down');
+        }
+
         return {
           raw: topmarkMatch[0],
           parsed: deleteUndefinedKeys<Structure>({
