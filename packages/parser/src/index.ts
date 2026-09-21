@@ -51,6 +51,7 @@ import { mergeLights } from './stages/merge.js';
 import { removeDuplicateSectors } from './parser/work/removeDuplicateSectors.js';
 
 const REF_KEY = 'seamark:light:reference';
+const CHECK_DATE_KEY = 'seamark:date'; // stupid tag
 
 const config: Config = {
   $schema:
@@ -68,11 +69,12 @@ const config: Config = {
     file: lolConvertedFile,
   },
   o_data: {
+    check_date_key: CHECK_DATE_KEY,
     source: {
       type: 'postpass',
       // postpass_query_file is not specified, so it'll default to downloading everything with seamark:light:reference=*
     },
-    tags_to_keep: [REF_KEY, 'check_date', '/.+/'],
+    tags_to_keep: [REF_KEY, CHECK_DATE_KEY, '/.+/'],
   },
   merge: {
     osm_key: REF_KEY,
