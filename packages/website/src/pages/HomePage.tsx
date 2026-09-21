@@ -6,6 +6,7 @@ import { DataContext } from '../context/DataContext';
 import { getCountryName, locale, t } from '../i18n';
 import { StatsBar, getTotal } from '../components/StatsBar';
 import { APP_NAME, GITHUB_URL, NGA_URL, WIKI_URL } from '../helpers/constants';
+import { getFlagEmoji } from '../helpers/geo';
 
 const WELCOME_TEXT_LINKS = {
   a1: (str: string) => (
@@ -75,6 +76,8 @@ export const HomePage = () => {
                         return (
                           <div key={country}>
                             <Anchor component={Link} to={`/${country}`}>
+                              {!navigator.platform.includes('Win') &&
+                                getFlagEmoji(country)}{' '}
                               {getCountryName(country) || t('noname.country')}
                             </Anchor>{' '}
                             ({total.toLocaleString(locale)}

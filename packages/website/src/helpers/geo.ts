@@ -21,3 +21,10 @@ export function createBbox(data: LatLon[]) {
     },
   };
 }
+
+export const getFlagEmoji = (country: string) => {
+  if (country === '--') return '';
+  return String.fromCodePoint(
+    ...[...country].map((char) => 0x1f1a5 + char.codePointAt(0)!),
+  );
+};
