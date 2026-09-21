@@ -3,6 +3,5 @@ tmp
 out
 dist
 *.local.*
-.wrangler
 *.tsbuildinfo
 .DS_Store
