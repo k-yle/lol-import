@@ -68,10 +68,10 @@ describe(parseRemarks, () => {
 
   describe('visible bearing', () => {
     it.each`
-      start                 | end     | remarks                        | extra
-      ${123.4}              | ${56.3} | ${'Visible 123.4°-56°18`'}     | ${[]}
-      ${123.06666666666666} | ${56.3} | ${"Visible 123°4'-56°18`"}     | ${[]}
-      ${256}                | ${118}  | ${'Visible 256°-118°.  XXXX.'} | ${[{ type: 'unknown', line: 'XXXX' }]}
+      start     | end     | remarks                        | extra
+      ${123.4}  | ${56.3} | ${'Visible 123.4°-56°18`'}     | ${[]}
+      ${123.07} | ${56.3} | ${"Visible 123°4'-56°18`"}     | ${[]}
+      ${256}    | ${118}  | ${'Visible 256°-118°.  XXXX.'} | ${[{ type: 'unknown', line: 'XXXX' }]}
     `('$remarks', ({ remarks, start, end, extra }) => {
       const warnings: Warning[] = [];
       expect(parseRemarks(<LolFeature>{ remarks }, warnings)).toStrictEqual([
@@ -185,15 +185,15 @@ describe(parseRemarks, () => {
       [
         'F.G. 178°.24`-179°.24`, Al.G.W.-179°.42`, F.W.-180°, Al.W.R.-180°.18`, F.R.-181°.18`.  Range 4M by day',
         [
-          { characteristics: 'F.G', start: 178.004, end: 179.004 },
+          { characteristics: 'F.G', start: 178, end: 179 },
           {
             characteristics: 'Al.G.W',
-            start: 179.004,
-            end: 179.007,
+            start: 179,
+            end: 179.01,
           },
-          { characteristics: 'F.W', start: 179.007, end: 180 },
-          { characteristics: 'Al.W.R', start: 180, end: 180.003 },
-          { characteristics: 'F.R', start: 180.003, end: 181.003 },
+          { characteristics: 'F.W', start: 179.01, end: 180 },
+          { characteristics: 'Al.W.R', start: 180, end: 180 },
+          { characteristics: 'F.R', start: 180, end: 181 },
         ],
         [{ type: 'unknown', line: 'Range 4M by day' }],
       ],

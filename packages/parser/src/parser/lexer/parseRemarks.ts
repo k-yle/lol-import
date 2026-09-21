@@ -71,7 +71,7 @@ export function parseBearing(_string: string): number | undefined {
   const dmMatch = string.match(/^(\d+)[?°]([\d.]+)('|`)?\.?$/);
   if (dmMatch) {
     const [, d, m] = dmMatch;
-    return +d + +m / 60;
+    return +(+d + +m / 60).toFixed(2);
   }
 
   // could be a decimal
