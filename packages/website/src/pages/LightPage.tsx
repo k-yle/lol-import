@@ -365,6 +365,14 @@ export const InnerLightPage: React.FC<{
           rel="noreferrer"
         >
           iD
+        </Anchor>{' '}
+        –{' '}
+        <Anchor
+          href={`https://kyle.kiwi/OpenSeaMap-vector/#map=18/${light.lat}/${light.lon}`}
+          target="_blank"
+          rel="noreferrer"
+        >
+          OpenSeaMap
         </Anchor>
       </div>
 
