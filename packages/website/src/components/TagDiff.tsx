@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import Diff from 'react-diff-viewer-continued';
+import Diff, { type ReactDiffViewerProps } from 'react-diff-viewer-continued';
 import type { FELight } from '@lol-import/parser';
 
 export type Tags = Record<string, string | null>;
@@ -11,7 +11,10 @@ export const tagsToString = (tags: Tags) =>
     .map(([k, v]) => `${k}=${v!.replaceAll('\n', String.raw`\n`)}`)
     .join('\n');
 
-export const TagDiff: React.FC<{ light: FELight }> = ({ light }) => {
+export const TagDiff: React.FC<{
+  light: FELight;
+  renderContent?: ReactDiffViewerProps['renderContent'];
+}> = ({ light, renderContent }) => {
   const newTags = useMemo(() => {
     const out = { ...light.osm!.currentTags };
     for (const [key, value] of Object.entries(light.osm!.diff)) {
@@ -25,6 +28,7 @@ export const TagDiff: React.FC<{ light: FELight }> = ({ light }) => {
     <div style={{ width: '100%', overflowX: 'auto' }}>
       <Diff
         hideLineNumbers
+        renderContent={renderContent}
         oldValue={tagsToString(light.osm!.currentTags)}
         newValue={tagsToString(newTags)}
       />

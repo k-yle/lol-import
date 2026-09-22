@@ -31,6 +31,7 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import { LIGHT_CHARACTERISTICS } from 'light-characteristics';
 import { useLocalStorage } from '@mantine/hooks';
 import type { FELight } from '@lol-import/parser';
+import type { ReactDiffViewerProps } from 'react-diff-viewer-continued';
 import { DataContext } from '../context/DataContext';
 import { getCountryName, t } from '../i18n';
 import { TagDiff, tagsToString } from '../components/TagDiff';
@@ -101,8 +102,8 @@ function highlightErrors(text: string | null, light: FELight) {
   return <Code block>{text}</Code>;
 }
 
+const SEGMENTS_TO_HIGHLIGHT = new Set([':beacon:', ':buoy:']);
 function renderKey(key: string) {
-  const SEGMENTS_TO_HIGHLIGHT = [':beacon:', ':buoy:'];
   for (const segment of SEGMENTS_TO_HIGHLIGHT) {
     if (key.includes(segment)) {
       return (
@@ -118,6 +119,17 @@ function renderKey(key: string) {
   }
   return key;
 }
+
+/** called for each chunk within <TagDiff /> */
+const renderDiffContent: ReactDiffViewerProps['renderContent'] = (text) => {
+  if (!text) return null as never; // broken typedefs, imput and output can be nullish
+
+  if (SEGMENTS_TO_HIGHLIGHT.has(text)) {
+    const Markk = createMarkWithReason(ERRORS.GENERIC_BUOY_BEACON(text));
+    return <Markk>{text}</Markk>;
+  }
+  return <>{renderKey(text)}</>;
+};
 
 function renderValue(key: string, value: string) {
   if (key === 'seamark:information') {
@@ -295,7 +307,7 @@ export const InnerLightPage: React.FC<{
         {showDiff && (
           <>
             <br />
-            <TagDiff light={light} />
+            <TagDiff light={light} renderContent={renderDiffContent} />
           </>
         )}
       </Alert>
