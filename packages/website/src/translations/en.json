@@ -37,6 +37,7 @@
   "StatsBar.existsAndPerfect": "Perfect",
   "StatsBar.existsButNeedsUpdate": "Data Wrong",
   "StatsBar.missing": "Missing",
+  "TagDiff.show_trivial": "Show unimportant suggestions",
   "disclaimer.long": "Data from this tool or from OpenStreetMap {#b}should never be used for marine navigation{/b}. The contributors of this project take no responsibility for the accuracy of the data. Always use official nautical charts.",
   "disclaimer.short": "Not for navigation!",
   "disclaimer.title": "Disclaimer",

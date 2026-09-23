@@ -37,6 +37,7 @@
   "StatsBar.existsAndPerfect": "Perfekt",
   "StatsBar.existsButNeedsUpdate": "Daten falsch",
   "StatsBar.missing": "Fehlt",
+  "TagDiff.show_trivial": "Unwichtige Änderungen anzeigen",
   "disclaimer.long": "Daten von diesen Tool oder von OpenStreetMap sollten {#b}niemals für die Meeresnavigation verwendet werden{/b}. Die Mitwirkenden dieses Projekts übernehmen keine Verantwortung für die Richtigkeit der Daten. Benutzen Sie immer offizielle Seekarten.",
   "disclaimer.short": "Nicht für die Navigation!",
   "disclaimer.title": "Haftungsausschluss",

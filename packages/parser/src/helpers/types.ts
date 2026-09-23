@@ -95,6 +95,7 @@ export interface StatsFile {
   global: Stats;
   byCountry: { [countryCode: string]: Stats };
   continents: { [continentName: string]: string[] };
+  TRIVIAL_KEYS: string[];
 }
 
 export type FELight = LatLon & {

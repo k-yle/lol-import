@@ -7,7 +7,11 @@ import {
 import { getHighestSector } from './merge.js';
 
 /** if the only thing that needs changing are these keys, then abort */
-const TRIVIAL_KEYS = new Set(['source', 'seamark:name', 'seamark:information']);
+export const TRIVIAL_KEYS = new Set([
+  'source',
+  'seamark:name',
+  'seamark:information',
+]);
 
 /**
  * Compares the expected vs actual tags, returns a diff

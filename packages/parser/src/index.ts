@@ -27,7 +27,7 @@ import {
 } from './helpers/constants.js';
 import { getContinents, parseCoords } from './helpers/geo.js';
 import { loadLolFile } from './stages/fetch.js';
-import { conflateTags } from './stages/conflate.js';
+import { TRIVIAL_KEYS, conflateTags } from './stages/conflate.js';
 import { generateOsmTags } from './parser/generateOsmTags.js';
 import { getUnparsableCharactericLines } from './parser/lexer/parseCharacteristics.js';
 import { getUnparsableRemarks } from './parser/lexer/parseRemarks.js';
@@ -126,6 +126,7 @@ async function main() {
     global: emptyStats(),
     byCountry: {},
     continents: {},
+    TRIVIAL_KEYS: [...TRIVIAL_KEYS],
   };
   const fullData: FullFile = {};
   let allWarnings: { [warningType: string]: string[] } = {};
