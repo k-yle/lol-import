@@ -68,7 +68,7 @@ const config: Config = {
     type: 'file',
     file: lolConvertedFile,
   },
-  o_data: {
+  osm_data: {
     check_date_key: CHECK_DATE_KEY,
     source: {
       type: 'postpass',

@@ -14,4 +14,4 @@ catalog:
   'typescript': ^6.0.0
 
 minimumReleaseAgeExclude:
-  - '@osm-conflation-engine/cli@3.7.0'
+  - '@osm-conflation-engine/cli@3.9.0'
