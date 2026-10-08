@@ -27,8 +27,8 @@ importers:
   packages/parser:
     dependencies:
       '@osm-conflation-engine/cli':
-        specifier: ^3.9.0
-        version: 3.9.0
+        specifier: ^3.12.0
+        version: 3.12.0
       '@rapideditor/country-coder':
         specifier: ^5.2.2
         version: 5.6.1
@@ -816,8 +816,8 @@ packages:
       '@emnapi/core': ^1.7.1 || ^2.0.0-alpha.4
       '@emnapi/runtime': ^1.7.1 || ^2.0.0-alpha.4
 
-  '@osm-conflation-engine/cli@3.9.0':
-    resolution: {integrity: sha512-ot1s0PJ/6cuy84UXv5xVRPpqlPAYDpsbb+ok2WY1DTNk2/r+aBGW1ZuCVBRiFseHlcGCGIQeaFDRLv/enIf2zw==}
+  '@osm-conflation-engine/cli@3.12.0':
+    resolution: {integrity: sha512-D51KpR6icGE3VOTFzitzsuiNXDVJlG65Kh31rl1sqHdRd6f5bjFjowkqPkyeoEqk1ZX5obIR8yUjojFvLGdq5g==}
 
   '@pkgr/core@0.3.6':
     resolution: {integrity: sha512-SEeaJLb3qBNF/OaXnaR1NmmBbFYk1zC0ZH/52fATcRPLFg/p791YrcyFFy44Bo9sLaGuSuLp5Q6axbb/O+v/RA==}
@@ -2247,8 +2247,8 @@ packages:
     resolution: {integrity: sha512-EVQhqwhBCatsiL87pJ5fFM0MF5dhDV4SQQGmANml7e9CwuxCJRaNhwH1twJP5+A9i3BNbRYjj5qULV1CfTO/+w==}
     engines: {node: '>=18'}
 
-  osm-api@4.0.0:
-    resolution: {integrity: sha512-H2E+1lXtlk8MDyiuaS+llGKA7KTCGQ53iUgLu5Kn2bvRhxT7WBAbBgNOQs4ESQi9tVpPkUupkGqD7B3ZFLGDpg==}
+  osm-api@4.0.1:
+    resolution: {integrity: sha512-6fYtDvue5qnCNaLXSWlPlty9NGBqOAtp0MD93ziY+GXFL6ujjSQQPdr0bLHuuB+bsbBh9VgmDlnq1VWy1GbT7w==}
     engines: {node: '>=18'}
 
   own-keys@1.0.2:
@@ -2676,6 +2676,9 @@ packages:
 
   tabbable@6.5.0:
     resolution: {integrity: sha512-wieBHXygIm7OyQOu5hQlkk62/WyCFYGlWg7L6/ZCUZwx0o398Zkn4pVmMyfYhfMG8kGrj/Krt8eIk6UKC6VzwA==}
+
+  tag2link@2026.9.21:
+    resolution: {integrity: sha512-PpRyVrkMzOVtZ5Sclsa71l+YZBUKWwB7tZDVKhhOgu1cstu+3mCt1gf658YXxErMoucKmbv7fUfQ8QzCLrAGAA==}
 
   through2@3.0.2:
     resolution: {integrity: sha512-enaDQ4MUyP2W6ZyT6EsMzqBPZaM/avg8iuo+l2d3QCs0J+6RaqkHV/2/lOwDTueBHeJ/2LG9lrLW3d5rWPucuQ==}
@@ -3593,15 +3596,16 @@ snapshots:
       '@tybys/wasm-util': 0.10.3
     optional: true
 
-  '@osm-conflation-engine/cli@3.9.0':
+  '@osm-conflation-engine/cli@3.12.0':
     dependencies:
       '@actions/core': 3.0.1
       ajv: 8.20.0
       d3-geo: 3.1.1
       h3-js: 4.5.0
-      osm-api: 4.0.0
+      osm-api: 4.0.1
       pbf2json: https://codeload.github.com/osm-nz/pbf2json/tar.gz/c275a7beeabe553f0878ddba3a31ef902d2b8ca0
       protobufjs: 8.8.0
+      tag2link: 2026.9.21
 
   '@pkgr/core@0.3.6': {}
 
@@ -5204,7 +5208,7 @@ snapshots:
       '@types/geojson': 7946.0.16
       fast-xml-parser: 4.5.7
 
-  osm-api@4.0.0:
+  osm-api@4.0.1:
     dependencies:
       '@types/geojson': 7946.0.16
       fast-xml-parser: 4.5.7
@@ -5689,6 +5693,8 @@ snapshots:
       '@pkgr/core': 0.3.6
 
   tabbable@6.5.0: {}
+
+  tag2link@2026.9.21: {}
 
   through2@3.0.2:
     dependencies:

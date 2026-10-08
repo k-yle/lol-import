@@ -50,6 +50,8 @@ import {
 import { mergeLights } from './stages/merge.js';
 import { removeDuplicateSectors } from './parser/work/removeDuplicateSectors.js';
 
+const taginfoJson = generateTagInfoFile();
+
 const REF_KEY = 'seamark:light:reference';
 const CHECK_DATE_KEY = 'seamark:date'; // stupid tag
 
@@ -61,8 +63,10 @@ const config: Config = {
     name: 'List of Lights',
     description:
       'Lighthouses and Maritime Aids to Navigation from the US Department of Defense',
-    git_repository: 'https://github.com/k-yle/lol-import',
-    wiki_page: 'https://osm.wiki/OpenSeaMap/List_of_Lights_Import',
+    wiki_page: taginfoJson.project.doc_url,
+    taginfo_project_url: taginfoJson.data_url,
+    license_waiver_url:
+      'https://en.wikipedia.org/wiki/Copyright_status_of_works_by_the_federal_government_of_the_United_States',
   },
   source_data: {
     type: 'file',
@@ -395,7 +399,7 @@ async function main() {
 
   await fs.writeFile(
     taginfoFile,
-    await format(JSON.stringify(generateTagInfoFile()), {
+    await format(JSON.stringify(taginfoJson), {
       parser: 'json',
       printWidth: 150,
     }),
