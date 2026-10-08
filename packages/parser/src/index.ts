@@ -92,6 +92,12 @@ function getRegion(pos: FELight | OsmFeature) {
   return iso1A2Code(centroid, { level: 'territory' }) || '--';
 }
 
+const formatter = new Intl.DisplayNames(undefined, { type: 'region' });
+function getRegionName(pos: FELight | OsmFeature) {
+  const code = getRegion(pos);
+  return code === '--' ? 'International Waters' : formatter.of(code) || code;
+}
+
 async function main() {
   // create folder if they doesn't exist
   await fs.mkdir(tempFolder, { recursive: true });
@@ -285,7 +291,7 @@ async function main() {
         return {
           diff: { tags: source.properties.tags },
           category: '',
-          group: getRegion(source.properties),
+          group: getRegionName(source.properties),
           selection: undefined, // not implemented yet
         };
       },
@@ -295,7 +301,7 @@ async function main() {
         return {
           diff: { tags: { ...tagDiff } },
           category: '',
-          group: getRegion(source.properties),
+          group: getRegionName(source.properties),
         };
       },
 
